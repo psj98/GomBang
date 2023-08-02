@@ -1,7 +1,6 @@
-package com.ssafy.user.domain;
+package com.ssafy.member.domain;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
@@ -13,10 +12,10 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-public class User {
+public class Member {
 
     @Id
-    @Column(name ="user_id")
+    @Column(name ="member_id")
     private UUID id;
 
     @NonNull
@@ -28,6 +27,7 @@ public class User {
     @NonNull
     private String nickname;
 
+    @NonNull
     private String email;
 
     @NonNull

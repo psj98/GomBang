@@ -1,4 +1,4 @@
-package com.ssafy.user.domain;
+package com.ssafy.member.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 

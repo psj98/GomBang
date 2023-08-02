@@ -48,7 +48,7 @@ repositories {
 
 group 'com.ssafy'
 version '1.0-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '1.8'
 
 node {
     download = true
@@ -184,6 +184,8 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.20")
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
+
+    implementation('com.googlecode.json-simple:json-simple:1.1.1')
 }
 
 test {
