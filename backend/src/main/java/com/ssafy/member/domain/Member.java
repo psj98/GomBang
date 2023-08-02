@@ -1,36 +1,41 @@
 package com.ssafy.member.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
+@Builder
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Member {
 
     @Id
     @Column(name ="member_id")
     private UUID id;
 
-    @NonNull
-    private String name;
+    @Builder.Default
+    @NotNull
+    private String name = "사용자";
 
-    @NonNull
+    @NotNull
     private String channelId;
 
-    @NonNull
+    @NotNull
     private String nickname;
 
-    @NonNull
+    @NotNull
     private String email;
 
-    @NonNull
+    @NotNull
     private String gender;
 
 
