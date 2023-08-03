@@ -5,9 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
@@ -19,7 +17,7 @@ import java.util.UUID;
 public class Member {
 
     @Id
-    @Column(name ="member_id")
+    @Column(name ="member_id", columnDefinition = "BINARY(16)")
     private UUID id;
 
     @Builder.Default
@@ -36,7 +34,7 @@ public class Member {
     private String email;
 
     @NotNull
-    private String gender;
-
+    @Enumerated(EnumType.ORDINAL)
+    private Gender gender;
 
 }

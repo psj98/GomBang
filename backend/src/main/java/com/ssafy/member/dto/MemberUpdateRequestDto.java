@@ -6,6 +6,7 @@ import lombok.*;
 import javax.validation.constraints.NotNull;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class MemberUpdateRequestDto {
 

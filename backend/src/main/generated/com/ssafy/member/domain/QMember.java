@@ -10,20 +10,20 @@ import com.querydsl.core.types.Path;
 
 
 /**
- * QUser is a Querydsl query type for User
+ * QMember is a Querydsl query type for Member
  */
 @Generated("com.querydsl.codegen.EntitySerializer")
-public class QUser extends EntityPathBase<User> {
+public class QMember extends EntityPathBase<Member> {
 
-    private static final long serialVersionUID = 192897113L;
+    private static final long serialVersionUID = 8216183L;
 
-    public static final QUser user = new QUser("user");
+    public static final QMember member = new QMember("member1");
 
     public final StringPath channelId = createString("channelId");
 
     public final StringPath email = createString("email");
 
-    public final StringPath gender = createString("gender");
+    public final EnumPath<Gender> gender = createEnum("gender", Gender.class);
 
     public final ComparablePath<java.util.UUID> id = createComparable("id", java.util.UUID.class);
 
@@ -31,16 +31,16 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath nickname = createString("nickname");
 
-    public QUser(String variable) {
-        super(User.class, forVariable(variable));
+    public QMember(String variable) {
+        super(Member.class, forVariable(variable));
     }
 
-    public QUser(Path<? extends User> path) {
+    public QMember(Path<? extends Member> path) {
         super(path.getType(), path.getMetadata());
     }
 
-    public QUser(PathMetadata metadata) {
-        super(User.class, metadata);
+    public QMember(PathMetadata metadata) {
+        super(Member.class, metadata);
     }
 
 }

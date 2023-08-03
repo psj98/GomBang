@@ -3,6 +3,7 @@ package com.ssafy.member.controller;
 
 import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.global.common.response.ResponseService;
+import com.ssafy.member.dto.KakaoTokenResponseDto;
 import com.ssafy.member.dto.MemberUpdateRequestDto;
 import com.ssafy.member.dto.KakaoLoginResponseDto;
 import com.ssafy.member.dto.MemberLoginResponseDto;
@@ -23,22 +24,17 @@ public class MemberController {
 
     // 카카오 로그인 요청 처리
     @GetMapping("/login")
-    public BaseResponse<Object> loginCallBack(HttpServletRequest request) throws Exception {
-        String kakaoToken;
-        KakaoLoginResponseDto kakaoLoginResponseDto;
-        try {
-            // 인가코드로 토큰 발급
-            kakaoToken = memberService.getKaKaoToken(request.getParameter("code"));
-            // 토큰으로 카카오 사용자 정보 요청 (channelId, email, gender)
-            kakaoLoginResponseDto = memberService.getMemberInfoWithToken(kakaoToken);
-        } catch (Exception e) {
-            // 카카오 로그인 Exception 만들기
-            throw new Exception("Kakao authentication failed");
-        }
+    public BaseResponse<Object> loginCallBack(HttpServletRequest request) {
+        // 인가코드로 토큰 발급
+        KakaoTokenResponseDto kakaoToken = memberService.getKaKaoToken(request.getParameter("code"));
+        // 토큰으로 카카오 사용자 정보 요청 (channelId, email, gender)
+        KakaoLoginResponseDto kakaoLoginResponseDto = memberService.getMemberInfoWithToken(kakaoToken);
 
         // 사용자 channelId로 회원가입 여부 확인
         try {
-            MemberLoginResponseDto loginMember = new MemberLoginResponseDto(memberService.getMemberInfoWithChannelId(kakaoLoginResponseDto.getChannelId()));
+            MemberLoginResponseDto loginMember = new MemberLoginResponseDto(memberService.getMemberInfoWithChannelId(kakaoLoginResponseDto.getId()));
+
+            System.out.println(loginMember.toString());
             return responseService.getSuccessResponse("로그인 성공", loginMember);
         } catch (NoSuchElementException e) {
             MemberLoginResponseDto joinMember = new MemberLoginResponseDto(memberService.join(kakaoLoginResponseDto));

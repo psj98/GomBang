@@ -1,22 +1,28 @@
 package com.ssafy.member.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
 
-@Builder
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class KakaoLoginResponseDto {
 
-    @NotNull
-    private String channelId;
+    private String id;
 
-    @NotNull
-    private String email;
+    private KakaoAccount kakao_account;
 
-    @NotNull
-    private String gender;
+    @Getter
+    @NoArgsConstructor
+    public class KakaoAccount {
+
+        private String email;
+
+        private String gender;
+
+    }
 
 }

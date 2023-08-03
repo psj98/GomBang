@@ -4,8 +4,8 @@ import com.ssafy.member.domain.Member;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
-import java.util.UUID;
 
+@NoArgsConstructor
 @AllArgsConstructor
 public class MemberLoginResponseDto {
 
