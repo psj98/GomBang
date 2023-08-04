@@ -1,0 +1,10 @@
+.roomoutform {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  label {
+    margin-right: 30px;
+  }
