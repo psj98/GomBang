@@ -1,14 +1,16 @@
 package com.ssafy.member.dto;
 
+import com.ssafy.member.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
-public class KakaoTokenResponseDto {
+@AllArgsConstructor
+public class MemberJoinResponseDto {
 
-    private String access_token;
-
+    private UUID id;
 }

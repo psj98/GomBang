@@ -112,8 +112,8 @@ public class MemberService {
     // 사용자 이름 수정
     @Transactional
     public Member updateMemberName(MemberUpdateRequestDto memberUpdateRequestDto) {
-        Member member = getMemberInfoWithId(memberUpdateRequestDto.getMember().getId());
-        member.setName(memberUpdateRequestDto.getMember().getName());
+        Member member = getMemberInfoWithId(memberUpdateRequestDto.getId());
+        member.setName(memberUpdateRequestDto.getName());
         return member;
     }
 

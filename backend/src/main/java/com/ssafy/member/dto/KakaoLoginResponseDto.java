@@ -3,9 +3,6 @@ package com.ssafy.member.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-
-import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor

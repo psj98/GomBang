@@ -1,15 +1,16 @@
 package com.ssafy.member.dto;
 
-import com.ssafy.member.domain.Member;
+import com.ssafy.member.domain.Gender;
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberUpdateRequestDto {
 
-    @NotNull
-    private Member member;
+    private UUID id;
+
+    private String name;
 }
