@@ -1,0 +1,9 @@
+.hash-button{
+    background-color: #d9d9d9;
+    margin-right: 10px;
+  }
+
+  .hash-button:hover {
+    background-color: #d9d9d9;
+    color: black;
+  }
