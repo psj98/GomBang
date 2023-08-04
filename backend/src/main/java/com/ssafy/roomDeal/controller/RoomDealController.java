@@ -1,16 +1,15 @@
 package com.ssafy.roomDeal.controller;
 
+import com.ssafy.elasticsearch.dto.RoomDealSearchDto;
 import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.roomDeal.dto.RoomDealRegisterRequestDto;
+import com.ssafy.roomDeal.dto.SearchByAddressRequestDto;
 import com.ssafy.roomDeal.dto.SearchNearestStationUnivRequestDto;
 import com.ssafy.roomDeal.service.RoomDealService;
 import lombok.RequiredArgsConstructor;
-import org.elasticsearch.common.unit.DistanceUnit;
-import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
-import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,15 +23,26 @@ public class RoomDealController {
         return new BaseResponse<>();
     }
 
-    @GetMapping("/hehe")
-    public void hehe() {
-        System.out.println("hehe");
+    @PostMapping("/search-address")
+    public BaseResponse<Object> searchByAddress(@RequestBody SearchByAddressRequestDto searchByAddressRequestDto) {
+
+        List<RoomDealSearchDto> roomDealSearchDtos = roomDealService.searchbyAddress(searchByAddressRequestDto);
+
+        for(RoomDealSearchDto r : roomDealSearchDtos){
+            System.out.println(r.toString());
+        }
+
+        return null;
     }
 
     @PostMapping("/search-station-univ")
     public BaseResponse<Object> searchNearestStationUniv(@RequestBody SearchNearestStationUnivRequestDto searchNearestStationUnivRequestDto) {
 
-        roomDealService.searchNearestStationUniv(searchNearestStationUnivRequestDto);
+        List<RoomDealSearchDto> roomDealSearchDtos = roomDealService.searchByLocation(searchNearestStationUnivRequestDto);
+
+        for(RoomDealSearchDto r : roomDealSearchDtos){
+            System.out.println(r.toString());
+        }
 
         return null;
     }
