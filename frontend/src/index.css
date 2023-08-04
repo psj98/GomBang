@@ -1,3 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=Magra:wght@700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Istok+Web:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lexend+Giga:wght@400&display=swap");
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -11,3 +14,47 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+:root {
+  /* fonts */
+  --font-magra: Magra;
+  --font-lexend-giga: "Lexend Giga";
+  --font-istok-web: "Istok Web";
+
+  /* font sizes */
+  --font-size-6xl: 25px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-21xl: 40px;
+  --font-size-3xl: 22px;
+  --font-size-16xl: 35px;
+
+  /* Colors */
+  --color-white-100: rgba(255,255,255,1);
+  --color-white-60: rgba(255,255,255,0.6);
+  --color-gray-100: #282828;
+  --color-gray-200: rgba(40, 40, 40, 0.6);
+  --color-tan: rgba(199, 173, 146, 0.4);
+  --color-tan2: rgba(199, 173, 146, 1.0);
+  --color-black: #000;
+
+  /* Gaps */
+  --gap-11xl: 30px;
+  --gap-50xl: 69px;
+  --gap-31xl: 50px;
+  --gap-13xl: 32px;
+  --gap-888xl: 907px;
+  --gap-798xl: 817px;
+  --gap-sm: 14px;
+  --gap-8xl: 27px;
+
+  /* Paddings */
+  --padding-8xs: 5px;
+  --padding-3xs: 10px;
+  --padding-81xl: 100px;
+
+  /* border radiuses */
+  --br-xl: 20px;
+  --br-3xs: 10px;
+}
+
