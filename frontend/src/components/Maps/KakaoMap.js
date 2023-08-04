@@ -9,7 +9,7 @@ const KakaoMap = () => {
         // const response = await axios.get('https://apis.map.kakao.com/download/web/data/chicken.json');
         
         // 2. 미리 받아놓은 json파일에서 불러오기
-        const response = await axios.get('/chicken.json');
+        const response = await axios.get('/assets/chicken.json');
         
         
         const data = response.data;
