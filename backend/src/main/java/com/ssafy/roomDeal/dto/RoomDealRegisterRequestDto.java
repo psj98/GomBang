@@ -1,25 +1,17 @@
-package com.ssafy.roomDeal.domain;
+package com.ssafy.roomDeal.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import java.awt.*;
 import java.sql.Date;
-import java.util.UUID;
 
-@Entity
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoomDeal {
-
-    @Id
-    @Column(name = "room_deal_id")
-    private UUID id;
+public class RoomDealRegisterRequestDto {
 
     @NotNull
     private String roomType;
@@ -68,24 +60,5 @@ public class RoomDeal {
     @NotNull
     private Point position;
 
-    @NotNull
-    private DealStatus dealStatus;
-
-    private String thumbnail;
-
-    private String station;
-
-    private Double stationDistance;
-
-    private String univ;
-
-    private Double univDistance;
-
     private String content;
-
-    @NotNull
-    private Date regTime;
-
-    // User -> Member로 변경시 FK로 가져올 것
-
 }

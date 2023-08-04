@@ -1,4 +1,8 @@
 package com.ssafy.roomDeal.repository;
 
-public class RoomDealRepository {
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface RoomDealRepository {
+
 }
