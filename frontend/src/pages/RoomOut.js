@@ -1,7 +1,7 @@
 import Gbaddress from "../components/Gbaddress";
 import Header from "../components/Header";
 import React, { useCallback, useState } from "react";
-import styles from "./Roomout.module.css";
+import styles from "./RoomOut.module.css";
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css'
 import { ko } from 'date-fns/esm/locale';
