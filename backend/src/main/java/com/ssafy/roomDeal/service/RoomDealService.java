@@ -28,7 +28,8 @@ public class RoomDealService {
 
     private final ElasticsearchOperations elasticsearchOperations;
 
-    public List<RoomDealSearchDto> searchbyAddress(SearchByAddressRequestDto searchByAddressRequestDto) {
+    // 지번주소로 매물 검색
+    public List<RoomDealSearchDto> searchByAddress(SearchByAddressRequestDto searchByAddressRequestDto) {
         // match_phrase query 생성
         MatchPhraseQueryBuilder matchPhraseQuery = QueryBuilders.matchPhraseQuery("address", searchByAddressRequestDto.getAddress());
         System.out.println(matchPhraseQuery); // query 확인
@@ -53,6 +54,7 @@ public class RoomDealService {
         return list;
     }
 
+    // 위도, 경도로 매물 찾기
     public List<RoomDealSearchDto> searchByLocation(SearchNearestStationUnivRequestDto searchNearestStationUnivRequestDto) {
         double lat = Double.parseDouble(searchNearestStationUnivRequestDto.getLat());
         double lon = Double.parseDouble(searchNearestStationUnivRequestDto.getLon());

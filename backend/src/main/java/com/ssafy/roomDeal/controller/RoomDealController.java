@@ -18,15 +18,17 @@ public class RoomDealController {
 
     private final RoomDealService roomDealService;
 
+    // 매물 등록
     @PostMapping("/register")
     public BaseResponse<Object> registerRoomDeal(@RequestBody RoomDealRegisterRequestDto roomDealRegisterRequestDto) {
         return new BaseResponse<>();
     }
 
+    // 주소로 매물 찾기
     @PostMapping("/search-address")
     public BaseResponse<Object> searchByAddress(@RequestBody SearchByAddressRequestDto searchByAddressRequestDto) {
 
-        List<RoomDealSearchDto> roomDealSearchDtos = roomDealService.searchbyAddress(searchByAddressRequestDto);
+        List<RoomDealSearchDto> roomDealSearchDtos = roomDealService.searchByAddress(searchByAddressRequestDto);
 
         for(RoomDealSearchDto r : roomDealSearchDtos){
             System.out.println(r.toString());
@@ -35,6 +37,7 @@ public class RoomDealController {
         return null;
     }
 
+    // 주변 역, 학교 찾기
     @PostMapping("/search-station-univ")
     public BaseResponse<Object> searchNearestStationUniv(@RequestBody SearchNearestStationUnivRequestDto searchNearestStationUnivRequestDto) {
 
