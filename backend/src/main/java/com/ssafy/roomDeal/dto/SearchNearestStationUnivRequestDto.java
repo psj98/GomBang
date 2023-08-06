@@ -15,4 +15,10 @@ public class SearchNearestStationUnivRequestDto {
 
     private String lon;
 
+    private String content;
+
+    public SearchNearestStationUnivRequestDto(String lat, String lon) {
+        this.lat = lat;
+        this.lon = lon;
+    }
 }

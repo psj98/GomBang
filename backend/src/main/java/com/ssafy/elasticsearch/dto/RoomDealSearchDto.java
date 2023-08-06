@@ -5,29 +5,28 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
-import org.springframework.data.elasticsearch.annotations.GeoPointField;
+import org.springframework.data.elasticsearch.annotations.*;
 
 @Getter
 @NoArgsConstructor
 @Document(indexName = "rooms_data")
+@Mapping(mappingPath = "json/roomDealMappings.json")
+@Setting(settingPath = "json/roomDealSettings.json")
 public class RoomDealSearchDto {
 
     @Id
     private String id;
 
-    @Field(type = FieldType.Keyword)
+//    @Field(type = FieldType.Keyword)
     private Long roomId;
 
-    @Field(type = FieldType.Text)
+//    @Field(type = FieldType.Text)
     private String address;
 
-    @GeoPointField
+//    @GeoPointField
     private SearchNearestStationUnivRequestDto location;
 
-    @Field(type = FieldType.Text)
+//    @Field(type = FieldType.Text)
     private String content;
 
     @Builder

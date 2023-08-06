@@ -6,4 +6,6 @@ import lombok.Getter;
 public class SearchByAddressRequestDto {
 
     private String address;
+
+    private String content;
 }

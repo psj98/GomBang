@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
 import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortMode;
@@ -42,26 +43,29 @@ public class RoomDealService {
     public List<RoomDealSearchDto> searchByAddress(SearchByAddressRequestDto searchByAddressRequestDto) {
         // match_phrase query 생성
         MatchPhraseQueryBuilder matchPhraseQuery = QueryBuilders.matchPhraseQuery("address", searchByAddressRequestDto.getAddress());
-        System.out.println(matchPhraseQuery); // query 확인
 
         // _search query 생성
-        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
-        queryBuilder.withQuery(matchPhraseQuery); // match_phrase query를 _search 안에 저장
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder()
+                .withQuery(matchPhraseQuery); // match_phrase query를 _search 안에 저장
+
+        if(!searchByAddressRequestDto.getContent().isEmpty()){
+            // match_phrase query 생성
+            MatchQueryBuilder matchQuery = QueryBuilders.matchQuery("content.nori", searchByAddressRequestDto.getContent());
+            queryBuilder.withQuery(matchQuery);
+        }
 
         // 결과 출력
         SearchHits<RoomDealSearchDto> articles = elasticsearchOperations
                 .search(queryBuilder.build(), RoomDealSearchDto.class, IndexCoordinates.of("rooms_data"));
 
-        System.out.println(articles); // _search 결과 확인
-
         // 결과 => Document로 매핑
         List<SearchHit<RoomDealSearchDto>> searchHitList = articles.getSearchHits();
-        ArrayList<RoomDealSearchDto> list = new ArrayList<>();
+        ArrayList<RoomDealSearchDto> roomDealSearchDtoList = new ArrayList<>();
         for (SearchHit<RoomDealSearchDto> item : searchHitList) {
-            list.add(item.getContent());
+            roomDealSearchDtoList.add(item.getContent());
         }
 
-        return list;
+        return roomDealSearchDtoList;
     }
 
     // 위도, 경도로 매물 찾기
@@ -71,10 +75,8 @@ public class RoomDealService {
 
         // geo_point query 생성
         GeoDistanceQueryBuilder geoDistanceQueryBuilder = QueryBuilders.geoDistanceQuery("location")
-//                .point(37.541609091148, 127.0717799526) // lat, lng
                 .point(lat, lon)
                 .distance(1000, DistanceUnit.KILOMETERS);
-        System.out.println(geoDistanceQueryBuilder); // query 확인
 
         // _search query 생성
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
@@ -82,26 +84,29 @@ public class RoomDealService {
         // match_phrase query를 _search 안에 저장
         queryBuilder.withQuery(geoDistanceQueryBuilder)
                 .withSort(SortBuilders // sort builder
-                        .geoDistanceSort("location", lat, lon)
+                        .geoDistanceSort("location", lat, lon) // 거리 기준 오름차순 정렬
                         .order(SortOrder.ASC)
                         .sortMode(SortMode.MIN))
                 .withPageable(PageRequest.of(0, 100)).build(); // size 제한 (100개)
 
-        System.out.println(queryBuilder);
+        if(!searchNearestStationUnivRequestDto.getContent().isEmpty()){
+            // match_phrase query 생성
+            MatchQueryBuilder matchQuery = QueryBuilders.matchQuery("content.nori", searchNearestStationUnivRequestDto.getContent());
+            queryBuilder.withQuery(matchQuery);
+        }
 
         // 결과 출력
         SearchHits<RoomDealSearchDto> articles = elasticsearchOperations
                 .search(queryBuilder.build(), RoomDealSearchDto.class, IndexCoordinates.of("rooms_data"));
-        System.out.println(articles); // _search 결과 확인
 
         // 결과 => Document로 매핑
         List<SearchHit<RoomDealSearchDto>> searchHitList = articles.getSearchHits();
-        ArrayList<RoomDealSearchDto> list = new ArrayList<>();
+        ArrayList<RoomDealSearchDto> roomDealSearchDtoList = new ArrayList<>();
         for (SearchHit<RoomDealSearchDto> item : searchHitList) {
-            list.add(item.getContent());
+            roomDealSearchDtoList.add(item.getContent());
         }
 
-        return list;
+        return roomDealSearchDtoList;
     }
 
     // 매물 등록
@@ -146,6 +151,29 @@ public class RoomDealService {
 
         return new RoomDealResponseDto(roomdeal, roomDealOption);
 
+    }
+
+    // 본문 검색
+    public List<RoomDealSearchDto> searchByContent(String sentence) {
+        // match_phrase query 생성
+        MatchQueryBuilder matchQuery = QueryBuilders.matchQuery("content.nori", sentence);
+
+        // _search query 생성
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+        queryBuilder.withQuery(matchQuery); // match_phrase query를 _search 안에 저장
+
+        // 결과 출력
+        SearchHits<RoomDealSearchDto> articles = elasticsearchOperations
+                .search(queryBuilder.build(), RoomDealSearchDto.class, IndexCoordinates.of("rooms_data"));
+
+        // 결과 => Document로 매핑
+        List<SearchHit<RoomDealSearchDto>> searchHitList = articles.getSearchHits();
+        ArrayList<RoomDealSearchDto> roomDealSearchDtoList = new ArrayList<>();
+        for (SearchHit<RoomDealSearchDto> item : searchHitList) {
+            roomDealSearchDtoList.add(item.getContent());
+        }
+
+        return roomDealSearchDtoList;
     }
 
     // 매물 삭제
