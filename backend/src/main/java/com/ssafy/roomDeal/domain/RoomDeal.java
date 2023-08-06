@@ -1,6 +1,7 @@
 package com.ssafy.roomDeal.domain;
 
 import com.ssafy.roomDeal.dto.RoomDealRegisterDefaultDto;
+import com.ssafy.roomDeal.dto.RoomDealUpdateRequestDto;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -116,5 +117,14 @@ public class RoomDeal {
         this.content = roomDealRegisterDefaultDto.getContent();
         this.registerTime = new Date(System.currentTimeMillis());
 
+    }
+
+    // 매물 수정
+    public RoomDeal roomDealUpdate(RoomDealUpdateRequestDto roomDealUpdateRequestDto) {
+        this.monthlyFee = roomDealUpdateRequestDto.getMonthlyFee();
+        this.deposit = roomDealUpdateRequestDto.getDeposit();
+        this.managementFee = roomDealUpdateRequestDto.getManagementFee();
+
+        return this;
     }
 }

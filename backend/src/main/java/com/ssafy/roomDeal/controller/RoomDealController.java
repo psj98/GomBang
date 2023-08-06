@@ -4,6 +4,7 @@ import com.ssafy.elasticsearch.dto.RoomDealSearchDto;
 import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.global.common.response.ResponseService;
 import com.ssafy.roomDeal.dto.RoomDealRegisterRequestDto;
+import com.ssafy.roomDeal.dto.RoomDealUpdateRequestDto;
 import com.ssafy.roomDeal.dto.SearchByAddressRequestDto;
 import com.ssafy.roomDeal.dto.SearchNearestStationUnivRequestDto;
 import com.ssafy.roomDeal.service.RoomDealService;
@@ -39,13 +40,19 @@ public class RoomDealController {
         }
     }
 
+    // 매물 수정
+    @PutMapping("/update")
+    public BaseResponse<Object> updateRoomDeal(@RequestBody RoomDealUpdateRequestDto roomDealUpdateRequestDto) {
+        return responseService.getSuccessResponse("매물 수정 성공", roomDealService.updateRoomDeal(roomDealUpdateRequestDto));
+    }
+
     // 주소로 매물 찾기
     @PostMapping("/search-address")
     public BaseResponse<Object> searchByAddress(@RequestBody SearchByAddressRequestDto searchByAddressRequestDto) {
 
         List<RoomDealSearchDto> roomDealSearchDtos = roomDealService.searchByAddress(searchByAddressRequestDto);
 
-        for(RoomDealSearchDto r : roomDealSearchDtos){
+        for (RoomDealSearchDto r : roomDealSearchDtos) {
             System.out.println(r.toString());
         }
 
@@ -58,7 +65,7 @@ public class RoomDealController {
 
         List<RoomDealSearchDto> roomDealSearchDtos = roomDealService.searchByLocation(searchNearestStationUnivRequestDto);
 
-        for(RoomDealSearchDto r : roomDealSearchDtos){
+        for (RoomDealSearchDto r : roomDealSearchDtos) {
             System.out.println(r.toString());
         }
 

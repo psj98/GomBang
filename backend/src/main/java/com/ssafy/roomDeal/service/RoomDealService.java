@@ -3,10 +3,7 @@ package com.ssafy.roomDeal.service;
 import com.ssafy.elasticsearch.dto.RoomDealSearchDto;
 import com.ssafy.roomDeal.domain.RoomDeal;
 import com.ssafy.roomDeal.domain.RoomDealOption;
-import com.ssafy.roomDeal.dto.RoomDealRegisterRequestDto;
-import com.ssafy.roomDeal.dto.RoomDealResponseDto;
-import com.ssafy.roomDeal.dto.SearchByAddressRequestDto;
-import com.ssafy.roomDeal.dto.SearchNearestStationUnivRequestDto;
+import com.ssafy.roomDeal.dto.*;
 import com.ssafy.roomDeal.repository.RoomDealElasticSearchRepository;
 import com.ssafy.roomDeal.repository.RoomDealOptionReposiroty;
 import com.ssafy.roomDeal.repository.RoomDealRepository;
@@ -119,7 +116,7 @@ public class RoomDealService {
         /* ES 매물 등록 - 추후 Position 수정 */
         try {
             roomDealElasticSearchRepository.save(new RoomDealSearchDto(String.valueOf(newRoomDeal.getId()), newRoomDeal.getId(), newRoomDeal.getJibunAddress(), new SearchNearestStationUnivRequestDto("37.1", "121.1"), newRoomDeal.getContent()));
-        } catch(Exception e){
+        } catch (Exception e) {
             return new RoomDealResponseDto(newRoomDeal, newRoomDealOption);
         }
 
@@ -136,5 +133,18 @@ public class RoomDealService {
         } else {
             throw new IllegalArgumentException("존재하지 않는 roomDeal입니다.");
         }
+    }
+
+    // 매물 수정
+    @Transactional
+    public RoomDealResponseDto updateRoomDeal(RoomDealUpdateRequestDto roomDealUpdateRequestDto) {
+        RoomDeal roomdeal = roomDealRepository.findById(roomDealUpdateRequestDto.getId()).get();
+
+        roomdeal.roomDealUpdate(roomDealUpdateRequestDto);
+
+        RoomDealOption roomDealOption = roomDealOptionReposiroty.findById(roomDealUpdateRequestDto.getId()).get();
+
+        return new RoomDealResponseDto(roomdeal, roomDealOption);
+
     }
 }
