@@ -8,6 +8,7 @@ import com.ssafy.roomDeal.dto.SearchByAddressRequestDto;
 import com.ssafy.roomDeal.dto.SearchNearestStationUnivRequestDto;
 import com.ssafy.roomDeal.service.RoomDealService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +26,17 @@ public class RoomDealController {
     // 매물 등록
     @PostMapping("/register")
     public BaseResponse<Object> registerRoomDeal(@RequestBody RoomDealRegisterRequestDto roomDealRegisterRequestDto) {
-        return responseService.getSuccessResponse("매물 등록 성공", roomDealService.register(roomDealRegisterRequestDto));
+        return responseService.getSuccessResponse("매물 등록 성공", roomDealService.registerRoomDeal(roomDealRegisterRequestDto));
+    }
+
+    // 매물 조회
+    @GetMapping("/{id}")
+    public BaseResponse<Object> getRoomDeal(@PathVariable("id") Long id) {
+        try {
+            return responseService.getSuccessResponse("매물 조회 성공", roomDealService.getRoomDeal(id));
+        } catch (IllegalArgumentException e) {
+            return responseService.getFailureResponse(e.getMessage());
+        }
     }
 
     // 주소로 매물 찾기

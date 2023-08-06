@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -114,5 +115,17 @@ public class RoomDealService {
         roomDealOptionReposiroty.save(newRoomDealOption);
 
         return new RoomDealResponseDto(newRoomDeal, newRoomDealOption);
+    }
+
+    // 매믈 조회
+    public RoomDealResponseDto getRoomDeal(Long id) {
+        Optional<RoomDeal> roomDeal = roomDealRepository.findById(id);
+        Optional<RoomDealOption> roomDealOption = roomDealOptionReposiroty.findById(id);
+
+        if (roomDeal.isPresent() && roomDealOption.isPresent()) {
+            return new RoomDealResponseDto(roomDeal.get(), roomDealOption.get());
+        } else {
+            throw new IllegalArgumentException("존재하지 않는 roomDeal입니다.");
+        }
     }
 }
