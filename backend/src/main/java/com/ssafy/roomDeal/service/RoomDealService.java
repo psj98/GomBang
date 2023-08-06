@@ -128,7 +128,7 @@ public class RoomDealService {
     }
 
     /**
-     * 위도, 경도로 매물 찾기
+     * 위도, 경도로 매물 검색
      *
      * @param searchNearestStationUnivRequestDto
      * @return
