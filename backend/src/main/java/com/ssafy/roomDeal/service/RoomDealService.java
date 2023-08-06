@@ -4,7 +4,7 @@ import com.ssafy.elasticsearch.dto.RoomDealSearchDto;
 import com.ssafy.roomDeal.domain.RoomDeal;
 import com.ssafy.roomDeal.domain.RoomDealOption;
 import com.ssafy.roomDeal.dto.RoomDealRegisterRequestDto;
-import com.ssafy.roomDeal.dto.RoomDealRegisterResponseDto;
+import com.ssafy.roomDeal.dto.RoomDealResponseDto;
 import com.ssafy.roomDeal.dto.SearchByAddressRequestDto;
 import com.ssafy.roomDeal.dto.SearchNearestStationUnivRequestDto;
 import com.ssafy.roomDeal.repository.RoomDealOptionReposiroty;
@@ -106,13 +106,13 @@ public class RoomDealService {
 
     // 매물 등록
     @Transactional
-    public RoomDealRegisterResponseDto register(RoomDealRegisterRequestDto roomDealRegisterRequestDto) {
+    public RoomDealResponseDto registerRoomDeal(RoomDealRegisterRequestDto roomDealRegisterRequestDto) {
         RoomDeal newRoomDeal = new RoomDeal(roomDealRegisterRequestDto.getRoomDealRegisterDefaultDto());
         RoomDealOption newRoomDealOption = new RoomDealOption(newRoomDeal, roomDealRegisterRequestDto.getRoomDealRegisterOptionDto());
 
         roomDealRepository.save(newRoomDeal);
         roomDealOptionReposiroty.save(newRoomDealOption);
 
-        return new RoomDealRegisterResponseDto(newRoomDeal, newRoomDealOption);
+        return new RoomDealResponseDto(newRoomDeal, newRoomDealOption);
     }
 }
