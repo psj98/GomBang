@@ -7,7 +7,6 @@ import com.ssafy.roomDeal.dto.RoomDealRegisterRequestDto;
 import com.ssafy.roomDeal.dto.RoomDealRegisterResponseDto;
 import com.ssafy.roomDeal.dto.SearchByAddressRequestDto;
 import com.ssafy.roomDeal.dto.SearchNearestStationUnivRequestDto;
-import com.ssafy.roomDeal.repository.RoomDealElasticSearchRepository;
 import com.ssafy.roomDeal.repository.RoomDealOptionReposiroty;
 import com.ssafy.roomDeal.repository.RoomDealRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +28,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -73,6 +73,7 @@ public class RoomDealService {
 
         // geo_point query 생성
         GeoDistanceQueryBuilder geoDistanceQueryBuilder = QueryBuilders.geoDistanceQuery("location")
+//                .point(37.541609091148, 127.0717799526) // lat, lng
                 .point(lat, lon)
                 .distance(1000, DistanceUnit.KILOMETERS);
         System.out.println(geoDistanceQueryBuilder); // query 확인
@@ -83,7 +84,7 @@ public class RoomDealService {
         // match_phrase query를 _search 안에 저장
         queryBuilder.withQuery(geoDistanceQueryBuilder)
                 .withSort(SortBuilders // sort builder
-                        .geoDistanceSort("location", lat, lon) // 거리 기준 오름차순 정렬
+                        .geoDistanceSort("location", lat, lon)
                         .order(SortOrder.ASC)
                         .sortMode(SortMode.MIN))
                 .withPageable(PageRequest.of(0, 100)).build(); // size 제한 (100개)
@@ -107,7 +108,7 @@ public class RoomDealService {
 
     // 매물 등록
     @Transactional
-    public RoomDealRegisterResponseDto register(RoomDealRegisterRequestDto roomDealRegisterRequestDto) {
+    public RoomDealResponseDto registerRoomDeal(RoomDealRegisterRequestDto roomDealRegisterRequestDto) {
         RoomDeal newRoomDeal = new RoomDeal(roomDealRegisterRequestDto.getRoomDealRegisterDefaultDto());
         RoomDealOption newRoomDealOption = new RoomDealOption(newRoomDeal, roomDealRegisterRequestDto.getRoomDealRegisterOptionDto());
 
@@ -118,9 +119,21 @@ public class RoomDealService {
         try {
             roomDealElasticSearchRepository.save(new RoomDealSearchDto(String.valueOf(newRoomDeal.getId()), newRoomDeal.getId(), newRoomDeal.getJibunAddress(), new SearchNearestStationUnivRequestDto("37.1", "121.1"), newRoomDeal.getContent()));
         } catch(Exception e){
-            return new RoomDealRegisterResponseDto(newRoomDeal, newRoomDealOption);
+            return new RoomDealResponseDto(newRoomDeal, newRoomDealOption);
         }
 
-        return new RoomDealRegisterResponseDto(newRoomDeal, newRoomDealOption);
+        return new RoomDealResponseDto(newRoomDeal, newRoomDealOption);
+    }
+
+    // 매믈 조회
+    public RoomDealResponseDto getRoomDeal(Long id) {
+        Optional<RoomDeal> roomDeal = roomDealRepository.findById(id);
+        Optional<RoomDealOption> roomDealOption = roomDealOptionReposiroty.findById(id);
+
+        if (roomDeal.isPresent() && roomDealOption.isPresent()) {
+            return new RoomDealResponseDto(roomDeal.get(), roomDealOption.get());
+        } else {
+            throw new IllegalArgumentException("존재하지 않는 roomDeal입니다.");
+        }
     }
 }

@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @AllArgsConstructor
-public class RoomDealRegisterResponseDto {
+public class RoomDealResponseDto {
 
     @NotNull
     private RoomDeal roomDeal;
