@@ -25,7 +25,6 @@ public class RoomDealController {
     // 매물 등록
     @PostMapping("/register")
     public BaseResponse<Object> registerRoomDeal(@RequestBody RoomDealRegisterRequestDto roomDealRegisterRequestDto) {
-        System.out.println(roomDealRegisterRequestDto);
         return responseService.getSuccessResponse("매물 등록 성공", roomDealService.register(roomDealRegisterRequestDto));
     }
 
