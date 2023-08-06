@@ -46,6 +46,12 @@ public class RoomDealController {
         return responseService.getSuccessResponse("매물 수정 성공", roomDealService.updateRoomDeal(roomDealUpdateRequestDto));
     }
 
+    // 매물 삭제
+    @DeleteMapping("/delete/{id}")
+    public BaseResponse<Object> deledeRoomDeal(@PathVariable("id") Long id) {
+        return responseService.getSuccessResponse("매물 삭제 성공", roomDealService.deleteRoomDeal(id));
+    }
+
     // 주소로 매물 찾기
     @PostMapping("/search-address")
     public BaseResponse<Object> searchByAddress(@RequestBody SearchByAddressRequestDto searchByAddressRequestDto) {

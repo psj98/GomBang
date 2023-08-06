@@ -147,4 +147,13 @@ public class RoomDealService {
         return new RoomDealResponseDto(roomdeal, roomDealOption);
 
     }
+
+    // 매물 삭제
+    @Transactional
+    public RoomDealDeleteResponseDto deleteRoomDeal(Long id) {
+        roomDealOptionReposiroty.deleteById(id);
+        roomDealRepository.deleteById(id);
+
+        return new RoomDealDeleteResponseDto(id);
+    }
 }
