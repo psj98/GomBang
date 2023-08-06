@@ -25,6 +25,7 @@ import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,9 +104,10 @@ public class RoomDealService {
         return list;
     }
 
+    // 매물 등록
+    @Transactional
     public RoomDealRegisterResponseDto register(RoomDealRegisterRequestDto roomDealRegisterRequestDto) {
         RoomDeal newRoomDeal = new RoomDeal(roomDealRegisterRequestDto.getRoomDealRegisterDefaultDto());
-
         RoomDealOption newRoomDealOption = new RoomDealOption(newRoomDeal, roomDealRegisterRequestDto.getRoomDealRegisterOptionDto());
 
         roomDealRepository.save(newRoomDeal);
