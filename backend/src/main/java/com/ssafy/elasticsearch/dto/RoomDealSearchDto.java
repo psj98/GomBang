@@ -1,5 +1,6 @@
 package com.ssafy.elasticsearch.dto;
 
+import com.ssafy.roomDeal.dto.SearchNearestStationUnivRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,36 +9,44 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.GeoPointField;
-import org.springframework.data.geo.Point;
 
 @Getter
 @NoArgsConstructor
-@Document(indexName = "recStation")
+@Document(indexName = "rooms_data")
 public class RoomDealSearchDto {
 
     @Id
+    private String id;
+
     @Field(type = FieldType.Keyword)
-    private Integer roomId;
+    private Long roomId;
 
     @Field(type = FieldType.Text)
     private String address;
 
     @GeoPointField
-    private Point location;
+    private SearchNearestStationUnivRequestDto location;
+
+    @Field(type = FieldType.Text)
+    private String content;
 
     @Builder
-    public RoomDealSearchDto(Integer roomId, String address, Point location) {
+    public RoomDealSearchDto(String id, Long roomId, String address, SearchNearestStationUnivRequestDto location, String content) {
+        this.id = id;
         this.roomId = roomId;
         this.address = address;
         this.location = location;
+        this.content = content;
     }
 
     @Override
     public String toString() {
         return "RoomDealSearchDto{" +
-                "roomId=" + roomId +
+                "id='" + id + '\'' +
+                ", roomId=" + roomId +
                 ", address='" + address + '\'' +
                 ", location=" + location +
+                ", content='" + content + '\'' +
                 '}';
     }
 }

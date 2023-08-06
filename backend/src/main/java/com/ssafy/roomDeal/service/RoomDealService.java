@@ -7,6 +7,7 @@ import com.ssafy.roomDeal.dto.RoomDealRegisterRequestDto;
 import com.ssafy.roomDeal.dto.RoomDealRegisterResponseDto;
 import com.ssafy.roomDeal.dto.SearchByAddressRequestDto;
 import com.ssafy.roomDeal.dto.SearchNearestStationUnivRequestDto;
+import com.ssafy.roomDeal.repository.RoomDealElasticSearchRepository;
 import com.ssafy.roomDeal.repository.RoomDealOptionReposiroty;
 import com.ssafy.roomDeal.repository.RoomDealRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class RoomDealService {
 
     private final RoomDealRepository roomDealRepository;
     private final RoomDealOptionReposiroty roomDealOptionReposiroty;
+    private final RoomDealElasticSearchRepository roomDealElasticSearchRepository;
 
     // 지번주소로 매물 검색
     public List<RoomDealSearchDto> searchByAddress(SearchByAddressRequestDto searchByAddressRequestDto) {
@@ -71,7 +73,6 @@ public class RoomDealService {
 
         // geo_point query 생성
         GeoDistanceQueryBuilder geoDistanceQueryBuilder = QueryBuilders.geoDistanceQuery("location")
-//                .point(37.541609091148, 127.0717799526) // lat, lng
                 .point(lat, lon)
                 .distance(1000, DistanceUnit.KILOMETERS);
         System.out.println(geoDistanceQueryBuilder); // query 확인
@@ -82,7 +83,7 @@ public class RoomDealService {
         // match_phrase query를 _search 안에 저장
         queryBuilder.withQuery(geoDistanceQueryBuilder)
                 .withSort(SortBuilders // sort builder
-                        .geoDistanceSort("location", lat, lon)
+                        .geoDistanceSort("location", lat, lon) // 거리 기준 오름차순 정렬
                         .order(SortOrder.ASC)
                         .sortMode(SortMode.MIN))
                 .withPageable(PageRequest.of(0, 100)).build(); // size 제한 (100개)
@@ -112,6 +113,13 @@ public class RoomDealService {
 
         roomDealRepository.save(newRoomDeal);
         roomDealOptionReposiroty.save(newRoomDealOption);
+
+        /* ES 매물 등록 - 추후 Position 수정 */
+        try {
+            roomDealElasticSearchRepository.save(new RoomDealSearchDto(String.valueOf(newRoomDeal.getId()), newRoomDeal.getId(), newRoomDeal.getJibunAddress(), new SearchNearestStationUnivRequestDto("37.1", "121.1"), newRoomDeal.getContent()));
+        } catch(Exception e){
+            return new RoomDealRegisterResponseDto(newRoomDeal, newRoomDealOption);
+        }
 
         return new RoomDealRegisterResponseDto(newRoomDeal, newRoomDealOption);
     }
