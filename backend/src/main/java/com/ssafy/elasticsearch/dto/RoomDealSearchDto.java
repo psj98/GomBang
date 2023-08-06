@@ -16,17 +16,9 @@ public class RoomDealSearchDto {
 
     @Id
     private String id;
-
-//    @Field(type = FieldType.Keyword)
     private Long roomId;
-
-//    @Field(type = FieldType.Text)
     private String address;
-
-//    @GeoPointField
     private SearchNearestStationUnivRequestDto location;
-
-//    @Field(type = FieldType.Text)
     private String content;
 
     @Builder
