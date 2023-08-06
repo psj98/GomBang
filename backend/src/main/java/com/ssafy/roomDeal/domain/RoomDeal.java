@@ -1,14 +1,15 @@
 package com.ssafy.roomDeal.domain;
 
+import com.ssafy.roomDeal.dto.RoomDealRegisterDefaultDto;
 import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import java.awt.*;
 import java.sql.Date;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -18,8 +19,11 @@ import java.util.UUID;
 public class RoomDeal {
 
     @Id
+    @GeneratedValue
     @Column(name = "room_deal_id")
-    private UUID id;
+    private Long id;
+
+    // User -> Member로 변경시 FK로 가져올 것
 
     @NotNull
     private String roomType;
@@ -65,8 +69,8 @@ public class RoomDeal {
     @NotNull
     private Integer totalFloor;
 
-    @NotNull
-    private Point position;
+//    @NotNull
+//    private Point position;
 
     @NotNull
     private DealStatus dealStatus;
@@ -84,8 +88,33 @@ public class RoomDeal {
     private String content;
 
     @NotNull
-    private Date regTime;
+    private Date registerTime;
 
-    // User -> Member로 변경시 FK로 가져올 것
+    public RoomDeal(RoomDealRegisterDefaultDto roomDealRegisterDefaultDto) {
+        this.roomType = roomDealRegisterDefaultDto.getRoomType();
+        this.roomSize = roomDealRegisterDefaultDto.getRoomSize();
+        this.roomCount = roomDealRegisterDefaultDto.getRoomCount();
+        this.oneroomType = roomDealRegisterDefaultDto.getOneroomType();
+        this.bathroomCount = roomDealRegisterDefaultDto.getBathroomCount();
+        this.roadAddress = roomDealRegisterDefaultDto.getRoadAddress();
+        this.jibunAddress = roomDealRegisterDefaultDto.getJibunAddress();
+        this.monthlyFee = roomDealRegisterDefaultDto.getMonthlyFee();
+        this.deposit = roomDealRegisterDefaultDto.getDeposit();
+        this.managementFee = roomDealRegisterDefaultDto.getManagementFee();
+        this.usageDate = roomDealRegisterDefaultDto.getUsageDate();
+        this.moveInDate = roomDealRegisterDefaultDto.getMoveInDate();
+        this.expirationDate = roomDealRegisterDefaultDto.getExpirationDate();
+        this.floor = roomDealRegisterDefaultDto.getFloor();
+        this.totalFloor = roomDealRegisterDefaultDto.getTotalFloor();
+//        this.position = roomDealDefaultDto.getPosition();
+        this.dealStatus = DealStatus.dealable;
+        this.thumbnail = roomDealRegisterDefaultDto.getThumbnail();
+        this.station = roomDealRegisterDefaultDto.getStation();
+        this.stationDistance = roomDealRegisterDefaultDto.getStationDistance();
+        this.univ = roomDealRegisterDefaultDto.getUniv();
+        this.univDistance = roomDealRegisterDefaultDto.getUnivDistance();
+        this.content = roomDealRegisterDefaultDto.getContent();
+        this.registerTime = new Date(System.currentTimeMillis());
 
+    }
 }

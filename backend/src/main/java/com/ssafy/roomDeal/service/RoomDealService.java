@@ -1,8 +1,14 @@
 package com.ssafy.roomDeal.service;
 
 import com.ssafy.elasticsearch.dto.RoomDealSearchDto;
+import com.ssafy.roomDeal.domain.RoomDeal;
+import com.ssafy.roomDeal.domain.RoomDealOption;
+import com.ssafy.roomDeal.dto.RoomDealRegisterRequestDto;
+import com.ssafy.roomDeal.dto.RoomDealRegisterResponseDto;
 import com.ssafy.roomDeal.dto.SearchByAddressRequestDto;
 import com.ssafy.roomDeal.dto.SearchNearestStationUnivRequestDto;
+import com.ssafy.roomDeal.repository.RoomDealOptionReposiroty;
+import com.ssafy.roomDeal.repository.RoomDealRepository;
 import lombok.RequiredArgsConstructor;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
@@ -27,6 +33,9 @@ import java.util.List;
 public class RoomDealService {
 
     private final ElasticsearchOperations elasticsearchOperations;
+
+    private final RoomDealRepository roomDealRepository;
+    private final RoomDealOptionReposiroty roomDealOptionReposiroty;
 
     // 지번주소로 매물 검색
     public List<RoomDealSearchDto> searchByAddress(SearchByAddressRequestDto searchByAddressRequestDto) {
@@ -92,5 +101,16 @@ public class RoomDealService {
         }
 
         return list;
+    }
+
+    public RoomDealRegisterResponseDto register(RoomDealRegisterRequestDto roomDealRegisterRequestDto) {
+        RoomDeal newRoomDeal = new RoomDeal(roomDealRegisterRequestDto.getRoomDealRegisterDefaultDto());
+
+        RoomDealOption newRoomDealOption = new RoomDealOption(newRoomDeal, roomDealRegisterRequestDto.getRoomDealRegisterOptionDto());
+
+        roomDealRepository.save(newRoomDeal);
+        roomDealOptionReposiroty.save(newRoomDealOption);
+
+        return new RoomDealRegisterResponseDto(newRoomDeal, newRoomDealOption);
     }
 }

@@ -2,6 +2,7 @@ package com.ssafy.roomDeal.controller;
 
 import com.ssafy.elasticsearch.dto.RoomDealSearchDto;
 import com.ssafy.global.common.response.BaseResponse;
+import com.ssafy.global.common.response.ResponseService;
 import com.ssafy.roomDeal.dto.RoomDealRegisterRequestDto;
 import com.ssafy.roomDeal.dto.SearchByAddressRequestDto;
 import com.ssafy.roomDeal.dto.SearchNearestStationUnivRequestDto;
@@ -16,12 +17,16 @@ import java.util.List;
 @RequestMapping("/roomdeal")
 public class RoomDealController {
 
+    private final ResponseService responseService;
+
     private final RoomDealService roomDealService;
+
 
     // 매물 등록
     @PostMapping("/register")
     public BaseResponse<Object> registerRoomDeal(@RequestBody RoomDealRegisterRequestDto roomDealRegisterRequestDto) {
-        return new BaseResponse<>();
+        System.out.println(roomDealRegisterRequestDto);
+        return responseService.getSuccessResponse("매물 등록 성공", roomDealService.register(roomDealRegisterRequestDto));
     }
 
     // 주소로 매물 찾기
