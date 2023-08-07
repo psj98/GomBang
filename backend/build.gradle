@@ -129,6 +129,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.plugin:spring-plugin-core:2.0.0.RELEASE")
     testImplementation("org.springframework.security:spring-security-test")
     annotationProcessor("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -193,6 +194,13 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.20")
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
+
+    implementation('com.googlecode.json-simple:json-simple:1.1.1')
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation('org.springframework.boot:spring-boot-starter-webflux')
+//    implementation('org.projectreactor:reactor-spring:1.0.1.RELEASE')
+    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+
 }
 
 test {
