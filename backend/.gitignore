@@ -41,3 +41,6 @@ out/
 ### properties ###
 application.properties
 
+/src/main/generated/
+
+*.gz
