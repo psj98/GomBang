@@ -1,4 +1,4 @@
-package com.ssafy.roomDeal.repository;
+package com.ssafy.elasticsearch.repository;
 
 import com.ssafy.elasticsearch.dto.RoomDealSearchDto;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;

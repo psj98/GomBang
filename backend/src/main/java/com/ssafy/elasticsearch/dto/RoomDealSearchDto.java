@@ -1,6 +1,5 @@
 package com.ssafy.elasticsearch.dto;
 
-import com.ssafy.roomDeal.dto.SearchNearestStationUnivRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,16 +27,5 @@ public class RoomDealSearchDto {
         this.address = address;
         this.location = location;
         this.content = content;
-    }
-
-    @Override
-    public String toString() {
-        return "RoomDealSearchDto{" +
-                "id='" + id + '\'' +
-                ", roomId=" + roomId +
-                ", address='" + address + '\'' +
-                ", location=" + location +
-                ", content='" + content + '\'' +
-                '}';
     }
 }

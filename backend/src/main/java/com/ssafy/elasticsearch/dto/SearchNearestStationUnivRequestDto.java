@@ -1,4 +1,4 @@
-package com.ssafy.roomDeal.dto;
+package com.ssafy.elasticsearch.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,11 +11,11 @@ import java.awt.*;
 @NoArgsConstructor
 public class SearchNearestStationUnivRequestDto {
 
-    private String lat;
+    private String lat; // 위도
 
-    private String lon;
+    private String lon; // 경도
 
-    private String content;
+    private String content; // 본문 내용
 
     public SearchNearestStationUnivRequestDto(String lat, String lon) {
         this.lat = lat;

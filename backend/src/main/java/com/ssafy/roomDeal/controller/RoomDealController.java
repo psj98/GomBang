@@ -6,11 +6,10 @@ import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.global.common.response.ResponseService;
 import com.ssafy.roomDeal.dto.RoomDealRegisterRequestDto;
 import com.ssafy.roomDeal.dto.RoomDealUpdateRequestDto;
-import com.ssafy.roomDeal.dto.SearchByAddressRequestDto;
-import com.ssafy.roomDeal.dto.SearchNearestStationUnivRequestDto;
+import com.ssafy.elasticsearch.dto.SearchByAddressRequestDto;
+import com.ssafy.elasticsearch.dto.SearchNearestStationUnivRequestDto;
 import com.ssafy.roomDeal.service.RoomDealService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.boot.model.naming.IllegalIdentifierException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

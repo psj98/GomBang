@@ -2,10 +2,12 @@ package com.ssafy.roomDeal.service;
 
 import com.ssafy.elasticsearch.dto.RoomDealNearestStationDto;
 import com.ssafy.elasticsearch.dto.RoomDealSearchDto;
+import com.ssafy.elasticsearch.dto.SearchByAddressRequestDto;
+import com.ssafy.elasticsearch.dto.SearchNearestStationUnivRequestDto;
+import com.ssafy.elasticsearch.repository.RoomDealElasticSearchRepository;
 import com.ssafy.roomDeal.domain.RoomDeal;
 import com.ssafy.roomDeal.domain.RoomDealOption;
 import com.ssafy.roomDeal.dto.*;
-import com.ssafy.roomDeal.repository.RoomDealElasticSearchRepository;
 import com.ssafy.roomDeal.repository.RoomDealOptionReposiroty;
 import com.ssafy.roomDeal.repository.RoomDealRepository;
 import lombok.RequiredArgsConstructor;
@@ -49,9 +51,17 @@ public class RoomDealService {
         roomDealRepository.save(newRoomDeal);
         roomDealOptionReposiroty.save(newRoomDealOption);
 
+        String id = String.valueOf(newRoomDeal.getId());
+        Long roomId = newRoomDeal.getId();
+        String address = newRoomDeal.getJibunAddress();
+        SearchNearestStationUnivRequestDto searchNearestStationUnivRequestDto = new SearchNearestStationUnivRequestDto("37.1", "127.1");
+        String content = newRoomDeal.getContent();
+
+        RoomDealSearchDto roomDealSearchDto = new RoomDealSearchDto(id, roomId, address, searchNearestStationUnivRequestDto, content);
+
         /* ES 매물 등록 - 추후 Position 수정 */
         try {
-            roomDealElasticSearchRepository.save(new RoomDealSearchDto(String.valueOf(newRoomDeal.getId()), newRoomDeal.getId(), newRoomDeal.getJibunAddress(), new SearchNearestStationUnivRequestDto("37.1", "121.1"), newRoomDeal.getContent()));
+            roomDealElasticSearchRepository.save(roomDealSearchDto);
         } catch (Exception e) {
             return new RoomDealResponseDto(newRoomDeal, newRoomDealOption);
         }

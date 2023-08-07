@@ -1,6 +1,5 @@
 package com.ssafy.elasticsearch.dto;
 
-import com.ssafy.roomDeal.dto.SearchNearestStationUnivRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,7 @@ public class RoomDealNearestStationDto {
     private SearchNearestStationUnivRequestDto location;
 
     @Builder
-    public RoomDealNearestStationDto(String id, String stationName, SearchNearestStationUnivRequestDto location){
+    public RoomDealNearestStationDto(String id, String stationName, SearchNearestStationUnivRequestDto location) {
         this.id = id;
         this.stationName = stationName;
         this.location = location;
