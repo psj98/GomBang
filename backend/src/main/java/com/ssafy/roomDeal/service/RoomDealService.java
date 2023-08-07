@@ -5,6 +5,8 @@ import com.ssafy.elasticsearch.dto.RoomDealSearchDto;
 import com.ssafy.elasticsearch.dto.SearchByAddressRequestDto;
 import com.ssafy.elasticsearch.dto.SearchNearestStationUnivRequestDto;
 import com.ssafy.elasticsearch.repository.RoomDealElasticSearchRepository;
+import com.ssafy.member.domain.Member;
+import com.ssafy.member.repository.MemberRepository;
 import com.ssafy.roomDeal.domain.RoomDeal;
 import com.ssafy.roomDeal.domain.RoomDealOption;
 import com.ssafy.roomDeal.dto.*;
@@ -38,6 +40,7 @@ public class RoomDealService {
 
     private final ElasticsearchOperations elasticsearchOperations;
 
+    private final MemberRepository memberRepository;
     private final RoomDealRepository roomDealRepository;
     private final RoomDealOptionReposiroty roomDealOptionReposiroty;
     private final RoomDealElasticSearchRepository roomDealElasticSearchRepository;
@@ -45,7 +48,8 @@ public class RoomDealService {
     // 매물 등록
     @Transactional
     public RoomDealResponseDto registerRoomDeal(RoomDealRegisterRequestDto roomDealRegisterRequestDto) {
-        RoomDeal newRoomDeal = new RoomDeal(roomDealRegisterRequestDto.getRoomDealRegisterDefaultDto());
+        Member newMember = memberRepository.findById(roomDealRegisterRequestDto.getRoomDealRegisterDefaultDto().getId()).get();
+        RoomDeal newRoomDeal = new RoomDeal(roomDealRegisterRequestDto.getRoomDealRegisterDefaultDto(), newMember);
         RoomDealOption newRoomDealOption = new RoomDealOption(newRoomDeal, roomDealRegisterRequestDto.getRoomDealRegisterOptionDto());
 
         roomDealRepository.save(newRoomDeal);
@@ -84,23 +88,47 @@ public class RoomDealService {
     // 매물 수정
     @Transactional
     public RoomDealResponseDto updateRoomDeal(RoomDealUpdateRequestDto roomDealUpdateRequestDto) {
-        RoomDeal roomdeal = roomDealRepository.findById(roomDealUpdateRequestDto.getId()).get();
+        Optional<RoomDeal> roomDealOptional = roomDealRepository.findById(roomDealUpdateRequestDto.getRoomDealId());
+        Optional<RoomDealOption> roomDealOptionOptional = roomDealOptionReposiroty.findById(roomDealUpdateRequestDto.getRoomDealId());
 
-        roomdeal.roomDealUpdate(roomDealUpdateRequestDto);
+        if (roomDealOptional.isPresent() && roomDealOptionOptional.isPresent()) {
+            RoomDeal roomDeal = roomDealOptional.get();
 
-        RoomDealOption roomDealOption = roomDealOptionReposiroty.findById(roomDealUpdateRequestDto.getId()).get();
+            // 본인 확인
+            if (roomDeal.getMember().getId().equals(roomDealUpdateRequestDto.getMemberId())) {
+                roomDeal.roomDealUpdate(roomDealUpdateRequestDto);
+                return new RoomDealResponseDto(roomDealOptional.get(), roomDealOptionOptional.get());
+            } else {
+                throw new IllegalArgumentException("작성자와 수정자가 일치하지 않습니다.");
+            }
+        } else {
+            throw new IllegalArgumentException("존재하지 않는 roomDeal입니다.");
+        }
 
-        return new RoomDealResponseDto(roomdeal, roomDealOption);
 
     }
 
     // 매물 삭제
     @Transactional
-    public RoomDealDeleteResponseDto deleteRoomDeal(Long id) {
-        roomDealOptionReposiroty.deleteById(id);
-        roomDealRepository.deleteById(id);
+    public RoomDealDeleteResponseDto deleteRoomDeal(RoomDealDeleteRequestDto roomDealDeleteRequestDto) {
 
-        return new RoomDealDeleteResponseDto(id);
+        Optional<RoomDeal> roomDealOptional = roomDealRepository.findById(roomDealDeleteRequestDto.getRoomDealId());
+        Optional<RoomDealOption> roomDealOptionOptional = roomDealOptionReposiroty.findById(roomDealDeleteRequestDto.getRoomDealId());
+
+        if (roomDealOptional.isPresent() && roomDealOptionOptional.isPresent()) {
+            RoomDeal roomDeal = roomDealOptional.get();
+            RoomDealOption roomDealOption = roomDealOptionOptional.get();
+            // 본인 확인
+            if (roomDeal.getMember().getId().equals(roomDealDeleteRequestDto.getMemberId())) {
+                roomDealOptionReposiroty.deleteById(roomDealDeleteRequestDto.getRoomDealId());
+                roomDealRepository.deleteById(roomDealDeleteRequestDto.getRoomDealId());
+                return new RoomDealDeleteResponseDto(roomDealDeleteRequestDto.getRoomDealId());
+            } else {
+                throw new IllegalArgumentException("작성자와 삭제자가 일치하지 않습니다.");
+            }
+        } else {
+            throw new IllegalArgumentException("존재하지 않는 roomDeal입니다.");
+        }
     }
 
     /**

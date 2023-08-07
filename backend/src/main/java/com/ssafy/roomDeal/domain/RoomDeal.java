@@ -1,13 +1,11 @@
 package com.ssafy.roomDeal.domain;
 
+import com.ssafy.member.domain.Member;
 import com.ssafy.roomDeal.dto.RoomDealRegisterDefaultDto;
 import com.ssafy.roomDeal.dto.RoomDealUpdateRequestDto;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.awt.*;
 import java.sql.Date;
@@ -24,7 +22,9 @@ public class RoomDeal {
     @Column(name = "room_deal_id")
     private Long id;
 
-    // User -> Member로 변경시 FK로 가져올 것
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @NotNull
     private String roomType;
@@ -91,7 +91,8 @@ public class RoomDeal {
     @NotNull
     private Date registerTime;
 
-    public RoomDeal(RoomDealRegisterDefaultDto roomDealRegisterDefaultDto) {
+    public RoomDeal(RoomDealRegisterDefaultDto roomDealRegisterDefaultDto, Member member) {
+        this.member = member;
         this.roomType = roomDealRegisterDefaultDto.getRoomType();
         this.roomSize = roomDealRegisterDefaultDto.getRoomSize();
         this.roomCount = roomDealRegisterDefaultDto.getRoomCount();

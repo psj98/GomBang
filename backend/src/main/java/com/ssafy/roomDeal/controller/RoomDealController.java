@@ -4,6 +4,7 @@ import com.ssafy.elasticsearch.dto.RoomDealNearestStationDto;
 import com.ssafy.elasticsearch.dto.RoomDealSearchDto;
 import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.global.common.response.ResponseService;
+import com.ssafy.roomDeal.dto.RoomDealDeleteRequestDto;
 import com.ssafy.roomDeal.dto.RoomDealRegisterRequestDto;
 import com.ssafy.roomDeal.dto.RoomDealUpdateRequestDto;
 import com.ssafy.elasticsearch.dto.SearchByAddressRequestDto;
@@ -54,17 +55,25 @@ public class RoomDealController {
      */
     @PutMapping("/update")
     public BaseResponse<Object> updateRoomDeal(@RequestBody RoomDealUpdateRequestDto roomDealUpdateRequestDto) {
-        return responseService.getSuccessResponse("매물 수정 성공", roomDealService.updateRoomDeal(roomDealUpdateRequestDto));
+        try {
+            return responseService.getSuccessResponse("매물 수정 성공", roomDealService.updateRoomDeal(roomDealUpdateRequestDto));
+        } catch (IllegalArgumentException e){
+            return responseService.getFailureResponse(e.getMessage());
+        }
     }
 
     /**
      * 매물 삭제
-     * @param id
+     * @param roomDealDeleteRequestDto
      * @return
      */
-    @DeleteMapping("/delete/{id}")
-    public BaseResponse<Object> deledeRoomDeal(@PathVariable("id") Long id) {
-        return responseService.getSuccessResponse("매물 삭제 성공", roomDealService.deleteRoomDeal(id));
+    @DeleteMapping("/delete")
+    public BaseResponse<Object> deledeRoomDeal(@RequestBody RoomDealDeleteRequestDto roomDealDeleteRequestDto) {
+        try {
+            return responseService.getSuccessResponse("매물 삭제 성공", roomDealService.deleteRoomDeal(roomDealDeleteRequestDto));
+        } catch (IllegalArgumentException e) {
+            return responseService.getFailureResponse(e.getMessage());
+        }
     }
 
     /**

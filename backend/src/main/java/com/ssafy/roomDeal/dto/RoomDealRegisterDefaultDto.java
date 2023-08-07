@@ -4,9 +4,13 @@ import lombok.Getter;
 
 import javax.validation.constraints.NotNull;
 import java.sql.Date;
+import java.util.UUID;
 
 @Getter
 public class RoomDealRegisterDefaultDto {
+
+    @NotNull
+    private UUID id;
 
     @NotNull
     private String roomType;
