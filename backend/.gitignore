@@ -41,6 +41,8 @@ out/
 ### properties ###
 application.properties
 
+### JPA 자동 생성 파일 ###
 /src/main/generated/
 
+### 로그 파일 ###
 *.gz
