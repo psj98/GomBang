@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.NoSuchElementException;
 
+/**
+ * @author 변지혜
+ * @version 1.0
+ * @see "com.ssafy.member.*"
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/member")
@@ -20,10 +25,14 @@ public class MemberController {
     private final MemberService memberService;
 
     /**
-     * 카카오 로그인 요청 처리
+     * 카카오 로그인 요청을 처리한다.
+     * 곰방 로그인의 경우 회원 정보를 반환하고, 회원가입의 경우와 회원가입 이후 사용자 이름을 입력하지 않은 경우 UUID를 반환한다.
+     *
      * request_url=https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=a20ef37212e1ae86b20e09630f6590ce&redirect_uri=http://localhost:8080/member/login
-     * @param request
-     * @return
+     * @param request 카카오 인가토큰이 포함된 request를 입력받는다.
+     * @return 로그인하는 경우 : 회원 정보를 반환한다.
+     * @return 회원가입하는 경우 : 새롭게 생성된 UUID를 반환한다.
+     * @return 회원가입 후 사용자 이름을 입력하지 않은 경우 : 회원가입 시 생성된 UUID를 반환한다.
      */
     @GetMapping("/login")
     public BaseResponse<Object> loginCallBack(HttpServletRequest request) {
@@ -55,9 +64,10 @@ public class MemberController {
     }
 
     /**
-     * 사용자 이름 수정 요청 처리
-     * @param memberUpdateRequestDto
-     * @return
+     * 회원 정보의 이름을 수정 요청을 처리한다.
+     *
+     * @param memberUpdateRequestDto 이름 수정을 요청하는 사용자의 id와 수정할 이름을 입력받는다.
+     * @return 이름이 수정된 사용자의 회원 정보를 반환한다.
      */
     @PostMapping("/update")
     public BaseResponse<Object> updateName(@RequestBody MemberUpdateRequestDto memberUpdateRequestDto) {

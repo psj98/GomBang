@@ -17,6 +17,11 @@ import javax.transaction.Transactional;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+/**
+ * @author 변지혜
+ * @version 1.0
+ * @see "com.ssafy.member.*"
+ */
 @Service
 @RequiredArgsConstructor
 public class MemberService {
