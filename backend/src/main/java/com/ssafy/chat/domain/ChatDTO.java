@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.Id;
+import java.util.UUID;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -19,7 +22,7 @@ public class ChatDTO {
     public enum MessageType {
         ENTER, TALK, LEAVE;
     }
-    
+
     private MessageType type; // 메시지 타입
     private String roomId; // 방 번호
     private String sender; // 채팅을 보낸 사람

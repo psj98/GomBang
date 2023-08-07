@@ -1,5 +1,6 @@
 package com.ssafy.chat.service;
 
+import com.ssafy.chat.domain.ChatDTO;
 import com.ssafy.chat.domain.ChatRoom;
 import com.ssafy.chat.dto.ChatCreateRequestDto;
 import com.ssafy.chat.dto.ChatGetIdRequestDto;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -23,7 +25,6 @@ public class ChatRoomService {
         try {
             result = chatRoomRepository.findById(roomId).get();
         } catch (Exception e) {
-            System.out.println("에러남");
             return null;
         }
         return result;
@@ -44,23 +45,22 @@ public class ChatRoomService {
         return result;
     }
 
-    public UUID createChatRoom(ChatCreateRequestDto chatCreateRequestDto) {
+    public UUID createChatRoom(ChatCreateRequestDto chatCreateRequestDto) throws Exception{
         ChatRoom chatRoom = new ChatRoom().create(chatCreateRequestDto);
 
         UUID assignee = chatCreateRequestDto.getAssigneeId();
         UUID grantor = chatCreateRequestDto.getGrantorId();
 
-        ChatRoom dup = null;
-        
         // 입력으로 들어온 양도자와 양수자의 id로 채팅방이 존재하는지 조회
         // 이전에 생성한 채팅방이 있지만 매물 상세보기 페이지에서 양도자와 채팅 버튼을 누른 경우
         try {
+            ChatRoom dup = null;
             dup = chatRoomRepository.findByAssigneeIdAndGrantorId(assignee, grantor).get();
+            return dup.getId();
         } catch (Exception e) {
             chatRoomRepository.save(chatRoom);
             return chatRoom.getId();
         }
-        return dup.getId();
 
     }
 }
