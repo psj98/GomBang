@@ -6,6 +6,8 @@ import lombok.Data;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
+import java.util.HashMap;
 import java.util.UUID;
 
 // STOMP를 통해 pub/sub를 사용하면 구독자 관리가 알아서 된다.
@@ -24,6 +26,7 @@ public class ChatRoom {
     @Column(columnDefinition = "BINARY(16)")
     private UUID assigneeId; // 양수자 아이디
 
+    @Column
     private Integer roomDealId; // 매물글 아이디
 
     public ChatRoom create(ChatCreateRequestDto chatCreateRequestDto) {

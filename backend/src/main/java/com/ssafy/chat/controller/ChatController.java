@@ -1,9 +1,8 @@
 package com.ssafy.chat.controller;
 
-import com.ssafy.chat.domain.ChatDTO;
+import com.ssafy.chat.domain.Chat;
 import com.ssafy.chat.dto.ChatEnterRequestDto;
 import com.ssafy.chat.dto.ChatSendRequestDto;
-import com.ssafy.chat.service.ChatRoomService;
 import com.ssafy.chat.service.ChatService;
 import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.global.common.response.ResponseService;
@@ -36,10 +35,16 @@ public class ChatController {
     @Autowired
     ResponseService responseService;
 
-    // MessageMapping을 통해 webSocket으로 들어오는 메시지를 발신 처리한다.
-    // 이때 클라이언트에서는 /pub/chat/message로 요청하게 되고 이것을 controller가 받아서 처리한다.
-    // 처리가 완료되면 /sub/chat/room/roomId로 메시지가 전송된다.
-    // userId, roomId,
+    /**
+     *
+     * MessageMapping을 통해 webSocket으로 들어오는 메시지를 발신 처리한다.
+     * 이때 클라이언트에서는 /pub/chat/message로 요청하게 되고 이것을 controller가 받아서 처리한다.
+     * 처리가 완료되면 /sub/chat/room/roomId로 메시지가 전송된다.
+     *
+     * @param chatEnterRequestDto - front에서 사용자 Id와 채팅방 Id를 JSON에 담아 보냄
+     * @param headerAccessor
+     * @return BaseResponse<List<Chat>> - front로 이전 채팅 이력을 List 형태로 보내줌
+     */
     @MessageMapping("/chat/enterUser")
     public BaseResponse<?> enterUser(@Payload ChatEnterRequestDto chatEnterRequestDto, SimpMessageHeaderAccessor headerAccessor) {
 
@@ -52,7 +57,7 @@ public class ChatController {
             headerAccessor.getSessionAttributes().put("roomId", chatEnterRequestDto.getRoomId());
 
             // 과거 채팅 이력
-            List<ChatDTO> history = service.chatHistory(roomId.toString());
+            List<Chat> history = service.chatHistory(roomId.toString());
 
             if(history == null) {
                 return responseService.getFailureResponse("No History");
@@ -65,10 +70,15 @@ public class ChatController {
         }
     }
 
+    /**
+     *
+     * @param chatSendRequestDto - front에서 Chat를 담은 JSON을 보냄
+     * @return BaseResponse<Chat> - 전송 성공 여부를 return  
+     */
     @MessageMapping("/chat/sendMessage")
     public BaseResponse<?> sendMessage(@Payload ChatSendRequestDto chatSendRequestDto) {
         try {
-            ChatDTO chat = chatSendRequestDto.getChat();
+            Chat chat = chatSendRequestDto.getChat();
             log.info("CHAT {}", chat);
 
             // 전송 시간 설정
@@ -87,7 +97,11 @@ public class ChatController {
         }
     }
 
-    // 유저 퇴장 시에는 EventListener를 통해 유저 퇴장을 확인
+    /**
+     * 유저 퇴장 시에는 EventListener를 통해 유저 퇴장을 확인
+     *
+     * @param event
+     */
     @EventListener
     public void webSocketDisconnectListener(SessionDisconnectEvent event) {
         log.info("DisConnEvent {}", event);

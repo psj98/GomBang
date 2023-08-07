@@ -1,15 +1,15 @@
 package com.ssafy.chat.service;
 
-import com.ssafy.chat.domain.ChatDTO;
+import com.ssafy.chat.domain.Chat;
 import com.ssafy.chat.domain.ChatRoom;
 import com.ssafy.chat.dto.ChatCreateRequestDto;
 import com.ssafy.chat.dto.ChatGetIdRequestDto;
+import com.ssafy.chat.dto.ChatGetIdResponseDto;
 import com.ssafy.chat.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -19,7 +19,12 @@ public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
 
-    // roomID 기준으로 채팅방 찾기
+    /**
+     * roomID 기준으로 채팅방 찾기
+     *
+     * @param roomId
+     * @return ChatRoom
+     */
     public ChatRoom findRoomById(String roomId) {
         ChatRoom result = null;
         try {
@@ -30,21 +35,33 @@ public class ChatRoomService {
         return result;
     }
 
-    // 양도자, 양수자 Id로 채팅방 Id 조회
-    public ChatRoom getChatRoomId(ChatGetIdRequestDto chatGetIdRequestDto) {
-        ChatRoom result = null;
+    /**
+     * 양도자, 양수자 Id로 채팅방 Id 조회
+     *
+     * @param chatGetIdRequestDto
+     * @return ChatGetIdResponseDto
+     */
+    public ChatGetIdResponseDto getChatRoomId(ChatGetIdRequestDto chatGetIdRequestDto) {
 
         UUID assignee = chatGetIdRequestDto.getAssigneeId();
         UUID grantor = chatGetIdRequestDto.getGrantorId();
 
         try {
-            result = chatRoomRepository.findByAssigneeIdAndGrantorId(assignee, grantor).get();
+            ChatRoom result = chatRoomRepository.findByAssigneeIdAndGrantorId(assignee, grantor).get();
+            ChatGetIdResponseDto response = new ChatGetIdResponseDto();
+            response.setRoomId(result.getId());
+            return response;
         } catch (Exception e) {
             return null;
         }
-        return result;
     }
 
+    /**
+     *
+     * @param chatCreateRequestDto
+     * @return
+     * @throws Exception
+     */
     public UUID createChatRoom(ChatCreateRequestDto chatCreateRequestDto) throws Exception{
         ChatRoom chatRoom = new ChatRoom().create(chatCreateRequestDto);
 

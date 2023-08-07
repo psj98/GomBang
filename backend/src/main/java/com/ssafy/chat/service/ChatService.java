@@ -1,6 +1,6 @@
 package com.ssafy.chat.service;
 
-import com.ssafy.chat.domain.ChatDTO;
+import com.ssafy.chat.domain.Chat;
 import com.ssafy.chat.repository.ChatRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,12 +17,21 @@ public class ChatService {
     @Autowired
     private final ChatRepository chatRepository;
 
-    public void saveChatMessage(ChatDTO chat) {
+    /**
+     *
+     * @param chat
+     */
+    public void saveChatMessage(Chat chat) {
         chatRepository.save(chat);
     }
 
-    // 채팅방의 history 가져오기
-    public List<ChatDTO> chatHistory(String roomId) {
+    /**
+     * 채팅방의 history 가져오기
+     *
+     * @param roomId
+     * @return List<Chat>
+     */
+    public List<Chat> chatHistory(String roomId) {
         return chatRepository.findByRoomId(roomId);
     }
 }

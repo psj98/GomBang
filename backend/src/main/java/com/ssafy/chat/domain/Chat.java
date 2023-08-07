@@ -6,15 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Id;
-import java.util.UUID;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "chat")
-public class ChatDTO {
+public class Chat {
     // 메시지 타임 : 입장, 채팅
     // 메시지 타입에 따라서 동작하는 구조가 달라진다.
     // 입장과 퇴장 (Enter, Leave)의 경우 입장/퇴장 이벤트 처리가 실행되고,

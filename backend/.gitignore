@@ -24,7 +24,6 @@ bin/
 *.iws
 *.iml
 *.ipr
-*.iml
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
@@ -39,3 +38,11 @@ out/
 ### VS Code ###
 .vscode/
 
+### properties ###
+application.properties
+
+### JPA 자동 생성 파일 ###
+/src/main/generated/
+
+### 로그 파일 ###
+*.gz
