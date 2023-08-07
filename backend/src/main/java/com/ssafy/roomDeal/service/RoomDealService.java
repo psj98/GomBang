@@ -14,10 +14,7 @@ import com.ssafy.roomDeal.repository.RoomDealOptionReposiroty;
 import com.ssafy.roomDeal.repository.RoomDealRepository;
 import lombok.RequiredArgsConstructor;
 import org.elasticsearch.common.unit.DistanceUnit;
-import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
-import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortMode;
 import org.elasticsearch.search.sort.SortOrder;
@@ -141,15 +138,21 @@ public class RoomDealService {
         // match_phrase query 생성
         MatchPhraseQueryBuilder matchPhraseQuery = QueryBuilders.matchPhraseQuery("address", searchByAddressRequestDto.getAddress());
 
-        // _search query 생성
-        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder()
-                .withQuery(matchPhraseQuery); // match_phrase query를 _search 안에 저장
+        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder(); // Bool Query 생성
+        ArrayList<QueryBuilder> queryBuilderList = new ArrayList<>(); // Bool Query 안에 넣을 query List 생성
+        queryBuilderList.add(matchPhraseQuery); // match_phrase query를 list 안에 저장
 
         if (!searchByAddressRequestDto.getContent().isEmpty()) {
-            // match_phrase query 생성
+            // match query 생성
             MatchQueryBuilder matchQuery = QueryBuilders.matchQuery("content.nori", searchByAddressRequestDto.getContent());
-            queryBuilder.withQuery(matchQuery);
+            queryBuilderList.add(matchQuery);
         }
+
+        boolQueryBuilder.must().addAll(queryBuilderList); // Bool Query List를 Bool에 저장 => must : 조건 모두 일치
+
+        // _search query 생성
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+        queryBuilder.withQuery(boolQueryBuilder);
 
         // 결과 출력
         SearchHits<RoomDealSearchDto> articles = elasticsearchOperations
@@ -180,22 +183,28 @@ public class RoomDealService {
                 .point(lat, lon)
                 .distance(1000, DistanceUnit.KILOMETERS);
 
+        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder(); // Bool Query 생성
+        ArrayList<QueryBuilder> queryBuilderList = new ArrayList<>(); // Bool Query 안에 넣을 query List 생성
+        queryBuilderList.add(geoDistanceQueryBuilder); // match_phrase query를 list 안에 저장
+
+        if (!searchNearestStationUnivRequestDto.getContent().isEmpty()) {
+            // match query 생성
+            MatchQueryBuilder matchQuery = QueryBuilders.matchQuery("content.nori", searchNearestStationUnivRequestDto.getContent());
+            queryBuilderList.add(matchQuery); // match query 저장
+        }
+
+        boolQueryBuilder.must().addAll(queryBuilderList); // Bool Query List를 Bool에 저장 => must : 조건 모두 일치
+
         // _search query 생성
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
 
         // match_phrase query를 _search 안에 저장
-        queryBuilder.withQuery(geoDistanceQueryBuilder)
+        queryBuilder.withQuery(boolQueryBuilder)
                 .withSort(SortBuilders // sort builder
                         .geoDistanceSort("location", lat, lon) // 거리 기준 오름차순 정렬
                         .order(SortOrder.ASC)
                         .sortMode(SortMode.MIN))
                 .withPageable(PageRequest.of(0, 100)).build(); // size 제한 (100개)
-
-        if (!searchNearestStationUnivRequestDto.getContent().isEmpty()) {
-            // match_phrase query 생성
-            MatchQueryBuilder matchQuery = QueryBuilders.matchQuery("content.nori", searchNearestStationUnivRequestDto.getContent());
-            queryBuilder.withQuery(matchQuery);
-        }
 
         // 결과 출력
         SearchHits<RoomDealSearchDto> articles = elasticsearchOperations
