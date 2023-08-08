@@ -1,14 +1,11 @@
 package com.ssafy.roomDeal.controller;
 
-import com.ssafy.elasticsearch.dto.RoomDealNearestStationDto;
-import com.ssafy.elasticsearch.dto.RoomDealSearchDto;
+import com.ssafy.elasticsearch.dto.*;
 import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.global.common.response.ResponseService;
 import com.ssafy.roomDeal.dto.RoomDealDeleteRequestDto;
 import com.ssafy.roomDeal.dto.RoomDealRegisterRequestDto;
 import com.ssafy.roomDeal.dto.RoomDealUpdateRequestDto;
-import com.ssafy.elasticsearch.dto.SearchByAddressRequestDto;
-import com.ssafy.elasticsearch.dto.SearchNearestStationUnivRequestDto;
 import com.ssafy.roomDeal.service.RoomDealService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -83,8 +80,8 @@ public class RoomDealController {
      */
     @GetMapping("/search-address")
     public BaseResponse<Object> searchByAddress(@RequestBody SearchByAddressRequestDto searchByAddressRequestDto) {
-        List<RoomDealSearchDto> roomDealSearchDtos = roomDealService.searchByAddress(searchByAddressRequestDto);
-        return responseService.getSuccessResponse("주소 매물 검색 성공", roomDealSearchDtos);
+        List<RoomDealSearchResponseDto> roomDealSearchResponseDtoList = roomDealService.searchByAddress(searchByAddressRequestDto);
+        return responseService.getSuccessResponse("주소 매물 검색 성공", roomDealSearchResponseDtoList);
     }
 
     /**
@@ -94,8 +91,8 @@ public class RoomDealController {
      */
     @GetMapping("/search-station-univ")
     public BaseResponse<Object> searchNearestStationUniv(@RequestBody SearchNearestStationUnivRequestDto searchNearestStationUnivRequestDto) {
-        List<RoomDealSearchDto> roomDealSearchDtos = roomDealService.searchByLocation(searchNearestStationUnivRequestDto);
-        return responseService.getSuccessResponse("주소 매물 검색 성공", roomDealSearchDtos);
+        List<RoomDealSearchResponseDto> roomDealSearchResponseDtoList = roomDealService.searchByLocation(searchNearestStationUnivRequestDto);
+        return responseService.getSuccessResponse("주소 매물 검색 성공", roomDealSearchResponseDtoList);
     }
 
     /**
@@ -105,8 +102,8 @@ public class RoomDealController {
      */
     @GetMapping("/search-content")
     public BaseResponse<Object> searchByContent(@RequestBody String content){
-        List<RoomDealSearchDto> roomDealSearchDtos = roomDealService.searchByContent(content);
-        return responseService.getSuccessResponse("본문 검색 성공", roomDealSearchDtos);
+        List<RoomDealSearchResponseDto> roomDealSearchResponseDtoList = roomDealService.searchByContent(content);
+        return responseService.getSuccessResponse("본문 검색 성공", roomDealSearchResponseDtoList);
     }
 
     /**
@@ -116,8 +113,18 @@ public class RoomDealController {
      */
     @GetMapping("/search-nearest-station")
     public BaseResponse<Object> searchNearestStation(@RequestBody SearchNearestStationUnivRequestDto searchNearestStationUnivRequestDto){
-        List<RoomDealNearestStationDto> roomDealNearestStationDtos = roomDealService.getNearestStation(searchNearestStationUnivRequestDto);
-        return responseService.getSuccessResponse("가까운 역 가져오기 성공", roomDealNearestStationDtos);
+        List<RoomDealNearestStationDto> roomDealNearestStationDtoList = roomDealService.getNearestStation(searchNearestStationUnivRequestDto);
+        return responseService.getSuccessResponse("가까운 역 가져오기 성공", roomDealNearestStationDtoList);
     }
 
+    /**
+     * 주소 목록 가져오기
+     * @param addressSearchListRequestDto
+     * @return
+     */
+    @GetMapping("/address-list")
+    public BaseResponse<Object> getAddressList(@RequestBody AddressSearchListRequestDto addressSearchListRequestDto){
+        List<AddressSearchListResponseDto> addressSearchListResponseDtoList = roomDealService.getAddressList(addressSearchListRequestDto);
+        return responseService.getSuccessResponse("주소 목록 리스트 가져오기 성공", addressSearchListResponseDtoList);
+    }
 }

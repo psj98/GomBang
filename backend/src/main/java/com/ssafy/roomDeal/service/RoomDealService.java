@@ -1,9 +1,6 @@
 package com.ssafy.roomDeal.service;
 
-import com.ssafy.elasticsearch.dto.RoomDealNearestStationDto;
-import com.ssafy.elasticsearch.dto.RoomDealSearchDto;
-import com.ssafy.elasticsearch.dto.SearchByAddressRequestDto;
-import com.ssafy.elasticsearch.dto.SearchNearestStationUnivRequestDto;
+import com.ssafy.elasticsearch.dto.*;
 import com.ssafy.elasticsearch.repository.RoomDealElasticSearchRepository;
 import com.ssafy.member.domain.Member;
 import com.ssafy.member.repository.MemberRepository;
@@ -58,11 +55,11 @@ public class RoomDealService {
         SearchNearestStationUnivRequestDto searchNearestStationUnivRequestDto = new SearchNearestStationUnivRequestDto("37.1", "127.1");
         String content = newRoomDeal.getContent();
 
-        RoomDealSearchDto roomDealSearchDto = new RoomDealSearchDto(id, roomId, address, searchNearestStationUnivRequestDto, content);
+        RoomDealSearchResponseDto roomDealSearchResponseDto = new RoomDealSearchResponseDto(id, roomId, address, searchNearestStationUnivRequestDto, content);
 
         /* ES 매물 등록 - 추후 Position 수정 */
         try {
-            roomDealElasticSearchRepository.save(roomDealSearchDto);
+            roomDealElasticSearchRepository.save(roomDealSearchResponseDto);
         } catch (Exception e) {
             return new RoomDealResponseDto(newRoomDeal, newRoomDealOption);
         }
@@ -134,7 +131,7 @@ public class RoomDealService {
      * @param searchByAddressRequestDto
      * @return
      */
-    public List<RoomDealSearchDto> searchByAddress(SearchByAddressRequestDto searchByAddressRequestDto) {
+    public List<RoomDealSearchResponseDto> searchByAddress(SearchByAddressRequestDto searchByAddressRequestDto) {
         // match_phrase query 생성
         MatchPhraseQueryBuilder matchPhraseQuery = QueryBuilders.matchPhraseQuery("address", searchByAddressRequestDto.getAddress());
 
@@ -143,9 +140,9 @@ public class RoomDealService {
         queryBuilderList.add(matchPhraseQuery); // match_phrase query를 list 안에 저장
 
         if (!searchByAddressRequestDto.getContent().isEmpty()) {
-            // match query 생성
-            MatchQueryBuilder matchQuery = QueryBuilders.matchQuery("content.nori", searchByAddressRequestDto.getContent());
-            queryBuilderList.add(matchQuery);
+            // term query 생성
+            TermQueryBuilder termQuery = QueryBuilders.termQuery("content.nori", searchByAddressRequestDto.getContent());
+            queryBuilderList.add(termQuery);
         }
 
         boolQueryBuilder.must().addAll(queryBuilderList); // Bool Query List를 Bool에 저장 => must : 조건 모두 일치
@@ -155,17 +152,17 @@ public class RoomDealService {
         queryBuilder.withQuery(boolQueryBuilder);
 
         // 결과 출력
-        SearchHits<RoomDealSearchDto> articles = elasticsearchOperations
-                .search(queryBuilder.build(), RoomDealSearchDto.class, IndexCoordinates.of("rooms_data"));
+        SearchHits<RoomDealSearchResponseDto> articles = elasticsearchOperations
+                .search(queryBuilder.build(), RoomDealSearchResponseDto.class, IndexCoordinates.of("rooms_data"));
 
         // 결과 => Document로 매핑
-        List<SearchHit<RoomDealSearchDto>> searchHitList = articles.getSearchHits();
-        ArrayList<RoomDealSearchDto> roomDealSearchDtoList = new ArrayList<>();
-        for (SearchHit<RoomDealSearchDto> item : searchHitList) {
-            roomDealSearchDtoList.add(item.getContent());
+        List<SearchHit<RoomDealSearchResponseDto>> searchHitList = articles.getSearchHits();
+        ArrayList<RoomDealSearchResponseDto> roomDealSearchResponseDtoList = new ArrayList<>();
+        for (SearchHit<RoomDealSearchResponseDto> item : searchHitList) {
+            roomDealSearchResponseDtoList.add(item.getContent());
         }
 
-        return roomDealSearchDtoList;
+        return roomDealSearchResponseDtoList;
     }
 
     /**
@@ -174,7 +171,7 @@ public class RoomDealService {
      * @param searchNearestStationUnivRequestDto
      * @return
      */
-    public List<RoomDealSearchDto> searchByLocation(SearchNearestStationUnivRequestDto searchNearestStationUnivRequestDto) {
+    public List<RoomDealSearchResponseDto> searchByLocation(SearchNearestStationUnivRequestDto searchNearestStationUnivRequestDto) {
         double lat = Double.parseDouble(searchNearestStationUnivRequestDto.getLat());
         double lon = Double.parseDouble(searchNearestStationUnivRequestDto.getLon());
 
@@ -188,9 +185,9 @@ public class RoomDealService {
         queryBuilderList.add(geoDistanceQueryBuilder); // match_phrase query를 list 안에 저장
 
         if (!searchNearestStationUnivRequestDto.getContent().isEmpty()) {
-            // match query 생성
-            MatchQueryBuilder matchQuery = QueryBuilders.matchQuery("content.nori", searchNearestStationUnivRequestDto.getContent());
-            queryBuilderList.add(matchQuery); // match query 저장
+            // term query 생성
+            TermQueryBuilder termQuery = QueryBuilders.termQuery("content.nori", searchNearestStationUnivRequestDto.getContent());
+            queryBuilderList.add(termQuery); // term query 저장
         }
 
         boolQueryBuilder.must().addAll(queryBuilderList); // Bool Query List를 Bool에 저장 => must : 조건 모두 일치
@@ -207,17 +204,17 @@ public class RoomDealService {
                 .withPageable(PageRequest.of(0, 100)).build(); // size 제한 (100개)
 
         // 결과 출력
-        SearchHits<RoomDealSearchDto> articles = elasticsearchOperations
-                .search(queryBuilder.build(), RoomDealSearchDto.class, IndexCoordinates.of("rooms_data"));
+        SearchHits<RoomDealSearchResponseDto> articles = elasticsearchOperations
+                .search(queryBuilder.build(), RoomDealSearchResponseDto.class, IndexCoordinates.of("rooms_data"));
 
         // 결과 => Document로 매핑
-        List<SearchHit<RoomDealSearchDto>> searchHitList = articles.getSearchHits();
-        ArrayList<RoomDealSearchDto> roomDealSearchDtoList = new ArrayList<>();
-        for (SearchHit<RoomDealSearchDto> item : searchHitList) {
-            roomDealSearchDtoList.add(item.getContent());
+        List<SearchHit<RoomDealSearchResponseDto>> searchHitList = articles.getSearchHits();
+        ArrayList<RoomDealSearchResponseDto> roomDealSearchResponseDtoList = new ArrayList<>();
+        for (SearchHit<RoomDealSearchResponseDto> item : searchHitList) {
+            roomDealSearchResponseDtoList.add(item.getContent());
         }
 
-        return roomDealSearchDtoList;
+        return roomDealSearchResponseDtoList;
     }
 
     /**
@@ -226,7 +223,7 @@ public class RoomDealService {
      * @param sentence
      * @return
      */
-    public List<RoomDealSearchDto> searchByContent(String sentence) {
+    public List<RoomDealSearchResponseDto> searchByContent(String sentence) {
         // match_phrase query 생성
         MatchQueryBuilder matchQuery = QueryBuilders.matchQuery("content.nori", sentence);
 
@@ -235,21 +232,22 @@ public class RoomDealService {
         queryBuilder.withQuery(matchQuery); // match_phrase query를 _search 안에 저장
 
         // 결과 출력
-        SearchHits<RoomDealSearchDto> articles = elasticsearchOperations
-                .search(queryBuilder.build(), RoomDealSearchDto.class, IndexCoordinates.of("rooms_data"));
+        SearchHits<RoomDealSearchResponseDto> articles = elasticsearchOperations
+                .search(queryBuilder.build(), RoomDealSearchResponseDto.class, IndexCoordinates.of("rooms_data"));
 
         // 결과 => Document로 매핑
-        List<SearchHit<RoomDealSearchDto>> searchHitList = articles.getSearchHits();
-        ArrayList<RoomDealSearchDto> roomDealSearchDtoList = new ArrayList<>();
-        for (SearchHit<RoomDealSearchDto> item : searchHitList) {
-            roomDealSearchDtoList.add(item.getContent());
+        List<SearchHit<RoomDealSearchResponseDto>> searchHitList = articles.getSearchHits();
+        ArrayList<RoomDealSearchResponseDto> roomDealSearchResponseDtoList = new ArrayList<>();
+        for (SearchHit<RoomDealSearchResponseDto> item : searchHitList) {
+            roomDealSearchResponseDtoList.add(item.getContent());
         }
 
-        return roomDealSearchDtoList;
+        return roomDealSearchResponseDtoList;
     }
 
     /**
      * 주소 API를 통해 위도, 경도 가져옴 => 가까운 역 찾기
+     *
      * @param searchNearestStationUnivRequestDto
      */
     public List<RoomDealNearestStationDto> getNearestStation(SearchNearestStationUnivRequestDto searchNearestStationUnivRequestDto) {
@@ -274,7 +272,7 @@ public class RoomDealService {
 
         // 결과 출력
         SearchHits<RoomDealNearestStationDto> articles = elasticsearchOperations
-                .search(queryBuilder.build(), RoomDealNearestStationDto.class, IndexCoordinates.of("stations"));
+                .search(queryBuilder.build(), RoomDealNearestStationDto.class, IndexCoordinates.of("station_info"));
 
         // 결과 => Document로 매핑
         List<SearchHit<RoomDealNearestStationDto>> searchHitList = articles.getSearchHits();
@@ -284,5 +282,34 @@ public class RoomDealService {
         }
 
         return roomDealSearchDtoList;
+    }
+
+    /**
+     * 주소 목록 가져오기
+     * @param addressSearchListRequestDto
+     * @return
+     */
+    public List<AddressSearchListResponseDto> getAddressList(AddressSearchListRequestDto addressSearchListRequestDto) {
+        String address = addressSearchListRequestDto.getAddress();
+
+        // term query 생성
+        TermQueryBuilder termQuery = QueryBuilders.termQuery("address.nori", address);
+
+        // _search query 생성
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+        queryBuilder.withQuery(termQuery); // term query를 _search 안에 저장
+
+        // 결과 출력
+        SearchHits<AddressSearchListResponseDto> articles = elasticsearchOperations
+                .search(queryBuilder.build(), AddressSearchListResponseDto.class, IndexCoordinates.of("address_mapping"));
+
+        // 결과 => Document로 매핑
+        List<SearchHit<AddressSearchListResponseDto>> searchHitList = articles.getSearchHits();
+        ArrayList<AddressSearchListResponseDto> addressSearchListResponseDtoList = new ArrayList<>();
+        for (SearchHit<AddressSearchListResponseDto> item : searchHitList) {
+            addressSearchListResponseDtoList.add(item.getContent());
+        }
+
+        return addressSearchListResponseDtoList;
     }
 }

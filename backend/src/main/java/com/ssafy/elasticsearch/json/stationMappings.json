@@ -1,6 +1,12 @@
 {
   "properties": {
-    "stationName": {
+    "id": {
+      "type": "text"
+    },
+    "name": {
+      "type": "text"
+    },
+    "address": {
       "type": "text"
     },
     "location": {
