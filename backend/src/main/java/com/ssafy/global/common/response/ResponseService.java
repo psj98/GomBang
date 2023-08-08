@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class ResponseService {
 
     /**
-     * 성공 응답 메소드 (간단버전)
+     * 성공 응답 메소드
      * 
      * @param message - 결과 메시지
      * @param data - 결과 데이터
@@ -23,33 +23,31 @@ public class ResponseService {
     }
 
     /**
-     * 성공 응답 메소드 (코드 입력 버전)
+     * 성공 Status 메소드
      *
-     * @param code - 결과 코드
-     * @param message - 결과 메시지
-     * @param data - 결과 데이터
+     * @param status - Custom한 Status
      * @return BaseResponse - 응답 객체
      */
-    public <T>BaseResponse<Object> getDetailSuccessResponse(int code, String message, T data) {
+    public <T>BaseResponse<Object> getSuccessStatusResponse(BaseResponseStatus status, T data) {
         return BaseResponse.builder()
-                .isSuccess(true)
-                .code(code)
-                .message(message)
+                .isSuccess(status.isSuccess())
+                .code(status.getCode())
+                .message(status.getMessage())
                 .data(data)
                 .build();
     }
-
+    
     /**
-     * 
-     * @param code - 에러 코드
-     * @param message - 에러 메시지
+     * 실패 Status 메소드
+     *
+     * @param status - Custom한 Status
      * @return BaseResponse - 응답 객체
      */
-    public <T>BaseResponse<Object> getFailureResponse(int code, String message) {
+    public <T>BaseResponse<Object> getFailureResponse(BaseResponseStatus status) {
         return BaseResponse.builder()
-                .isSuccess(false)
-                .code(code)
-                .message(message)
+                .isSuccess(status.isSuccess())
+                .code(status.getCode())
+                .message(status.getMessage())
                 .build();
     }
 }
