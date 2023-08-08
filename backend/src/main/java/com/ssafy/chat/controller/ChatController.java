@@ -62,7 +62,7 @@ public class ChatController {
             return responseService.getSuccessResponse("Load History success", service.chatHistory(roomId.toString()));
         } catch (Exception e) {
             // Service에서 Exception을 throw 하는 경우는 없지만, 이 메서드에서 발생할 수 있는 에러를 대비
-            return responseService.getFailureResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            return responseService.getFailureResponse(BaseResponseStatus.CHATROOM_CONNECT_FAIL);
         }
     }
 
@@ -87,8 +87,7 @@ public class ChatController {
             template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
             return responseService.getSuccessResponse("메시지 전송 성공", chat);
         } catch (BaseException e) {
-            BaseResponseStatus status = e.getStatus();
-            return responseService.getFailureResponse(status.getCode(), status.getMessage());
+            return responseService.getFailureResponse(e.getStatus());
         }
     }
 

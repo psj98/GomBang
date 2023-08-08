@@ -45,8 +45,7 @@ public class ChatRoomController {
         try{
             return responseService.getSuccessResponse("채팅방ID 조회 성공", chatRoomService.getChatRoomId(chatGetIdRequestDto));
         } catch (BaseException e) {
-            BaseResponseStatus status = e.getStatus();
-            return responseService.getFailureResponse(status.getCode(), status.getMessage());
+            return responseService.getFailureResponse(e.getStatus());
         }
     }
 }
