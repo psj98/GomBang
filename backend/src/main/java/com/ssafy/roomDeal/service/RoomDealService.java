@@ -5,6 +5,8 @@ import com.ssafy.elasticsearch.dto.RoomDealSearchDto;
 import com.ssafy.elasticsearch.dto.SearchByAddressRequestDto;
 import com.ssafy.elasticsearch.dto.SearchNearestStationUnivRequestDto;
 import com.ssafy.elasticsearch.repository.RoomDealElasticSearchRepository;
+import com.ssafy.global.common.response.BaseException;
+import com.ssafy.global.common.response.BaseResponseStatus;
 import com.ssafy.member.domain.Member;
 import com.ssafy.member.repository.MemberRepository;
 import com.ssafy.roomDeal.domain.RoomDeal;
@@ -71,20 +73,20 @@ public class RoomDealService {
     }
 
     // 매믈 조회
-    public RoomDealResponseDto getRoomDeal(Long id) {
+    public RoomDealResponseDto getRoomDeal(Long id) throws BaseException {
         Optional<RoomDeal> roomDeal = roomDealRepository.findById(id);
         Optional<RoomDealOption> roomDealOption = roomDealOptionReposiroty.findById(id);
 
         if (roomDeal.isPresent() && roomDealOption.isPresent()) {
             return new RoomDealResponseDto(roomDeal.get(), roomDealOption.get());
         } else {
-            throw new IllegalArgumentException("존재하지 않는 roomDeal입니다.");
+            throw new BaseException(BaseResponseStatus.NOT_MATCHED_ROOM_DEAL_ID);
         }
     }
 
     // 매물 수정
     @Transactional
-    public RoomDealResponseDto updateRoomDeal(RoomDealUpdateRequestDto roomDealUpdateRequestDto) {
+    public RoomDealResponseDto updateRoomDeal(RoomDealUpdateRequestDto roomDealUpdateRequestDto) throws BaseException {
         Optional<RoomDeal> roomDealOptional = roomDealRepository.findById(roomDealUpdateRequestDto.getRoomDealId());
         Optional<RoomDealOption> roomDealOptionOptional = roomDealOptionReposiroty.findById(roomDealUpdateRequestDto.getRoomDealId());
 
@@ -96,10 +98,10 @@ public class RoomDealService {
                 roomDeal.roomDealUpdate(roomDealUpdateRequestDto);
                 return new RoomDealResponseDto(roomDealOptional.get(), roomDealOptionOptional.get());
             } else {
-                throw new IllegalArgumentException("작성자와 수정자가 일치하지 않습니다.");
+                throw new BaseException(BaseResponseStatus.NOT_AUTHORIZED);
             }
         } else {
-            throw new IllegalArgumentException("존재하지 않는 roomDeal입니다.");
+            throw new BaseException(BaseResponseStatus.NOT_MATCHED_ROOM_DEAL_ID);
         }
 
 
@@ -107,7 +109,7 @@ public class RoomDealService {
 
     // 매물 삭제
     @Transactional
-    public RoomDealDeleteResponseDto deleteRoomDeal(RoomDealDeleteRequestDto roomDealDeleteRequestDto) {
+    public RoomDealDeleteResponseDto deleteRoomDeal(RoomDealDeleteRequestDto roomDealDeleteRequestDto) throws BaseException {
 
         Optional<RoomDeal> roomDealOptional = roomDealRepository.findById(roomDealDeleteRequestDto.getRoomDealId());
         Optional<RoomDealOption> roomDealOptionOptional = roomDealOptionReposiroty.findById(roomDealDeleteRequestDto.getRoomDealId());
@@ -121,10 +123,10 @@ public class RoomDealService {
                 roomDealRepository.deleteById(roomDealDeleteRequestDto.getRoomDealId());
                 return new RoomDealDeleteResponseDto(roomDealDeleteRequestDto.getRoomDealId());
             } else {
-                throw new IllegalArgumentException("작성자와 삭제자가 일치하지 않습니다.");
+                throw new BaseException(BaseResponseStatus.NOT_AUTHORIZED);
             }
         } else {
-            throw new IllegalArgumentException("존재하지 않는 roomDeal입니다.");
+            throw new BaseException(BaseResponseStatus.NOT_MATCHED_ROOM_DEAL_ID);
         }
     }
 
