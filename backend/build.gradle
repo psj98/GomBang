@@ -165,7 +165,7 @@ dependencies {
     // MongoDB
     // MongoDB 단독 사용이면 뒤에 reactive 빼도 됨
     // 다른 DB랑 같이 쓸려면 reactive 적어야 함
-    implementation ('org.springframework.boot:spring-boot-starter-data-mongodb-reactive')
+    implementation ('org.springframework.boot:spring-boot-starter-data-mongodb')
 
     //IntelliJ용
     //IntelliJ에서는 하기 annotationProcessor를 쓰면 별도의 querydsl 플러그인 및 플러그인 설정이 불필요.
