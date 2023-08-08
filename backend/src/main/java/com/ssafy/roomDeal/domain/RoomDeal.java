@@ -1,81 +1,79 @@
 package com.ssafy.roomDeal.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import com.ssafy.member.domain.Member;
+import com.ssafy.roomDeal.dto.RoomDealRegisterDefaultDto;
+import com.ssafy.roomDeal.dto.RoomDealUpdateRequestDto;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.awt.*;
 import java.sql.Date;
-import java.util.UUID;
 
 @Entity
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoomDeal {
 
     @Id
+    @GeneratedValue
     @Column(name = "room_deal_id")
-    private UUID id;
+    private Long id;
 
-    @NonNull
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @NotNull
     private String roomType;
 
-    @NonNull
+    @NotNull
     private Double roomSize;
 
-    @NonNull
+    @NotNull
     private Integer roomCount;
 
     private String oneroomType;
 
-    @NonNull
+    @NotNull
     private Integer bathroomCount;
 
-    @NonNull
-    private String address;
+    @NotNull
+    private String roadAddress;
 
-    @NonNull
-    private String sido;
+    @NotNull
+    private String jibunAddress;
 
-    @NonNull
-    private String gugun;
-
-    @NonNull
-    private String dongEupMyonRi;
-
-    @NonNull
+    @NotNull
     private Integer monthlyFee;
 
-    @NonNull
+    @NotNull
     private Integer deposit;
 
-    @NonNull
+    @NotNull
     private Integer managementFee;
 
-    @NonNull
+    @NotNull
     private Date usageDate;
 
-    @NonNull
+    @NotNull
     private Date moveInDate;
 
-    @NonNull
+    @NotNull
     private Date expirationDate;
 
-    @NonNull
+    @NotNull
     private Integer floor;
 
-    @NonNull
+    @NotNull
     private Integer totalFloor;
 
-    @NonNull
-    private Point position;
+//    @NotNull
+//    private Point position;
 
-    @NonNull
+    @NotNull
     private DealStatus dealStatus;
 
     private String thumbnail;
@@ -90,9 +88,44 @@ public class RoomDeal {
 
     private String content;
 
-    @NonNull
-    private Date regTime;
+    @NotNull
+    private Date registerTime;
 
-    // User -> Member로 변경시 FK로 가져올 것
+    public RoomDeal(RoomDealRegisterDefaultDto roomDealRegisterDefaultDto, Member member) {
+        this.member = member;
+        this.roomType = roomDealRegisterDefaultDto.getRoomType();
+        this.roomSize = roomDealRegisterDefaultDto.getRoomSize();
+        this.roomCount = roomDealRegisterDefaultDto.getRoomCount();
+        this.oneroomType = roomDealRegisterDefaultDto.getOneroomType();
+        this.bathroomCount = roomDealRegisterDefaultDto.getBathroomCount();
+        this.roadAddress = roomDealRegisterDefaultDto.getRoadAddress();
+        this.jibunAddress = roomDealRegisterDefaultDto.getJibunAddress();
+        this.monthlyFee = roomDealRegisterDefaultDto.getMonthlyFee();
+        this.deposit = roomDealRegisterDefaultDto.getDeposit();
+        this.managementFee = roomDealRegisterDefaultDto.getManagementFee();
+        this.usageDate = roomDealRegisterDefaultDto.getUsageDate();
+        this.moveInDate = roomDealRegisterDefaultDto.getMoveInDate();
+        this.expirationDate = roomDealRegisterDefaultDto.getExpirationDate();
+        this.floor = roomDealRegisterDefaultDto.getFloor();
+        this.totalFloor = roomDealRegisterDefaultDto.getTotalFloor();
+//        this.position = roomDealDefaultDto.getPosition();
+        this.dealStatus = DealStatus.dealable;
+        this.thumbnail = roomDealRegisterDefaultDto.getThumbnail();
+        this.station = roomDealRegisterDefaultDto.getStation();
+        this.stationDistance = roomDealRegisterDefaultDto.getStationDistance();
+        this.univ = roomDealRegisterDefaultDto.getUniv();
+        this.univDistance = roomDealRegisterDefaultDto.getUnivDistance();
+        this.content = roomDealRegisterDefaultDto.getContent();
+        this.registerTime = new Date(System.currentTimeMillis());
 
+    }
+
+    // 매물 수정
+    public RoomDeal roomDealUpdate(RoomDealUpdateRequestDto roomDealUpdateRequestDto) {
+        this.monthlyFee = roomDealUpdateRequestDto.getMonthlyFee();
+        this.deposit = roomDealUpdateRequestDto.getDeposit();
+        this.managementFee = roomDealUpdateRequestDto.getManagementFee();
+
+        return this;
+    }
 }

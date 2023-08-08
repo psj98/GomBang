@@ -129,6 +129,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.plugin:spring-plugin-core:2.0.0.RELEASE")
     testImplementation("org.springframework.security:spring-security-test")
     annotationProcessor("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -145,6 +146,8 @@ dependencies {
 
     //STOMP 웹소캣 서버 사이드 테스트를 위한 의존성 추가
     implementation("org.springframework.boot:spring-boot-starter-mustache")
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
+
     //STOMP 관련 프론트 라이브러리
     implementation('org.webjars.bower:jquery:3.3.1')
     implementation('org.webjars:sockjs-client:1.1.2')
@@ -156,6 +159,13 @@ dependencies {
     implementation('org.kurento:kurento-client:6.16.0')
     implementation('org.kurento:kurento-utils-js:6.15.0')
 
+    // validation
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+
+    // MongoDB
+    // MongoDB 단독 사용이면 뒤에 reactive 빼도 됨
+    // 다른 DB랑 같이 쓸려면 reactive 적어야 함
+    implementation ('org.springframework.boot:spring-boot-starter-data-mongodb')
 
     //IntelliJ용
     //IntelliJ에서는 하기 annotationProcessor를 쓰면 별도의 querydsl 플러그인 및 플러그인 설정이 불필요.
@@ -184,6 +194,13 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.20")
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
+
+    implementation('com.googlecode.json-simple:json-simple:1.1.1')
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation('org.springframework.boot:spring-boot-starter-webflux')
+//    implementation('org.projectreactor:reactor-spring:1.0.1.RELEASE')
+    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+
 }
 
 test {
