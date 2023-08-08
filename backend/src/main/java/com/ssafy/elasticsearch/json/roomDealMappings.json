@@ -1,0 +1,23 @@
+{
+  "properties": {
+    "room_id": {
+      "type": "keyword"
+    },
+    "address": {
+      "type": "text"
+    },
+    "location": {
+      "type": "geo_point"
+    },
+    "content": {
+      "type": "text",
+      "fields": {
+        "nori": {
+          "type": "text",
+          "analyzer": "nori",
+          "search_analyzer": "nori"
+        }
+      }
+    }
+  }
+}
