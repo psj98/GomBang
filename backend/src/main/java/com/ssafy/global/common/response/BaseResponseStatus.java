@@ -41,7 +41,8 @@ public enum BaseResponseStatus {
      * code: 4000번대
      */
     NOT_FOUND_CHAT_ROOM(false, 4001, "일치하는 채팅방이 없습니다."),
-    CHAT_MESSAGE_SAVE_FAILED(false, 4002, "채팅 메시지 저장에 실패했습니다.");
+    CHAT_MESSAGE_SAVE_FAILED(false, 4002, "채팅 메시지 저장에 실패했습니다."),
+    CHATROOM_CONNECT_FAIL(false, 4003, "채팅방 연결에 실패했습니다");
 
 
 
