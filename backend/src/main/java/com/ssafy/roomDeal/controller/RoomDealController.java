@@ -81,7 +81,7 @@ public class RoomDealController {
      * @param searchByAddressRequestDto
      * @return
      */
-    @PostMapping("/search-address")
+    @GetMapping("/search-address")
     public BaseResponse<Object> searchByAddress(@RequestBody SearchByAddressRequestDto searchByAddressRequestDto) {
         List<RoomDealSearchDto> roomDealSearchDtos = roomDealService.searchByAddress(searchByAddressRequestDto);
         return responseService.getSuccessResponse("주소 매물 검색 성공", roomDealSearchDtos);
@@ -92,7 +92,7 @@ public class RoomDealController {
      * @param searchNearestStationUnivRequestDto
      * @return
      */
-    @PostMapping("/search-station-univ")
+    @GetMapping("/search-station-univ")
     public BaseResponse<Object> searchNearestStationUniv(@RequestBody SearchNearestStationUnivRequestDto searchNearestStationUnivRequestDto) {
         List<RoomDealSearchDto> roomDealSearchDtos = roomDealService.searchByLocation(searchNearestStationUnivRequestDto);
         return responseService.getSuccessResponse("주소 매물 검색 성공", roomDealSearchDtos);
