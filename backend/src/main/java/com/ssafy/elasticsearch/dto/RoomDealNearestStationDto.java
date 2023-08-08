@@ -8,6 +8,9 @@ import org.springframework.data.elasticsearch.annotations.Mapping;
 
 import javax.persistence.Id;
 
+/**
+ * 매물 주소에 따른 가까운 역 조회
+ */
 @Data
 @NoArgsConstructor
 @Document(indexName = "station_info")
@@ -15,13 +18,13 @@ import javax.persistence.Id;
 public class RoomDealNearestStationDto {
 
     @Id
-    private String id;
-    private String name;
-    private String address;
-    private SearchNearestStationUnivRequestDto location;
+    private String id; // 구분 id
+    private String name; // 역 이름
+    private String address; // 역 지번 주소
+    private SearchByStationUnivRequestDto location; // 위도, 경도
 
     @Builder
-    public RoomDealNearestStationDto(String id, String name, String address, SearchNearestStationUnivRequestDto location) {
+    public RoomDealNearestStationDto(String id, String name, String address, SearchByStationUnivRequestDto location) {
         this.id = id;
         this.name = name;
         this.address = address;

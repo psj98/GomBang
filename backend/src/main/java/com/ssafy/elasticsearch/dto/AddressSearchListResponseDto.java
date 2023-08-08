@@ -7,6 +7,9 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 import org.springframework.data.elasticsearch.annotations.Setting;
 
+/**
+ * 검색어 매핑 결과
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

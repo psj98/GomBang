@@ -18,7 +18,6 @@ import java.util.List;
 public class RoomDealController {
 
     private final ResponseService responseService;
-
     private final RoomDealService roomDealService;
 
     /**
@@ -86,12 +85,12 @@ public class RoomDealController {
 
     /**
      * 역, 학교로 매물 검색 + 본문 검색
-     * @param searchNearestStationUnivRequestDto
+     * @param searchByStationUnivRequestDto
      * @return
      */
     @GetMapping("/search-station-univ")
-    public BaseResponse<Object> searchNearestStationUniv(@RequestBody SearchNearestStationUnivRequestDto searchNearestStationUnivRequestDto) {
-        List<RoomDealSearchResponseDto> roomDealSearchResponseDtoList = roomDealService.searchByLocation(searchNearestStationUnivRequestDto);
+    public BaseResponse<Object> searchNearestStationUniv(@RequestBody SearchByStationUnivRequestDto searchByStationUnivRequestDto) {
+        List<RoomDealSearchResponseDto> roomDealSearchResponseDtoList = roomDealService.searchByLocation(searchByStationUnivRequestDto);
         return responseService.getSuccessResponse("주소 매물 검색 성공", roomDealSearchResponseDtoList);
     }
 
@@ -108,12 +107,12 @@ public class RoomDealController {
 
     /**
      * 주소 위도, 경도 기반으로 가까운 역 검색
-     * @param searchNearestStationUnivRequestDto
+     * @param searchByStationUnivRequestDto
      * @return
      */
     @GetMapping("/search-nearest-station")
-    public BaseResponse<Object> searchNearestStation(@RequestBody SearchNearestStationUnivRequestDto searchNearestStationUnivRequestDto){
-        List<RoomDealNearestStationDto> roomDealNearestStationDtoList = roomDealService.getNearestStation(searchNearestStationUnivRequestDto);
+    public BaseResponse<Object> searchNearestStation(@RequestBody SearchByStationUnivRequestDto searchByStationUnivRequestDto){
+        List<RoomDealNearestStationDto> roomDealNearestStationDtoList = roomDealService.getNearestStation(searchByStationUnivRequestDto);
         return responseService.getSuccessResponse("가까운 역 가져오기 성공", roomDealNearestStationDtoList);
     }
 

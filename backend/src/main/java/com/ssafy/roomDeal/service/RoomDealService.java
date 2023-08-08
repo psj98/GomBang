@@ -52,10 +52,10 @@ public class RoomDealService {
         String id = String.valueOf(newRoomDeal.getId());
         Long roomId = newRoomDeal.getId();
         String address = newRoomDeal.getJibunAddress();
-        SearchNearestStationUnivRequestDto searchNearestStationUnivRequestDto = new SearchNearestStationUnivRequestDto("37.1", "127.1");
+        SearchByStationUnivRequestDto searchByStationUnivRequestDto = new SearchByStationUnivRequestDto("37.1", "127.1");
         String content = newRoomDeal.getContent();
 
-        RoomDealSearchResponseDto roomDealSearchResponseDto = new RoomDealSearchResponseDto(id, roomId, address, searchNearestStationUnivRequestDto, content);
+        RoomDealSearchResponseDto roomDealSearchResponseDto = new RoomDealSearchResponseDto(id, roomId, address, searchByStationUnivRequestDto, content);
 
         /* ES 매물 등록 - 추후 Position 수정 */
         try {
@@ -168,12 +168,12 @@ public class RoomDealService {
     /**
      * 위도, 경도로 매물 검색
      *
-     * @param searchNearestStationUnivRequestDto
+     * @param searchByStationUnivRequestDto
      * @return
      */
-    public List<RoomDealSearchResponseDto> searchByLocation(SearchNearestStationUnivRequestDto searchNearestStationUnivRequestDto) {
-        double lat = Double.parseDouble(searchNearestStationUnivRequestDto.getLat());
-        double lon = Double.parseDouble(searchNearestStationUnivRequestDto.getLon());
+    public List<RoomDealSearchResponseDto> searchByLocation(SearchByStationUnivRequestDto searchByStationUnivRequestDto) {
+        double lat = Double.parseDouble(searchByStationUnivRequestDto.getLat());
+        double lon = Double.parseDouble(searchByStationUnivRequestDto.getLon());
 
         // geo_point query 생성
         GeoDistanceQueryBuilder geoDistanceQueryBuilder = QueryBuilders.geoDistanceQuery("location")
@@ -184,9 +184,9 @@ public class RoomDealService {
         ArrayList<QueryBuilder> queryBuilderList = new ArrayList<>(); // Bool Query 안에 넣을 query List 생성
         queryBuilderList.add(geoDistanceQueryBuilder); // match_phrase query를 list 안에 저장
 
-        if (!searchNearestStationUnivRequestDto.getContent().isEmpty()) {
+        if (!searchByStationUnivRequestDto.getContent().isEmpty()) {
             // term query 생성
-            TermQueryBuilder termQuery = QueryBuilders.termQuery("content.nori", searchNearestStationUnivRequestDto.getContent());
+            TermQueryBuilder termQuery = QueryBuilders.termQuery("content.nori", searchByStationUnivRequestDto.getContent());
             queryBuilderList.add(termQuery); // term query 저장
         }
 
@@ -248,11 +248,11 @@ public class RoomDealService {
     /**
      * 주소 API를 통해 위도, 경도 가져옴 => 가까운 역 찾기
      *
-     * @param searchNearestStationUnivRequestDto
+     * @param searchByStationUnivRequestDto
      */
-    public List<RoomDealNearestStationDto> getNearestStation(SearchNearestStationUnivRequestDto searchNearestStationUnivRequestDto) {
-        double lat = Double.parseDouble(searchNearestStationUnivRequestDto.getLat());
-        double lon = Double.parseDouble(searchNearestStationUnivRequestDto.getLon());
+    public List<RoomDealNearestStationDto> getNearestStation(SearchByStationUnivRequestDto searchByStationUnivRequestDto) {
+        double lat = Double.parseDouble(searchByStationUnivRequestDto.getLat());
+        double lon = Double.parseDouble(searchByStationUnivRequestDto.getLon());
 
         // geo_point query 생성
         GeoDistanceQueryBuilder geoDistanceQueryBuilder = QueryBuilders.geoDistanceQuery("location")

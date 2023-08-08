@@ -2,6 +2,9 @@ package com.ssafy.elasticsearch.dto;
 
 import lombok.Data;
 
+/**
+ * 주소로 매물 검색
+ */
 @Data
 public class SearchByAddressRequestDto {
 
