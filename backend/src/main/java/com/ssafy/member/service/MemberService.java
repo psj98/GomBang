@@ -132,7 +132,7 @@ public class MemberService {
     public MemberLoginResponseDto updateMemberName(MemberUpdateRequestDto memberUpdateRequestDto) throws BaseException {
         Member member = getMemberInfoWithId(memberUpdateRequestDto.getId());
         member.setName(memberUpdateRequestDto.getName());
-        new MemberLoginResponseDto(member);
+        return new MemberLoginResponseDto(member);
     }
 
     // channelId 기준으로 회원 정보 조회
