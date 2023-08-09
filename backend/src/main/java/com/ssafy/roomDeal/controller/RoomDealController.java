@@ -75,6 +75,7 @@ public class RoomDealController {
 
     /**
      * 주소로 매물 검색 + 본문 검색
+     *
      * @param searchByAddressRequestDto
      * @return
      */
@@ -86,17 +87,19 @@ public class RoomDealController {
 
     /**
      * 역, 학교로 매물 검색 + 본문 검색
+     *
      * @param searchByStationUnivRequestDto
      * @return
      */
     @GetMapping("/search-station-univ")
-    public BaseResponse<Object> searchNearestStationUniv(@RequestBody SearchByStationUnivRequestDto searchByStationUnivRequestDto) {
+    public BaseResponse<Object> searchByStationUniv(@RequestBody SearchByStationUnivRequestDto searchByStationUnivRequestDto) {
         List<RoomDealSearchResponseDto> roomDealSearchResponseDtoList = roomDealService.searchByLocation(searchByStationUnivRequestDto);
         return responseService.getSuccessResponse(roomDealSearchResponseDtoList);
     }
 
     /**
      * 본문 검색
+     *
      * @param content
      * @return
      */
@@ -107,24 +110,26 @@ public class RoomDealController {
     }
 
     /**
-     * 주소 위도, 경도 기반으로 가까운 역 검색
+     * 주소 위도, 경도 기반으로 가까운 역, 대학교 검색
+     *
      * @param searchByStationUnivRequestDto
      * @return
      */
-    @GetMapping("/search-nearest-station")
-    public BaseResponse<Object> searchNearestStation(@RequestBody SearchByStationUnivRequestDto searchByStationUnivRequestDto){
-        List<RoomDealNearestStationDto> roomDealNearestStationDtoList = roomDealService.getNearestStation(searchByStationUnivRequestDto);
-        return responseService.getSuccessResponse(roomDealNearestStationDtoList);
+    @GetMapping("/search-nearest")
+    public BaseResponse<Object> searchNearestStationUniv(@RequestBody SearchByStationUnivRequestDto searchByStationUnivRequestDto){
+        RoomDealNearestStationUnivResponseDto roomDealNearestStationResponseDto = roomDealService.getNearestStationUniv(searchByStationUnivRequestDto);
+        return responseService.getSuccessResponse(roomDealNearestStationResponseDto);
     }
 
     /**
      * 주소 목록 가져오기
+     *
      * @param addressSearchListRequestDto
      * @return
      */
     @GetMapping("/address-list")
     public BaseResponse<Object> getAddressList(@RequestBody AddressSearchListRequestDto addressSearchListRequestDto){
         List<AddressSearchListResponseDto> addressSearchListResponseDtoList = roomDealService.getAddressList(addressSearchListRequestDto);
-        return responseService.getSuccessResponse("주소 목록 리스트 가져오기 성공", addressSearchListResponseDtoList);
+        return responseService.getSuccessResponse(addressSearchListResponseDtoList);
     }
 }
