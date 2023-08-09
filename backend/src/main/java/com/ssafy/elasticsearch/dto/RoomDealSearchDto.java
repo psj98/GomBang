@@ -6,12 +6,14 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.*;
 
+import java.io.Serializable;
+
 @Getter
 @NoArgsConstructor
 @Document(indexName = "rooms_data")
 @Mapping(mappingPath = "json/roomDealMappings.json")
 @Setting(settingPath = "json/roomDealSettings.json")
-public class RoomDealSearchDto {
+public class RoomDealSearchDto implements Serializable {
 
     @Id
     private String id;

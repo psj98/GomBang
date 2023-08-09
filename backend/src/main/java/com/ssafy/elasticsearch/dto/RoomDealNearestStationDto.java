@@ -7,12 +7,13 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 
 import javax.persistence.Id;
+import java.io.Serializable;
 
 @Getter
 @NoArgsConstructor
 @Document(indexName = "stations")
 @Mapping(mappingPath = "json/stationMappings.json")
-public class RoomDealNearestStationDto {
+public class RoomDealNearestStationDto implements Serializable {
 
     @Id
     private String id;

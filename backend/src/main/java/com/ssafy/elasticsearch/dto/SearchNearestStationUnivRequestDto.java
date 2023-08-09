@@ -5,11 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.awt.*;
+import java.io.Serializable;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SearchNearestStationUnivRequestDto {
+public class SearchNearestStationUnivRequestDto implements Serializable {
 
     private String lat; // 위도
 

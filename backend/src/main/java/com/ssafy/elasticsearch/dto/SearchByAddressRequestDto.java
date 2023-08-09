@@ -1,9 +1,17 @@
 package com.ssafy.elasticsearch.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Getter
-public class SearchByAddressRequestDto {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class SearchByAddressRequestDto implements Serializable {
 
     private String address; // 지번 주소
 

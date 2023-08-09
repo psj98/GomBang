@@ -8,6 +8,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.awt.*;
+import java.io.Serializable;
 import java.sql.Date;
 
 @Entity
@@ -15,7 +16,7 @@ import java.sql.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoomDeal {
+public class RoomDeal implements Serializable {
 
     @Id
     @GeneratedValue
