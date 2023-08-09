@@ -30,7 +30,7 @@ public class ShowRoomController {
         System.out.println(showRoomRegisterRequestDto.getRoomDealId());
         System.out.println(showRoomRegisterRequestDto.getMemberId().toString());
         try {
-            return responseService.getSuccessResponse("곰방봐 등록 성공", showRoomService.registerShowRoom(showRoomRegisterRequestDto));
+            return responseService.getSuccessResponse(showRoomService.registerShowRoom(showRoomRegisterRequestDto));
         } catch (BaseException e) {
             return responseService.getFailureResponse(e.status);
         }
