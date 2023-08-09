@@ -5,12 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 검색어 매핑
+ * 검색어 매핑 최종 결과
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddressSearchListRequestDto {
+public class SearchRelatedListUniteResponseDto {
 
-    private String address; // 지번 주소
+    private String searchWord; // 검색어
+    private String searchType; // 검색어 타입
 }

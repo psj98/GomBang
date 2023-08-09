@@ -122,14 +122,14 @@ public class RoomDealController {
     }
 
     /**
-     * 주소 목록 가져오기
+     * 검색어 목록 가져오기
      *
-     * @param addressSearchListRequestDto
+     * @param searchRelatedListRequestDto
      * @return
      */
-    @GetMapping("/address-list")
-    public BaseResponse<Object> getAddressList(@RequestBody AddressSearchListRequestDto addressSearchListRequestDto){
-        List<AddressSearchListResponseDto> addressSearchListResponseDtoList = roomDealService.getAddressList(addressSearchListRequestDto);
-        return responseService.getSuccessResponse(addressSearchListResponseDtoList);
+    @GetMapping("/search-related-list")
+    public BaseResponse<Object> getRelatedList(@RequestBody SearchRelatedListRequestDto searchRelatedListRequestDto){
+        List<SearchRelatedListUniteResponseDto> searchRelatedListUniteResponseDtoList = roomDealService.getSearchRelatedListFinal(searchRelatedListRequestDto);
+        return responseService.getSuccessResponse(searchRelatedListUniteResponseDtoList);
     }
 }

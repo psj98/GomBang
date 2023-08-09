@@ -337,32 +337,78 @@ public class RoomDealService {
     }
 
     /**
-     * 주소 목록 가져오기
+     * 검색어 목록 가져오기
      *
-     * @param addressSearchListRequestDto
+     * @param searchRelatedListRequestDto
      * @return
      */
-    public List<AddressSearchListResponseDto> getAddressList(AddressSearchListRequestDto addressSearchListRequestDto) {
-        String address = addressSearchListRequestDto.getAddress();
+    public List<SearchRelatedListUniteResponseDto> getSearchRelatedListFinal(SearchRelatedListRequestDto searchRelatedListRequestDto) {
+        List<SearchRelatedListResponseDto> searchRelatedListResponseDtoList = getSearchRelatedList(searchRelatedListRequestDto);
 
-        // term query 생성
-        TermQueryBuilder termQuery = QueryBuilders.termQuery("address.nori", address);
+        List<SearchRelatedListUniteResponseDto> searchRelatedListUniteResponseDtoList = new ArrayList<>();
+        for (SearchRelatedListResponseDto s : searchRelatedListResponseDtoList) {
+            if (s.getAddress() != null) {
+                searchRelatedListUniteResponseDtoList.add(new SearchRelatedListUniteResponseDto(s.getAddress(), "address"));
+                continue;
+            }
+
+            if (s.getStation() != null) {
+                searchRelatedListUniteResponseDtoList.add(new SearchRelatedListUniteResponseDto(s.getStation(), "station"));
+                continue;
+            }
+
+            searchRelatedListUniteResponseDtoList.add(new SearchRelatedListUniteResponseDto(s.getUniv(), "univ"));
+        }
+
+        return searchRelatedListUniteResponseDtoList;
+    }
+
+    /**
+     * 주소, 역, 대학교 목록 가져오기
+     *
+     * @param searchRelatedListRequestDto
+     * @return
+     */
+    public List<SearchRelatedListResponseDto> getSearchRelatedList(SearchRelatedListRequestDto searchRelatedListRequestDto) {
+        String searchWord = searchRelatedListRequestDto.getSearchWord(); // 검색어
+
+        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder(); // Bool Query 생성
+        ArrayList<QueryBuilder> queryBuilderList = new ArrayList<>(); // Bool Query 안에 넣을 query List 생성
+
+        /* 주소 Query 생성 */
+        if (!searchWord.contains("학교")) {
+            MatchQueryBuilder matchAddressQuery = QueryBuilders.matchQuery("address.nori", searchWord); // match query 생성
+            queryBuilderList.add(matchAddressQuery); // match query를 list 안에 저장
+        } else { /* 대학교 Query 생성 */
+            MatchQueryBuilder matchUnivQuery = QueryBuilders.matchQuery("univ.nori", searchWord); // match query 생성
+            queryBuilderList.add(matchUnivQuery); // match query를 list 안에 저장
+        }
+
+        /* 역 Query 생성 */
+        TermQueryBuilder termStationQuery = QueryBuilders.termQuery("station.nori", searchWord); // term query 생성
+        queryBuilderList.add(termStationQuery); // term query를 list 안에 저장
+
+        boolQueryBuilder.should().addAll(queryBuilderList); // Bool Query List를 Bool에 저장 => should : or
 
         // _search query 생성
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
-        queryBuilder.withQuery(termQuery); // term query를 _search 안에 저장
+        queryBuilder.withQuery(boolQueryBuilder)
+                .withSort(SortBuilders // sort builder
+                        .fieldSort("_id") // 거리 기준 오름차순 정렬
+                        .order(SortOrder.ASC))
+                .withPageable(PageRequest.of(0, 20)).build(); // size 제한 (20개);
 
         // 결과 출력
-        SearchHits<AddressSearchListResponseDto> articles = elasticsearchOperations
-                .search(queryBuilder.build(), AddressSearchListResponseDto.class, IndexCoordinates.of("address_mapping"));
+        SearchHits<SearchRelatedListResponseDto> articles = elasticsearchOperations
+                .search(queryBuilder.build(), SearchRelatedListResponseDto.class, IndexCoordinates.of("search_related_list"));
 
         // 결과 => Document로 매핑
-        List<SearchHit<AddressSearchListResponseDto>> searchHitList = articles.getSearchHits();
-        ArrayList<AddressSearchListResponseDto> addressSearchListResponseDtoList = new ArrayList<>();
-        for (SearchHit<AddressSearchListResponseDto> item : searchHitList) {
-            addressSearchListResponseDtoList.add(item.getContent());
+        List<SearchHit<SearchRelatedListResponseDto>> searchHitList = articles.getSearchHits();
+        ArrayList<SearchRelatedListResponseDto> searchListResponseDtoRelatedList = new ArrayList<>();
+        for (SearchHit<SearchRelatedListResponseDto> item : searchHitList) {
+            searchListResponseDtoRelatedList.add(item.getContent());
         }
 
-        return addressSearchListResponseDtoList;
+        return searchListResponseDtoRelatedList;
     }
 }

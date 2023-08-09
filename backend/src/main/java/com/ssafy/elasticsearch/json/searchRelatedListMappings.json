@@ -1,0 +1,37 @@
+{
+  "properties": {
+    "address": {
+      "type": "text",
+      "fields": {
+        "nori": {
+          "type": "text",
+          "analyzer": "nori",
+          "search_analyzer": "nori"
+        }
+      }
+    },
+    "station": {
+      "type": "text",
+      "fields": {
+        "nori": {
+          "type": "text",
+          "analyzer": "nori",
+          "search_analyzer": "nori"
+        }
+      }
+    },
+    "univ": {
+      "type": "text",
+      "fields": {
+        "nori": {
+          "type": "text",
+          "analyzer": "nori",
+          "search_analyzer": "nori"
+        }
+      }
+    },
+    "searchType": {
+      "type": "text"
+    }
+  }
+}
