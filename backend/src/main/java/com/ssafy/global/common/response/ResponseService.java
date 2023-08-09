@@ -9,15 +9,14 @@ public class ResponseService {
     /**
      * 성공 응답 메소드
      * 
-     * @param message - 결과 메시지
      * @param data - 결과 데이터
      * @return BaseResponse - 응답 객체
      */
-    public <T>BaseResponse<Object> getSuccessResponse(String message, T data) {
+    public <T>BaseResponse<Object> getSuccessResponse(T data) {
         return BaseResponse.builder()
                 .isSuccess(true)
-                .code(HttpStatus.OK.value())
-                .message(message)
+                .code(BaseResponseStatus.SUCCESS.getCode())
+                .message(BaseResponseStatus.SUCCESS.getMessage())
                 .data(data)
                 .build();
     }

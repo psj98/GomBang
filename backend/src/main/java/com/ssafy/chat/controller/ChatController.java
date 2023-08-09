@@ -2,7 +2,7 @@ package com.ssafy.chat.controller;
 
 import com.ssafy.chat.domain.Chat;
 import com.ssafy.chat.dto.ChatEnterRequestDto;
-import com.ssafy.chat.dto.ChatSendRequestDto;
+import com.ssafy.chat.dto.ChatSendDto;
 import com.ssafy.chat.service.ChatService;
 import com.ssafy.global.common.response.BaseException;
 import com.ssafy.global.common.response.BaseResponse;
@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
-import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -23,7 +22,6 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -52,14 +50,14 @@ public class ChatController {
     public BaseResponse<?> enterUser(@Payload ChatEnterRequestDto chatEnterRequestDto, SimpMessageHeaderAccessor headerAccessor) {
 
         try {
-            UUID userId = chatEnterRequestDto.getUserId();
+            UUID userId = chatEnterRequestDto.getMemberId();
             UUID roomId= chatEnterRequestDto.getRoomId();
 
             // 반환 결과를 socket session에 userUUID로 저장
-            headerAccessor.getSessionAttributes().put("userID", chatEnterRequestDto.getUserId());
+            headerAccessor.getSessionAttributes().put("userID", chatEnterRequestDto.getMemberId());
             headerAccessor.getSessionAttributes().put("roomId", chatEnterRequestDto.getRoomId());
 
-            return responseService.getSuccessResponse("Load History success", service.chatHistory(roomId.toString()));
+            return responseService.getSuccessResponse(service.chatHistory(roomId.toString()));
         } catch (Exception e) {
             // Service에서 Exception을 throw 하는 경우는 없지만, 이 메서드에서 발생할 수 있는 에러를 대비
             return responseService.getFailureResponse(BaseResponseStatus.CHATROOM_CONNECT_FAIL);
@@ -68,12 +66,12 @@ public class ChatController {
 
     /**
      *
-     * @param chatSendRequestDto - Chat객체가 들어있음
+     * @param chatSendDto - Chat객체가 들어있음
      * @return BaseResponse<Chat> - 전송 성공 여부를 return  
      */
     @MessageMapping("/chat/sendmessage")
-    public BaseResponse<?> sendMessage(@Payload ChatSendRequestDto chatSendRequestDto) {
-        Chat chat = chatSendRequestDto.getChat();
+    public BaseResponse<?> sendMessage(@Payload ChatSendDto chatSendDto) {
+        Chat chat = chatSendDto.getChat();
         log.info("CHAT {}", chat);
 
         // 전송 시간 설정
@@ -84,8 +82,9 @@ public class ChatController {
         // MongoDB에 채팅 메시지 저장
         try {
             service.saveChatMessage(chat);
+            chatSendDto.setChat(chat);
             template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
-            return responseService.getSuccessResponse("메시지 전송 성공", chat);
+            return responseService.getSuccessResponse(chatSendDto);
         } catch (BaseException e) {
             return responseService.getFailureResponse(e.getStatus());
         }

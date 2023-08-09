@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
-public class ChatSendRequestDto {
+public class ChatSendDto {
 
     @NotNull
     private Chat chat;

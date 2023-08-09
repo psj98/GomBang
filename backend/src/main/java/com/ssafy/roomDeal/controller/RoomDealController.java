@@ -28,7 +28,7 @@ public class RoomDealController {
      */
     @PostMapping("/register")
     public BaseResponse<Object> registerRoomDeal(@RequestBody RoomDealRegisterRequestDto roomDealRegisterRequestDto) {
-        return responseService.getSuccessResponse("매물 등록 성공", roomDealService.registerRoomDeal(roomDealRegisterRequestDto));
+        return responseService.getSuccessResponse(roomDealService.registerRoomDeal(roomDealRegisterRequestDto));
     }
 
     /**
@@ -39,7 +39,7 @@ public class RoomDealController {
     @GetMapping("/{id}")
     public BaseResponse<Object> getRoomDeal(@PathVariable("id") Long id) {
         try {
-            return responseService.getSuccessResponse("매물 조회 성공", roomDealService.getRoomDeal(id));
+            return responseService.getSuccessResponse(roomDealService.getRoomDeal(id));
         } catch (BaseException e) {
             return responseService.getFailureResponse(e.status);
         }
@@ -53,7 +53,7 @@ public class RoomDealController {
     @PutMapping("/update")
     public BaseResponse<Object> updateRoomDeal(@RequestBody RoomDealUpdateRequestDto roomDealUpdateRequestDto) {
         try {
-            return responseService.getSuccessResponse("매물 수정 성공", roomDealService.updateRoomDeal(roomDealUpdateRequestDto));
+            return responseService.getSuccessResponse(roomDealService.updateRoomDeal(roomDealUpdateRequestDto));
         } catch (BaseException e){
             return responseService.getFailureResponse(e.status);
         }
@@ -67,7 +67,7 @@ public class RoomDealController {
     @DeleteMapping("/delete")
     public BaseResponse<Object> deledeRoomDeal(@RequestBody RoomDealDeleteRequestDto roomDealDeleteRequestDto) {
         try {
-            return responseService.getSuccessResponse("매물 삭제 성공", roomDealService.deleteRoomDeal(roomDealDeleteRequestDto));
+            return responseService.getSuccessResponse(roomDealService.deleteRoomDeal(roomDealDeleteRequestDto));
         } catch (BaseException e) {
             return responseService.getFailureResponse(e.status);
         }
@@ -81,7 +81,7 @@ public class RoomDealController {
     @GetMapping("/search-address")
     public BaseResponse<Object> searchByAddress(@RequestBody SearchByAddressRequestDto searchByAddressRequestDto) {
         List<RoomDealSearchResponseDto> roomDealSearchResponseDtoList = roomDealService.searchByAddress(searchByAddressRequestDto);
-        return responseService.getSuccessResponse("주소 매물 검색 성공", roomDealSearchResponseDtoList);
+        return responseService.getSuccessResponse(roomDealSearchResponseDtoList);
     }
 
     /**
@@ -92,7 +92,7 @@ public class RoomDealController {
     @GetMapping("/search-station-univ")
     public BaseResponse<Object> searchNearestStationUniv(@RequestBody SearchByStationUnivRequestDto searchByStationUnivRequestDto) {
         List<RoomDealSearchResponseDto> roomDealSearchResponseDtoList = roomDealService.searchByLocation(searchByStationUnivRequestDto);
-        return responseService.getSuccessResponse("주소 매물 검색 성공", roomDealSearchResponseDtoList);
+        return responseService.getSuccessResponse(roomDealSearchResponseDtoList);
     }
 
     /**
@@ -103,7 +103,7 @@ public class RoomDealController {
     @GetMapping("/search-content")
     public BaseResponse<Object> searchByContent(@RequestBody String content){
         List<RoomDealSearchResponseDto> roomDealSearchResponseDtoList = roomDealService.searchByContent(content);
-        return responseService.getSuccessResponse("본문 검색 성공", roomDealSearchResponseDtoList);
+        return responseService.getSuccessResponse(roomDealSearchResponseDtoList);
     }
 
     /**
@@ -114,7 +114,7 @@ public class RoomDealController {
     @GetMapping("/search-nearest-station")
     public BaseResponse<Object> searchNearestStation(@RequestBody SearchByStationUnivRequestDto searchByStationUnivRequestDto){
         List<RoomDealNearestStationDto> roomDealNearestStationDtoList = roomDealService.getNearestStation(searchByStationUnivRequestDto);
-        return responseService.getSuccessResponse("가까운 역 가져오기 성공", roomDealNearestStationDtoList);
+        return responseService.getSuccessResponse(roomDealNearestStationDtoList);
     }
 
     /**

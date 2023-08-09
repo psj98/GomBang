@@ -1,10 +1,10 @@
 package com.ssafy.member.service;
 
+import com.ssafy.global.common.response.BaseException;
+import com.ssafy.global.common.response.BaseResponseStatus;
 import com.ssafy.member.domain.Gender;
 import com.ssafy.member.domain.Member;
-import com.ssafy.member.dto.KakaoLoginResponseDto;
-import com.ssafy.member.dto.KakaoTokenResponseDto;
-import com.ssafy.member.dto.MemberUpdateRequestDto;
+import com.ssafy.member.dto.*;
 import com.ssafy.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.transaction.Transactional;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -41,11 +42,10 @@ public class MemberService {
     private final static String KAKAO_API_URI = "https://kapi.kakao.com/v2/user/me";
 
     // 카카오 인가코드로 토큰 발급 요청
-    public KakaoTokenResponseDto getKaKaoToken(String code) {
+    public KakaoTokenResponseDto getKaKaoToken(String code) throws BaseException {
         // 인가코드가 있는지 확인
         if (code == null)
-//            throw new Exception("Failed get authorization code");
-            System.out.println("코드없음");
+            throw new BaseException(BaseResponseStatus.NOT_FOUND_KAKAO_CODE);
 
         // 카카오로 보낼 바디 만들기
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -66,12 +66,16 @@ public class MemberService {
                 .bodyToMono(KakaoTokenResponseDto.class)
                 .block();
 
-        // 토큰 반환
-        return kakaoTokenResponseDto;
+        if (kakaoTokenResponseDto != null) {
+            // 토큰 반환
+            return kakaoTokenResponseDto;
+        } else {
+            throw new BaseException(BaseResponseStatus.KAKAO_API_CALL_FAILED);
+        }
     }
 
     // 토큰으로 카카오 사용자 정보 요청
-    public KakaoLoginResponseDto getMemberInfoWithToken(KakaoTokenResponseDto kakaoTokenResponseDto) {
+    public KakaoLoginResponseDto getMemberInfoWithToken(KakaoTokenResponseDto kakaoTokenResponseDto) throws BaseException {
         // API 호출
         // POST방식으로 카카오에 요청 보내기
         KakaoLoginResponseDto kakaoLoginResponseDto = WebClient.create()
@@ -82,13 +86,22 @@ public class MemberService {
                 .bodyToMono(KakaoLoginResponseDto.class)
                 .block();
 
-        // channelId, email, gender 데이터 반환
-        return kakaoLoginResponseDto;
+        if (kakaoLoginResponseDto != null) {
+            // channelId, email, gender 데이터 반환
+            return kakaoLoginResponseDto;
+        } else {
+            throw new BaseException(BaseResponseStatus.KAKAO_API_CALL_FAILED);
+        }
+    }
+
+    // 카카오 channelId로 사용자 로그인 (회원정보 반환)
+    public MemberLoginResponseDto login(String channelId) throws BaseException {
+        return new MemberLoginResponseDto(getMemberInfoWithChannelId(channelId));
     }
 
     // 들어온 사용자 정보 + 생성한 UUID/닉네임으로 회원가입 (DB에 저장)
     @Transactional
-    public Member join(KakaoLoginResponseDto kakaoLoginResponseDto) {
+    public MemberJoinResponseDto join(KakaoLoginResponseDto kakaoLoginResponseDto) {
         // UUID 생성
         UUID id = generateUUID();
         String nickname = "회원가입한 곰돌이";
@@ -111,32 +124,36 @@ public class MemberService {
 
         // DB에 회원가입한 사용자 정보 저장
         memberRepository.save(member);
-        return member;
+        return new MemberJoinResponseDto(member.getId());
     }
 
     // 사용자 이름 수정
     @Transactional
-    public Member updateMemberName(MemberUpdateRequestDto memberUpdateRequestDto) {
+    public MemberLoginResponseDto updateMemberName(MemberUpdateRequestDto memberUpdateRequestDto) throws BaseException {
         Member member = getMemberInfoWithId(memberUpdateRequestDto.getId());
         member.setName(memberUpdateRequestDto.getName());
-        return member;
+        return new MemberLoginResponseDto(member);
     }
 
     // channelId 기준으로 회원 정보 조회
-    public Member getMemberInfoWithChannelId(String channelId) {
-        try {
-            return memberRepository.findByChannelId(channelId).get();
-        } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("Cannot find member by channelId");
+    public Member getMemberInfoWithChannelId(String channelId) throws BaseException {
+        Optional<Member> member = memberRepository.findByChannelId(channelId);
+
+        if (member.isPresent()) {
+            return member.get();
+        } else {
+            throw new BaseException(BaseResponseStatus.NOT_FOUND_MEMBER);
         }
     }
 
     // id 기준으로 회원 정보 조회
-    public Member getMemberInfoWithId(UUID id) {
-        try {
-            return memberRepository.findById(id).get();
-        } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("Cannot find member by id");
+    private Member getMemberInfoWithId(UUID id) throws BaseException {
+        Optional<Member> member = memberRepository.findById(id);
+
+        if (member.isPresent()) {
+            return member.get();
+        } else {
+            throw new BaseException(BaseResponseStatus.NOT_FOUND_MEMBER);
         }
     }
 
@@ -151,11 +168,12 @@ public class MemberService {
 
     // UUID 기준으로 중복 회원 확인
     private boolean checkUuidDuplicate(UUID id) {
-        try {
-            Member member = memberRepository.findById(id).get();
-        } catch (NoSuchElementException e) {
+        Optional<Member> member = memberRepository.findById(id);
+
+        if (member.isPresent()) {
+            return true;
+        } else {
             return false;
         }
-        return true;
     }
 }
