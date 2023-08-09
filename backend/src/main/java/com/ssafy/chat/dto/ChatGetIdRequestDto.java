@@ -10,8 +10,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ChatGetIdRequestDto {
     @NotNull
-    private UUID assigneeId;
+    private UUID grantorId;
 
     @NotNull
-    private UUID grantorId;
+    private UUID assigneeId;
 }

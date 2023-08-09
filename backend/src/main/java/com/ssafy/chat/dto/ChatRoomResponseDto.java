@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-public class ChatCreateResponseDto {
+public class ChatRoomResponseDto {
 
     @NotNull
     private UUID roomId;

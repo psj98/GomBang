@@ -2,6 +2,7 @@ package com.ssafy.roomDeal.controller;
 
 import com.ssafy.elasticsearch.dto.*;
 import com.ssafy.global.common.response.BaseResponse;
+import com.ssafy.global.common.response.BaseException;
 import com.ssafy.global.common.response.ResponseService;
 import com.ssafy.roomDeal.dto.RoomDealDeleteRequestDto;
 import com.ssafy.roomDeal.dto.RoomDealRegisterRequestDto;
@@ -39,8 +40,8 @@ public class RoomDealController {
     public BaseResponse<Object> getRoomDeal(@PathVariable("id") Long id) {
         try {
             return responseService.getSuccessResponse("매물 조회 성공", roomDealService.getRoomDeal(id));
-        } catch (IllegalArgumentException e) {
-            return responseService.getFailureResponse(e.getMessage());
+        } catch (BaseException e) {
+            return responseService.getFailureResponse(e.status);
         }
     }
 
@@ -53,8 +54,8 @@ public class RoomDealController {
     public BaseResponse<Object> updateRoomDeal(@RequestBody RoomDealUpdateRequestDto roomDealUpdateRequestDto) {
         try {
             return responseService.getSuccessResponse("매물 수정 성공", roomDealService.updateRoomDeal(roomDealUpdateRequestDto));
-        } catch (IllegalArgumentException e){
-            return responseService.getFailureResponse(e.getMessage());
+        } catch (BaseException e){
+            return responseService.getFailureResponse(e.status);
         }
     }
 
@@ -67,8 +68,8 @@ public class RoomDealController {
     public BaseResponse<Object> deledeRoomDeal(@RequestBody RoomDealDeleteRequestDto roomDealDeleteRequestDto) {
         try {
             return responseService.getSuccessResponse("매물 삭제 성공", roomDealService.deleteRoomDeal(roomDealDeleteRequestDto));
-        } catch (IllegalArgumentException e) {
-            return responseService.getFailureResponse(e.getMessage());
+        } catch (BaseException e) {
+            return responseService.getFailureResponse(e.status);
         }
     }
 
