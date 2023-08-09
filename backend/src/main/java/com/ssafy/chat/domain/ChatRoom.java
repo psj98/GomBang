@@ -18,11 +18,11 @@ public class ChatRoom {
     private UUID id; // 채팅방 아이디
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "grantor_id", referencedColumnName = "member_id")
     private Member grantorId; // 양도자 아이디
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "assignee_id", referencedColumnName = "member_id")
     private Member assigneeId; // 양수자 아이디
 
     @Column
