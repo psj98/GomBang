@@ -9,6 +9,8 @@ import com.ssafy.chat.repository.ChatRoomRepository;
 import com.ssafy.global.common.response.BaseException;
 import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.global.common.response.BaseResponseStatus;
+import com.ssafy.member.domain.Member;
+import com.ssafy.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ import java.util.UUID;
 public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
+    private final MemberRepository memberRepository;
 
     /**
      *
@@ -32,15 +35,17 @@ public class ChatRoomService {
     public ChatRoomResponseDto createChatRoom(ChatCreateRequestDto chatCreateRequestDto) {
         ChatRoomResponseDto response = new ChatRoomResponseDto();
 
-        UUID assignee = chatCreateRequestDto.getAssigneeId();
-        UUID grantor = chatCreateRequestDto.getGrantorId();
+        UUID assigneeId = chatCreateRequestDto.getAssigneeId();
+        UUID grantorId = chatCreateRequestDto.getGrantorId();
 
-        Optional<ChatRoom> pastRoom = chatRoomRepository.findByAssigneeIdAndGrantorId(assignee, grantor);
+        Optional<ChatRoom> pastRoom = chatRoomRepository.findByAssigneeIdAndGrantorId(assigneeId, grantorId);
 
         if(pastRoom.isPresent()) {
             response.setRoomId(pastRoom.get().getId());
         } else {
-            ChatRoom chatRoom = new ChatRoom().create(chatCreateRequestDto);
+            Member grantor = memberRepository.findById(grantorId).get();
+            Member assignee = memberRepository.findById(assigneeId).get();
+            ChatRoom chatRoom = new ChatRoom().create(chatCreateRequestDto, grantor, assignee);
             chatRoomRepository.save(chatRoom);
             response.setRoomId(chatRoom.getId());
         }
