@@ -56,7 +56,7 @@ public class MemberController {
             memberService.getMemberInfoWithChannelId(memberLoginRequestDto.getChannelId());
         } catch (BaseException e) {
             // DB에 존재하지 않는 사용자면 회원가입
-            return responseService.getSuccessStatusResponse(BaseResponseStatus.JOIN_SUCCESS, memberService.join(kakaoLoginResponseDto))
+            return responseService.getSuccessStatusResponse(BaseResponseStatus.JOIN_SUCCESS, memberService.join(kakaoLoginResponseDto));
         }
 
         // DB에 존재하는 사용자면 로그인
@@ -81,7 +81,7 @@ public class MemberController {
     @PostMapping("/update")
     public BaseResponse<Object> updateName(@RequestBody MemberUpdateRequestDto memberUpdateRequestDto) {
         try {
-            return responseService.getSuccessStatusResponse(BaseResponseStatus.SUCCESS, memberService.updateMemberName(memberUpdateRequestDto));
+            return responseService.getSuccessResponse(memberService.updateMemberName(memberUpdateRequestDto));
         } catch (BaseException e) {
             return responseService.getFailureResponse(BaseResponseStatus.MEMBER_NAME_UPDATE_FAILED);
         }
