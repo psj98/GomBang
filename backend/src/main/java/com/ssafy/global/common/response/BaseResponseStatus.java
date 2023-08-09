@@ -20,6 +20,10 @@ public enum BaseResponseStatus {
 
     LOGIN_FAILED(false, 2101, "로그인에 실패했습니다."),
     MEMBER_NAME_UPDATE_FAILED(false, 2102, "사용자 이름 수정에 실패했습니다."),
+    NOT_FOUND_MEMBER(false, 2103, "일치하는 사용자가 없습니다."),
+
+    NOT_FOUND_KAKAO_CODE(false, 2201, "입력된 카카오 인가코드가 없습니다."),
+    KAKAO_API_CALL_FAILED(false, 2202, "카카오 API 호출에 실패했습니다."),
 
     /**
      * RoomDeal
