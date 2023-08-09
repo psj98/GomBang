@@ -2,15 +2,18 @@ package com.ssafy.chat.service;
 
 import com.ssafy.chat.domain.ChatRoom;
 import com.ssafy.chat.dto.ChatCreateRequestDto;
+import com.ssafy.chat.dto.ChatRoomListResponseDto;
 import com.ssafy.chat.dto.ChatRoomResponseDto;
 import com.ssafy.chat.dto.ChatGetIdRequestDto;
 import com.ssafy.chat.repository.ChatRoomRepository;
 import com.ssafy.global.common.response.BaseException;
+import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.global.common.response.BaseResponseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -64,6 +67,22 @@ public class ChatRoomService {
             return response;
         } else {
             throw new BaseException(BaseResponseStatus.NOT_FOUND_CHAT_ROOM);
+        }
+    }
+
+    /**
+     *
+     * @param memberId
+     * @return List<ChatRoom>
+     */
+    public ChatRoomListResponseDto getChatRoomList(UUID memberId) throws BaseException {
+        List<ChatRoom> list = chatRoomRepository.findByAssigneeIdOrGrantorId(memberId, memberId);
+        if(!list.isEmpty()) {
+            ChatRoomListResponseDto response = new ChatRoomListResponseDto();
+            response.setList(list);
+            return response;
+        } else {
+            throw new BaseException(BaseResponseStatus.NO_CHATROOM_LIST);
         }
     }
 }
