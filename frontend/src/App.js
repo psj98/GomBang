@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Map from './pages/MapPage';
 import ZzimList from './pages/ZzimList';
-import RoomOut from './pages/Roomout';
+import RoomOut from './pages/RoomOut';
 import Signuplogin from './pages/Signuplogin';
 import GbbList from './pages/GbbList';
 import GbbCreate from './pages/GbbCreate';
