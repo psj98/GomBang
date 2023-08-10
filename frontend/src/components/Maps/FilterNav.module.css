@@ -62,11 +62,10 @@
     justify-content: flex-end;
     display: flex;
     align-items: center;
-
 }
 
 .icon_detail{
     width: 30px;
     margin:  0px 10px;
-
+    cursor:pointer;
 }
