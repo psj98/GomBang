@@ -10,6 +10,13 @@
       "stopwords": {
         "type": "stop",
         "stopwords": [
+          "학교",
+          "대학교"
+        ]
+      },
+      "stopwords_univ": {
+        "type": "stop",
+        "stopwords": [
           "대",
           "학교",
           "대학교"
@@ -21,6 +28,11 @@
         "type": "custom",
         "tokenizer": "nori",
         "filter": ["trim", "nori_part_of_speech", "stopwords"]
+      },
+      "nori_univ": {
+        "type": "custom",
+        "tokenizer": "nori",
+        "filter": ["trim", "nori_part_of_speech", "stopwords_univ"]
       }
     }
   }

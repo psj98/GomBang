@@ -1,5 +1,8 @@
 {
   "properties": {
+    "sortId": {
+      "type": "integer"
+    },
     "address": {
       "type": "text",
       "fields": {
@@ -25,8 +28,8 @@
       "fields": {
         "nori": {
           "type": "text",
-          "analyzer": "nori",
-          "search_analyzer": "nori"
+          "analyzer": "nori_univ",
+          "search_analyzer": "nori_univ"
         }
       }
     },

@@ -26,9 +26,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -375,18 +373,49 @@ public class RoomDealService {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder(); // Bool Query 생성
         ArrayList<QueryBuilder> queryBuilderList = new ArrayList<>(); // Bool Query 안에 넣을 query List 생성
 
+        String[] searchWordArr = {"서울시", "부산시", "대구시", "대전시", "광주시", "울산시", "인천시", "강원도", "제주시"};
+        String[] originWordArr = {"서울특별시", "부산 AND 광역시", "대구 AND 광역시", "대전 AND 광역시", "광주 AND 광역시", "울산 AND 광역시", "인천 AND 광역시", "강원 AND 특별자치도", "제주 AND 시"};
+
+        HashMap<String, String> addressMap = new HashMap<>();
+        for (int i = 0; i < searchWordArr.length; i++) {
+            addressMap.put(searchWordArr[i], originWordArr[i]);
+        }
+
         /* 주소 Query 생성 */
         if (!searchWord.contains("학교")) {
-            MatchQueryBuilder matchAddressQuery = QueryBuilders.matchQuery("address.nori", searchWord); // match query 생성
-            queryBuilderList.add(matchAddressQuery); // match query를 list 안에 저장
-        } else { /* 대학교 Query 생성 */
-            MatchQueryBuilder matchUnivQuery = QueryBuilders.matchQuery("univ.nori", searchWord); // match query 생성
-            queryBuilderList.add(matchUnivQuery); // match query를 list 안에 저장
+            StringTokenizer stk = new StringTokenizer(searchWord);
+            StringBuilder sb = new StringBuilder();
+
+            String checkSido = stk.nextToken();
+            if (addressMap.containsKey(checkSido)) {
+                sb.append(addressMap.get(checkSido));
+            } else {
+                sb.append(checkSido);
+            }
+
+            while (stk.hasMoreTokens()) {
+                String checkWord = checkGuGunDongEupMyeonLi(stk.nextToken());
+                sb.append(checkWord);
+            }
+
+            String newWord = sb.toString();
+
+            QueryStringQueryBuilder queryStringQuery = QueryBuilders.queryStringQuery(newWord);
+//            MatchQueryBuilder matchAddressQuery = QueryBuilders.matchQuery("address.nori", searchWord); // match query 생성
+            queryBuilderList.add(queryStringQuery); // match query를 list 안에 저장
         }
 
         /* 역 Query 생성 */
         TermQueryBuilder termStationQuery = QueryBuilders.termQuery("station.nori", searchWord); // term query 생성
         queryBuilderList.add(termStationQuery); // term query를 list 안에 저장
+
+        if (searchWord.contains("학교")) { /* 대학교 Query 생성 */
+            MatchQueryBuilder matchUnivQuery = QueryBuilders.matchQuery("univ.nori", searchWord); // match query 생성
+            queryBuilderList.add(matchUnivQuery); // match query를 list 안에 저장
+        } else if (searchWord.endsWith("대")) {
+            MatchQueryBuilder matchUnivQuery = QueryBuilders.matchQuery("univ.nori", searchWord.substring(0, searchWord.length() - 1));
+            queryBuilderList.add(matchUnivQuery);
+        }
 
         boolQueryBuilder.should().addAll(queryBuilderList); // Bool Query List를 Bool에 저장 => should : or
 
@@ -394,9 +423,9 @@ public class RoomDealService {
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
         queryBuilder.withQuery(boolQueryBuilder)
                 .withSort(SortBuilders // sort builder
-                        .fieldSort("_id") // 거리 기준 오름차순 정렬
+                        .fieldSort("sortId") // 거리 기준 오름차순 정렬
                         .order(SortOrder.ASC))
-                .withPageable(PageRequest.of(0, 20)).build(); // size 제한 (20개);
+                .withPageable(PageRequest.of(0, 40)).build(); // size 제한 (20개);
 
         // 결과 출력
         SearchHits<SearchRelatedListResponseDto> articles = elasticsearchOperations
@@ -410,5 +439,21 @@ public class RoomDealService {
         }
 
         return searchListResponseDtoRelatedList;
+    }
+
+    public String checkGuGunDongEupMyeonLi(String word) {
+        StringBuilder sb = new StringBuilder();
+
+        if ((word.endsWith("구") || word.endsWith("군") ||
+                word.endsWith("동") || word.endsWith("읍") || word.endsWith("면") || word.endsWith("리")) && word.length() >= 3) {
+            sb.append(" AND ").append(word.substring(0, word.length() - 1))
+                    .append(" AND ").append(word.substring(word.length() - 1));
+            System.out.println(word.substring(0, word.length() - 1));
+            System.out.println(word.length() - 1);
+        } else {
+            sb.append(" AND ").append(word);
+        }
+
+        return sb.toString();
     }
 }
