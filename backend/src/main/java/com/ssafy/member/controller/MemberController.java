@@ -39,11 +39,11 @@ public class MemberController {
      * @return 로그인에 실패한 경우 : LOGIN_FAILED를 반환한다.
      */
     @GetMapping("/login")
-    public BaseResponse<Object> loginCallBack(@RequestBody KakaoLoginRequestDto kakaoLoginRequestDto) {
+    public BaseResponse<Object> loginCallBack(HttpServletRequest request) {
         KakaoLoginResponseDto kakaoLoginResponseDto;
         try {
             // 인가코드로 토큰 발급
-            KakaoTokenResponseDto kakaoToken = memberService.getKaKaoToken(kakaoLoginRequestDto.getCode());
+            KakaoTokenResponseDto kakaoToken = memberService.getKaKaoToken(request.getParameter("code"));
             // 토큰으로 카카오 사용자 정보 요청 (channelId, email, gender)
             kakaoLoginResponseDto = memberService.getMemberInfoWithToken(kakaoToken);
         } catch (BaseException e) {
