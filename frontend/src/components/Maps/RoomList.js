@@ -30,7 +30,7 @@ const RoomList = () => {
                     dataLength={items.length}
                     next={fetchMoreData}
                     hasMore={hasMore}
-                    loader={<h4>loading...</h4>}
+                    loader={<h4>불러오는 중이곰...</h4>}
                     scrollableTarget="scrollableDiv"
                 >
                 {items.map((i, index) => (
