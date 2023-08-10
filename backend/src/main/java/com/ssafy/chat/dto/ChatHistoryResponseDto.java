@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class ChatEnterResponseDto {
+public class ChatHistoryResponseDto {
 
     @NotNull
     private List<Chat> history;
