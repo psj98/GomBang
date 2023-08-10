@@ -386,16 +386,26 @@ public class RoomDealService {
             StringTokenizer stk = new StringTokenizer(searchWord);
             StringBuilder sb = new StringBuilder();
 
-            String checkSido = stk.nextToken();
-            if (addressMap.containsKey(checkSido)) {
-                sb.append(addressMap.get(checkSido));
+            // 첫번째 단어 확인 (시, 도, 구, 군, 동, 읍, 면, 리)
+            String firstWord = stk.nextToken();
+            if (addressMap.containsKey(firstWord)) {
+                sb.append(addressMap.get(firstWord));
+            } else if (checkGuGunDongEupMyeonLi(firstWord)) {
+                sb.append(firstWord, 0, firstWord.length() - 1)
+                        .append(" AND ").append(firstWord.substring(firstWord.length() - 1));
             } else {
-                sb.append(checkSido);
+                sb.append(firstWord);
             }
 
+            // 조건 확인
             while (stk.hasMoreTokens()) {
-                String checkWord = checkGuGunDongEupMyeonLi(stk.nextToken());
-                sb.append(checkWord);
+                String cur = stk.nextToken();
+                if (checkGuGunDongEupMyeonLi(cur)) {
+                    sb.append(" AND ").append(cur, 0, cur.length() - 1)
+                            .append(" AND ").append(cur.substring(cur.length() - 1));
+                } else {
+                    sb.append(" AND ").append(cur);
+                }
             }
 
             String newWord = sb.toString();
@@ -441,19 +451,19 @@ public class RoomDealService {
         return searchListResponseDtoRelatedList;
     }
 
-    public String checkGuGunDongEupMyeonLi(String word) {
-        StringBuilder sb = new StringBuilder();
-
+    /**
+     * 구군 동읍면리 체크
+     * 
+     * @param word
+     * @return
+     */
+    public boolean checkGuGunDongEupMyeonLi(String word) {
         if ((word.endsWith("구") || word.endsWith("군") ||
-                word.endsWith("동") || word.endsWith("읍") || word.endsWith("면") || word.endsWith("리")) && word.length() >= 3) {
-            sb.append(" AND ").append(word.substring(0, word.length() - 1))
-                    .append(" AND ").append(word.substring(word.length() - 1));
-            System.out.println(word.substring(0, word.length() - 1));
-            System.out.println(word.length() - 1);
+                word.endsWith("동") || word.endsWith("읍") || word.endsWith("면") || word.endsWith("리"))
+                && word.length() >= 3) {
+            return true;
         } else {
-            sb.append(" AND ").append(word);
+            return false;
         }
-
-        return sb.toString();
     }
 }
