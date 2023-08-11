@@ -259,8 +259,9 @@ public class RoomDealService {
         RoomDealNearestUnivResponseDto roomDealNearestUnivResponseDto = getNearestUniv(searchByStationUnivRequestDto);
 
         RoomDealNearestStationUnivResponseDto roomDealNearestStationUnivResponseDto = new RoomDealNearestStationUnivResponseDto();
-        roomDealNearestStationUnivResponseDto.setStationName(roomDealNearestStationResponseDto.getName());
-        roomDealNearestStationUnivResponseDto.setUnivName(roomDealNearestUnivResponseDto.getName());
+
+        roomDealNearestStationUnivResponseDto.setStationName(roomDealNearestStationResponseDto == null ? null : roomDealNearestStationResponseDto.getName());
+        roomDealNearestStationUnivResponseDto.setUnivName(roomDealNearestUnivResponseDto == null ? null : roomDealNearestUnivResponseDto.getName());
 
         return roomDealNearestStationUnivResponseDto;
     }
@@ -296,9 +297,8 @@ public class RoomDealService {
 
         // 결과 => Document로 매핑
         List<SearchHit<RoomDealNearestStationResponseDto>> searchHitList = articles.getSearchHits();
-        RoomDealNearestStationResponseDto roomDealNearestStationResponseDto = searchHitList.get(0).getContent();
 
-        return roomDealNearestStationResponseDto;
+        return searchHitList.isEmpty() ? null : searchHitList.get(0).getContent();
     }
 
     /**
@@ -332,9 +332,8 @@ public class RoomDealService {
 
         // 결과 => Document로 매핑
         List<SearchHit<RoomDealNearestUnivResponseDto>> searchHitList = articles.getSearchHits();
-        RoomDealNearestUnivResponseDto roomDealNearestUnivResponseDto = searchHitList.get(0).getContent();
 
-        return roomDealNearestUnivResponseDto;
+        return searchHitList.isEmpty() ? null : searchHitList.get(0).getContent();
     }
 
     /**
@@ -456,7 +455,7 @@ public class RoomDealService {
 
     /**
      * 구군 동읍면리 체크
-     * 
+     *
      * @param word
      * @return
      */
