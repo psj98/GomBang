@@ -13,6 +13,7 @@ public class ChatConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // stomp 접속 주소 url => /ws-stomp
         registry.addEndpoint("/ws-stomp") // 연결될 엔드포인트
+                .setAllowedOriginPatterns("*")
                 .withSockJS(); // SocketJS를 연결한다는 설정
     }
     

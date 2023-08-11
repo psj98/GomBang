@@ -20,6 +20,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.text.SimpleDateFormat;
@@ -28,7 +29,7 @@ import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class ChatController {
     private final SimpMessageSendingOperations template;
 
