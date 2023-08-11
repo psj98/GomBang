@@ -4,6 +4,7 @@ import com.ssafy.elasticsearch.dto.*;
 import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.global.common.response.BaseException;
 import com.ssafy.global.common.response.ResponseService;
+import com.ssafy.roomDeal.domain.RoomDeal;
 import com.ssafy.roomDeal.dto.RoomDealDeleteRequestDto;
 import com.ssafy.roomDeal.dto.RoomDealRegisterRequestDto;
 import com.ssafy.roomDeal.dto.RoomDealUpdateRequestDto;
@@ -82,11 +83,18 @@ public class RoomDealController {
      * @param searchByAddressRequestDto
      * @return
      */
-    @GetMapping("/search-address")
-    @Cacheable(value="address", key = "#searchByAddressRequestDto.address", cacheManager = "cacheManager")
+    @PostMapping("/search-address")
     public BaseResponse<Object> searchByAddress(@RequestBody SearchByAddressRequestDto searchByAddressRequestDto) {
         List<RoomDealSearchResponseDto> roomDealSearchResponseDtoList = roomDealService.searchByAddress(searchByAddressRequestDto);
-        return responseService.getSuccessResponse(roomDealSearchResponseDtoList);
+
+        List<RoomDeal> roomDeals;
+        try {
+            roomDeals = roomDealService.getRoomDealByIdAtCache(roomDealSearchResponseDtoList);
+        } catch (BaseException e) {
+            return responseService.getFailureResponse(e.status);
+        }
+
+        return responseService.getSuccessResponse(roomDeals);
     }
 
     /**
@@ -136,4 +144,5 @@ public class RoomDealController {
         List<SearchRelatedListUniteResponseDto> searchRelatedListUniteResponseDtoList = roomDealService.getSearchRelatedListFinal(searchRelatedListRequestDto);
         return responseService.getSuccessResponse(searchRelatedListUniteResponseDtoList);
     }
+
 }

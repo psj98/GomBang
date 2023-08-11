@@ -2,8 +2,10 @@ package com.ssafy.global.common.response;
 
 import lombok.Getter;
 
+import java.io.Serializable;
+
 @Getter
-public enum BaseResponseStatus {
+public enum BaseResponseStatus implements Serializable {
 
     SUCCESS(true, 1000, "요청에 성공했습니다."),
 

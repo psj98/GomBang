@@ -32,7 +32,7 @@ public class RedisConfig extends CachingConfigurerSupport{
         RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
 //                .prefixCacheNameWith("roomDeal:")
-                .entryTtl(Duration.ofMinutes(10L));
+                .entryTtl(Duration.ofHours(1L));
 
         builder.cacheDefaults(configuration);
         return builder.build();

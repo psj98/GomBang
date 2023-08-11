@@ -10,6 +10,7 @@ import com.ssafy.roomDeal.domain.RoomDeal;
 import com.ssafy.roomDeal.domain.RoomDealOption;
 import com.ssafy.roomDeal.dto.*;
 import com.ssafy.roomDeal.repository.RoomDealOptionReposiroty;
+import com.ssafy.roomDeal.repository.RoomDealRedisRepository;
 import com.ssafy.roomDeal.repository.RoomDealRepository;
 import lombok.RequiredArgsConstructor;
 import org.elasticsearch.common.unit.DistanceUnit;
@@ -17,6 +18,7 @@ import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortMode;
 import org.elasticsearch.search.sort.SortOrder;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -37,6 +39,7 @@ public class RoomDealService {
     private final MemberRepository memberRepository;
     private final RoomDealRepository roomDealRepository;
     private final RoomDealOptionReposiroty roomDealOptionReposiroty;
+    private final RoomDealRedisRepository roomDealRedisRepository;
     private final RoomDealElasticSearchRepository roomDealElasticSearchRepository;
 
     // 매물 등록
@@ -465,5 +468,29 @@ public class RoomDealService {
         } else {
             return false;
         }
+    }
+
+
+    /**
+     * Cache에 있는 RoomDeal 가져오기
+     * @param roomDealSearchDtoList
+     * @return List<RoomDeal>
+     * @throws BaseException
+     */
+    @Cacheable(value="address", key = "#roomDealSearchDtoList", cacheManager = "cacheManager")
+    public List<RoomDeal> getRoomDealByIdAtCache(List<RoomDealSearchResponseDto> roomDealSearchDtoList) throws BaseException {
+        List<RoomDeal> roomDeals = new ArrayList<>();
+
+        for (RoomDealSearchResponseDto roomDealSearchDto : roomDealSearchDtoList) {
+            Optional<RoomDeal> roomDealOptional = roomDealRepository.findById(roomDealSearchDto.getRoomId());
+            if (roomDealOptional.isEmpty()) {
+                throw new BaseException(BaseResponseStatus.NOT_MATCHED_ROOM_DEAL_ID);
+            }
+
+            roomDeals.add(roomDealOptional.get());
+        }
+
+        return roomDeals;
+
     }
 }
