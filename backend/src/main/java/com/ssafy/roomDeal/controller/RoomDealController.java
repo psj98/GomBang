@@ -9,6 +9,7 @@ import com.ssafy.roomDeal.dto.RoomDealRegisterRequestDto;
 import com.ssafy.roomDeal.dto.RoomDealUpdateRequestDto;
 import com.ssafy.roomDeal.service.RoomDealService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,6 +38,7 @@ public class RoomDealController {
      * @return
      */
     @GetMapping("/{id}")
+    @Cacheable(value="RoomDeal")
     public BaseResponse<Object> getRoomDeal(@PathVariable("id") Long id) {
         try {
             return responseService.getSuccessResponse(roomDealService.getRoomDeal(id));
@@ -44,6 +46,7 @@ public class RoomDealController {
             return responseService.getFailureResponse(e.status);
         }
     }
+//    여기다가 캐시어블 할게 아니라 메인검색에서 캐싱하자, 그리고 키는 검색어로 해야돼
 
     /**
      * 매물 수정
@@ -80,6 +83,7 @@ public class RoomDealController {
      * @return
      */
     @GetMapping("/search-address")
+    @Cacheable(value="address", key = "#searchByAddressRequestDto.address", cacheManager = "cacheManager")
     public BaseResponse<Object> searchByAddress(@RequestBody SearchByAddressRequestDto searchByAddressRequestDto) {
         List<RoomDealSearchResponseDto> roomDealSearchResponseDtoList = roomDealService.searchByAddress(searchByAddressRequestDto);
         return responseService.getSuccessResponse(roomDealSearchResponseDtoList);

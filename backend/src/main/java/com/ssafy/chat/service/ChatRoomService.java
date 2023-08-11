@@ -38,13 +38,16 @@ public class ChatRoomService {
         UUID assigneeId = chatCreateRequestDto.getAssigneeId();
         UUID grantorId = chatCreateRequestDto.getGrantorId();
 
-        Optional<ChatRoom> pastRoom = chatRoomRepository.findByAssigneeIdAndGrantorId(assigneeId, grantorId);
+        Member grantor = memberRepository.findById(grantorId).get();
+        Member assignee = memberRepository.findById(assigneeId).get();
+
+        Optional<ChatRoom> pastRoom = chatRoomRepository.findByAssigneeIdAndGrantorId(assignee, grantor);
 
         if(pastRoom.isPresent()) {
             response.setRoomId(pastRoom.get().getId());
         } else {
-            Member grantor = memberRepository.findById(grantorId).get();
-            Member assignee = memberRepository.findById(assigneeId).get();
+
+            System.out.println("22222222");
             ChatRoom chatRoom = new ChatRoom().create(chatCreateRequestDto, grantor, assignee);
             chatRoomRepository.save(chatRoom);
             response.setRoomId(chatRoom.getId());
@@ -61,8 +64,11 @@ public class ChatRoomService {
      */
     public ChatRoomResponseDto getChatRoomId(ChatGetIdRequestDto chatGetIdRequestDto) throws BaseException {
 
-        UUID assignee = chatGetIdRequestDto.getAssigneeId();
-        UUID grantor = chatGetIdRequestDto.getGrantorId();
+        UUID assigneeId = chatGetIdRequestDto.getAssigneeId();
+        UUID grantorId = chatGetIdRequestDto.getGrantorId();
+
+        Member grantor = memberRepository.findById(grantorId).get();
+        Member assignee = memberRepository.findById(assigneeId).get();
 
         Optional<ChatRoom> chatRoom = chatRoomRepository.findByAssigneeIdAndGrantorId(assignee, grantor);
 
@@ -81,7 +87,8 @@ public class ChatRoomService {
      * @return List<ChatRoom>
      */
     public ChatRoomListResponseDto getChatRoomList(UUID memberId) throws BaseException {
-        List<ChatRoom> list = chatRoomRepository.findByAssigneeIdOrGrantorId(memberId, memberId);
+        Member member = memberRepository.findById(memberId).get();
+        List<ChatRoom> list = chatRoomRepository.findByAssigneeIdOrGrantorId(member, member);
         if(!list.isEmpty()) {
             ChatRoomListResponseDto response = new ChatRoomListResponseDto();
             response.setList(list);

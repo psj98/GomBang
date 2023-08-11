@@ -4,13 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /**
  * 역, 학교로 매물 검색
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SearchByStationUnivRequestDto {
+public class SearchByStationUnivRequestDto implements Serializable {
 
     private String lat; // 위도
     private String lon; // 경도
