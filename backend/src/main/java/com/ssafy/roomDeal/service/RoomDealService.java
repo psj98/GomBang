@@ -58,11 +58,11 @@ public class RoomDealService {
         SearchByStationUnivRequestDto searchByStationUnivRequestDto = new SearchByStationUnivRequestDto("37.1", "127.1");
         String content = newRoomDeal.getContent();
 
-        RoomDealSearchResponseDto roomDealSearchResponseDto = new RoomDealSearchResponseDto(id, roomId, address, searchByStationUnivRequestDto, content);
+        RoomDealSaveDto roomDealSaveDto = new RoomDealSaveDto(id, roomId, address, searchByStationUnivRequestDto, content);
 
         /* ES 매물 등록 - 추후 Position 수정 */
         try {
-            roomDealElasticSearchRepository.save(roomDealSearchResponseDto);
+            roomDealElasticSearchRepository.save(roomDealSaveDto);
         } catch (Exception e) {
             return new RoomDealResponseDto(newRoomDeal, newRoomDealOption);
         }
@@ -140,7 +140,7 @@ public class RoomDealService {
         ArrayList<QueryBuilder> queryBuilderList = new ArrayList<>(); // Bool Query 안에 넣을 query List 생성
         queryBuilderList.add(matchPhraseQuery); // match_phrase query를 list 안에 저장
 
-        // 본문 검색
+        /* 본문 검색 */
         if (!searchByAddressRequestDto.getContent().isEmpty()) {
             // term query 생성
             TermQueryBuilder termQuery = QueryBuilders.termQuery("content.nori", searchByAddressRequestDto.getContent());
@@ -149,15 +149,15 @@ public class RoomDealService {
 
         boolQueryBuilder.must().addAll(queryBuilderList); // Bool Query List를 Bool에 저장 => must : 조건 모두 일치
 
-        // _search query 생성
+        /* _search query 생성 */
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
         queryBuilder.withQuery(boolQueryBuilder);
 
-        // 결과 출력
+        /* 결과 가져오기 */
         SearchHits<RoomDealSearchResponseDto> articles = elasticsearchOperations
                 .search(queryBuilder.build(), RoomDealSearchResponseDto.class, IndexCoordinates.of("rooms_data"));
 
-        // 결과 => Document로 매핑
+        /* 결과 => Document로 매핑 */
         List<SearchHit<RoomDealSearchResponseDto>> searchHitList = articles.getSearchHits();
         ArrayList<RoomDealSearchResponseDto> roomDealSearchResponseDtoList = new ArrayList<>();
         for (SearchHit<RoomDealSearchResponseDto> item : searchHitList) {
@@ -177,7 +177,7 @@ public class RoomDealService {
         double lat = Double.parseDouble(searchByStationUnivRequestDto.getLat());
         double lon = Double.parseDouble(searchByStationUnivRequestDto.getLon());
 
-        // geo_point query 생성
+        /* geo_point query 생성 */
         GeoDistanceQueryBuilder geoDistanceQueryBuilder = QueryBuilders.geoDistanceQuery("location")
                 .point(lat, lon)
                 .distance(5, DistanceUnit.KILOMETERS);
@@ -186,7 +186,7 @@ public class RoomDealService {
         ArrayList<QueryBuilder> queryBuilderList = new ArrayList<>(); // Bool Query 안에 넣을 query List 생성
         queryBuilderList.add(geoDistanceQueryBuilder); // match_phrase query를 list 안에 저장
 
-        // 본문 검색
+        /* 본문 검색 */
         if (!searchByStationUnivRequestDto.getContent().isEmpty()) {
             // term query 생성
             TermQueryBuilder termQuery = QueryBuilders.termQuery("content.nori", searchByStationUnivRequestDto.getContent());
@@ -195,10 +195,10 @@ public class RoomDealService {
 
         boolQueryBuilder.must().addAll(queryBuilderList); // Bool Query List를 Bool에 저장 => must : 조건 모두 일치
 
-        // _search query 생성
+        /* _search query 생성 */
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
 
-        // match_phrase query를 _search 안에 저장
+        /* match_phrase query를 _search 안에 저장 */
         queryBuilder.withQuery(boolQueryBuilder)
                 .withSort(SortBuilders // sort builder
                         .geoDistanceSort("location", lat, lon) // 거리 기준 오름차순 정렬
@@ -206,11 +206,11 @@ public class RoomDealService {
                         .sortMode(SortMode.MIN))
                 .withPageable(PageRequest.of(0, 100)).build(); // size 제한 (100개)
 
-        // 결과 출력
+        /* 결과 가져오기 */
         SearchHits<RoomDealSearchResponseDto> articles = elasticsearchOperations
                 .search(queryBuilder.build(), RoomDealSearchResponseDto.class, IndexCoordinates.of("rooms_data"));
 
-        // 결과 => Document로 매핑
+        /* 결과 => Document로 매핑 */
         List<SearchHit<RoomDealSearchResponseDto>> searchHitList = articles.getSearchHits();
         ArrayList<RoomDealSearchResponseDto> roomDealSearchResponseDtoList = new ArrayList<>();
         for (SearchHit<RoomDealSearchResponseDto> item : searchHitList) {
@@ -234,7 +234,7 @@ public class RoomDealService {
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
         queryBuilder.withQuery(matchQuery); // match_phrase query를 _search 안에 저장
 
-        // 결과 출력
+        // 결과 가져오기
         SearchHits<RoomDealSearchResponseDto> articles = elasticsearchOperations
                 .search(queryBuilder.build(), RoomDealSearchResponseDto.class, IndexCoordinates.of("rooms_data"));
 
@@ -251,12 +251,12 @@ public class RoomDealService {
     /**
      * 주소 기반으로 가까운 역, 대학교 검색
      *
-     * @param searchByStationUnivRequestDto
+     * @param locationRequestDto
      * @return
      */
-    public RoomDealNearestStationUnivResponseDto getNearestStationUniv(SearchByStationUnivRequestDto searchByStationUnivRequestDto) {
-        RoomDealNearestStationResponseDto roomDealNearestStationResponseDto = getNearestStation(searchByStationUnivRequestDto);
-        RoomDealNearestUnivResponseDto roomDealNearestUnivResponseDto = getNearestUniv(searchByStationUnivRequestDto);
+    public RoomDealNearestStationUnivResponseDto getNearestStationUniv(LocationRequestDto locationRequestDto) {
+        RoomDealNearestStationResponseDto roomDealNearestStationResponseDto = getNearestStation(locationRequestDto); // 가까운 역
+        RoomDealNearestUnivResponseDto roomDealNearestUnivResponseDto = getNearestUniv(locationRequestDto); // 가까운 대학교
 
         RoomDealNearestStationUnivResponseDto roomDealNearestStationUnivResponseDto = new RoomDealNearestStationUnivResponseDto();
 
@@ -267,29 +267,42 @@ public class RoomDealService {
     }
 
     /**
-     * 주소 API를 통해 위도, 경도 가져옴 => 가까운 역 찾기
+     * 가까운 역, 대학교 검색 Query 생성
      *
-     * @param searchByStationUnivRequestDto
+     * @param locationRequestDto
+     * @return
      */
-    public RoomDealNearestStationResponseDto getNearestStation(SearchByStationUnivRequestDto searchByStationUnivRequestDto) {
-        double lat = Double.parseDouble(searchByStationUnivRequestDto.getLat());
-        double lon = Double.parseDouble(searchByStationUnivRequestDto.getLon());
+    public NativeSearchQueryBuilder makeNearestQueryBuilder(LocationRequestDto locationRequestDto) {
+        double lat = Double.parseDouble(locationRequestDto.getLat()); // 위도
+        double lon = Double.parseDouble(locationRequestDto.getLon()); // 경도
 
-        // geo_point query 생성
+        /* geo_point query 생성 */
         GeoDistanceQueryBuilder geoDistanceQueryBuilder = QueryBuilders.geoDistanceQuery("location")
                 .point(lat, lon)
                 .distance(5, DistanceUnit.KILOMETERS);
 
-        // _search query 생성
+        /* _search query 생성 */
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
 
-        // match_phrase query를 _search 안에 저장
+        /* match_phrase query를 _search query 안에 저장 */
         queryBuilder.withQuery(geoDistanceQueryBuilder)
                 .withSort(SortBuilders // sort builder
                         .geoDistanceSort("location", lat, lon) // 거리 기준 오름차순 정렬
                         .order(SortOrder.ASC)
                         .sortMode(SortMode.MIN))
                 .withPageable(PageRequest.of(0, 1)).build(); // size 제한 (1개)
+
+        return queryBuilder;
+    }
+
+    /**
+     * 주소 API를 통해 위도, 경도 가져옴 => 가까운 역 찾기
+     *
+     * @param locationRequestDto
+     */
+    public RoomDealNearestStationResponseDto getNearestStation(LocationRequestDto locationRequestDto) {
+        // _search query 생성
+        NativeSearchQueryBuilder queryBuilder = makeNearestQueryBuilder(locationRequestDto);
 
         // 결과 출력
         SearchHits<RoomDealNearestStationResponseDto> articles = elasticsearchOperations
@@ -304,29 +317,13 @@ public class RoomDealService {
     /**
      * 주소 API를 통해 위도, 경도 가져옴 => 가까운 대학교 찾기
      *
-     * @param searchByStationUnivRequestDto
+     * @param locationRequestDto
      */
-    public RoomDealNearestUnivResponseDto getNearestUniv(SearchByStationUnivRequestDto searchByStationUnivRequestDto) {
-        double lat = Double.parseDouble(searchByStationUnivRequestDto.getLat());
-        double lon = Double.parseDouble(searchByStationUnivRequestDto.getLon());
-
-        // geo_point query 생성
-        GeoDistanceQueryBuilder geoDistanceQueryBuilder = QueryBuilders.geoDistanceQuery("location")
-                .point(lat, lon)
-                .distance(5, DistanceUnit.KILOMETERS);
-
+    public RoomDealNearestUnivResponseDto getNearestUniv(LocationRequestDto locationRequestDto) {
         // _search query 생성
-        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+        NativeSearchQueryBuilder queryBuilder = makeNearestQueryBuilder(locationRequestDto);
 
-        // match_phrase query를 _search 안에 저장
-        queryBuilder.withQuery(geoDistanceQueryBuilder)
-                .withSort(SortBuilders // sort builder
-                        .geoDistanceSort("location", lat, lon) // 거리 기준 오름차순 정렬
-                        .order(SortOrder.ASC)
-                        .sortMode(SortMode.MIN))
-                .withPageable(PageRequest.of(0, 1)).build(); // size 제한 (1개)
-
-        // 결과 출력
+        // 결과 가져오기
         SearchHits<RoomDealNearestUnivResponseDto> articles = elasticsearchOperations
                 .search(queryBuilder.build(), RoomDealNearestUnivResponseDto.class, IndexCoordinates.of("nearest_univ_info"));
 
@@ -347,16 +344,19 @@ public class RoomDealService {
 
         List<SearchRelatedListUniteResponseDto> searchRelatedListUniteResponseDtoList = new ArrayList<>();
         for (SearchRelatedListResponseDto s : searchRelatedListResponseDtoList) {
+            /* 주소 매핑 */
             if (s.getAddress() != null) {
                 searchRelatedListUniteResponseDtoList.add(new SearchRelatedListUniteResponseDto(s.getAddress(), "address"));
                 continue;
             }
 
+            /* 역 매핑 */
             if (s.getStation() != null) {
                 searchRelatedListUniteResponseDtoList.add(new SearchRelatedListUniteResponseDto(s.getStation(), "station"));
                 continue;
             }
 
+            /* 대학교 매핑 */
             searchRelatedListUniteResponseDtoList.add(new SearchRelatedListUniteResponseDto(s.getUniv(), "univ"));
         }
 
@@ -375,6 +375,7 @@ public class RoomDealService {
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder(); // Bool Query 생성
         ArrayList<QueryBuilder> queryBuilderList = new ArrayList<>(); // Bool Query 안에 넣을 query List 생성
 
+        /* 시 매핑 */
         String[] searchWordArr = {"서울시", "부산시", "대구시", "대전시", "광주시", "울산시", "인천시", "강원도", "제주시"};
         String[] originWordArr = {"서울특별시", "부산 AND 광역시", "대구 AND 광역시", "대전 AND 광역시", "광주 AND 광역시", "울산 AND 광역시", "인천 AND 광역시", "강원 AND 특별자치도", "제주 AND 시"};
 
@@ -388,7 +389,7 @@ public class RoomDealService {
             StringTokenizer stk = new StringTokenizer(searchWord);
             StringBuilder sb = new StringBuilder();
 
-            // 첫번째 단어 확인 (시, 도, 구, 군, 동, 읍, 면, 리)
+            /* 첫번째 단어 확인 (시, 도, 구, 군, 동, 읍, 면, 리) */
             String firstWord = stk.nextToken();
             if (addressMap.containsKey(firstWord)) {
                 sb.append(addressMap.get(firstWord));
@@ -399,7 +400,7 @@ public class RoomDealService {
                 sb.append(firstWord);
             }
 
-            // 조건 확인
+            /* 조건 확인 (구, 군, 동, 읍, 면, 리) */
             while (stk.hasMoreTokens()) {
                 String cur = stk.nextToken();
                 if (checkGuGunDongEupMyeonLi(cur)) {
@@ -412,9 +413,9 @@ public class RoomDealService {
 
             String newWord = sb.toString();
 
+            /* query_string 생성 */
             QueryStringQueryBuilder queryStringQuery = QueryBuilders.queryStringQuery(newWord);
-//            MatchQueryBuilder matchAddressQuery = QueryBuilders.matchQuery("address.nori", searchWord); // match query 생성
-            queryBuilderList.add(queryStringQuery); // match query를 list 안에 저장
+            queryBuilderList.add(queryStringQuery);
         }
 
         /* 역 Query 생성 */
