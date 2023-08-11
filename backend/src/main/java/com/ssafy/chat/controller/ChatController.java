@@ -18,6 +18,9 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.text.SimpleDateFormat;
@@ -26,7 +29,7 @@ import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class ChatController {
     private final SimpMessageSendingOperations template;
 
@@ -47,21 +50,19 @@ public class ChatController {
      * @return BaseResponse<List<Chat>> - front로 이전 채팅 이력을 List 형태로 보내줌
      */
     @MessageMapping("/chat/enteruser")
-    public BaseResponse<?> enterUser(@Payload ChatEnterRequestDto chatEnterRequestDto, SimpMessageHeaderAccessor headerAccessor) {
+    public void enterUser(@Payload ChatEnterRequestDto chatEnterRequestDto, SimpMessageHeaderAccessor headerAccessor) {
 
-        try {
-            UUID userId = chatEnterRequestDto.getMemberId();
-            UUID roomId= chatEnterRequestDto.getRoomId();
+        UUID userId = chatEnterRequestDto.getMemberId();
+        UUID roomId= chatEnterRequestDto.getRoomId();
 
-            // 반환 결과를 socket session에 userUUID로 저장
-            headerAccessor.getSessionAttributes().put("userID", chatEnterRequestDto.getMemberId());
-            headerAccessor.getSessionAttributes().put("roomId", chatEnterRequestDto.getRoomId());
+        // 반환 결과를 socket session에 userUUID로 저장
+        headerAccessor.getSessionAttributes().put("userID", chatEnterRequestDto.getMemberId());
+        headerAccessor.getSessionAttributes().put("roomId", chatEnterRequestDto.getRoomId());
+    }
 
-            return responseService.getSuccessResponse(service.chatHistory(roomId.toString()));
-        } catch (Exception e) {
-            // Service에서 Exception을 throw 하는 경우는 없지만, 이 메서드에서 발생할 수 있는 에러를 대비
-            return responseService.getFailureResponse(BaseResponseStatus.CHATROOM_CONNECT_FAIL);
-        }
+    @GetMapping("/chat/history/{roomId}")
+    public BaseResponse<?> gethistory(@PathVariable("roomId") String roomId) {
+        return responseService.getSuccessResponse(service.chatHistory(roomId));
     }
 
     /**
