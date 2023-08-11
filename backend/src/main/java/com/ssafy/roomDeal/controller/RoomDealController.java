@@ -124,12 +124,12 @@ public class RoomDealController {
     /**
      * 주소 위도, 경도 기반으로 가까운 역, 대학교 검색
      *
-     * @param searchByStationUnivRequestDto
+     * @param locationRequestDto
      * @return
      */
     @PostMapping("/search-nearest")
-    public BaseResponse<Object> searchNearestStationUniv(@RequestBody SearchByStationUnivRequestDto searchByStationUnivRequestDto){
-        RoomDealNearestStationUnivResponseDto roomDealNearestStationResponseDto = roomDealService.getNearestStationUniv(searchByStationUnivRequestDto);
+    public BaseResponse<Object> searchNearestStationUniv(@RequestBody LocationRequestDto locationRequestDto){
+        RoomDealNearestStationUnivResponseDto roomDealNearestStationResponseDto = roomDealService.getNearestStationUniv(locationRequestDto);
         return responseService.getSuccessResponse(roomDealNearestStationResponseDto);
     }
 
