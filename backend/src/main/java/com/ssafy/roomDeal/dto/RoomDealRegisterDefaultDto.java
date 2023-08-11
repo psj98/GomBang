@@ -56,8 +56,11 @@ public class RoomDealRegisterDefaultDto {
     @NotNull
     private Integer totalFloor;
 
-//    @NotNull
-//    private Point position;
+    @NotNull
+    private String lat;
+
+    @NotNull
+    private String lon;
 
     @NotNull
     private  String thumbnail;
