@@ -22,11 +22,11 @@ public class RoomDealSaveDto {
     private String id; // 구분 id
     private Long roomId; // 방 번호
     private String address; // 지번 주소
-    private SearchByStationUnivRequestDto location; // 위도, 경도
+    private LocationRequestDto location; // 위도, 경도
     private String content; // 본문 내용
 
     @Builder
-    public RoomDealSaveDto(String id, Long roomId, String address, SearchByStationUnivRequestDto location, String content) {
+    public RoomDealSaveDto(String id, Long roomId, String address, LocationRequestDto location, String content) {
         this.id = id;
         this.roomId = roomId;
         this.address = address;

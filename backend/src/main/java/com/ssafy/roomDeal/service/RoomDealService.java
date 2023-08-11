@@ -55,12 +55,11 @@ public class RoomDealService {
         String id = String.valueOf(newRoomDeal.getId());
         Long roomId = newRoomDeal.getId();
         String address = newRoomDeal.getJibunAddress();
-        SearchByStationUnivRequestDto searchByStationUnivRequestDto = new SearchByStationUnivRequestDto("37.1", "127.1");
+        LocationRequestDto locationRequestDto = new LocationRequestDto(newRoomDeal.getLat(), newRoomDeal.getLon());
         String content = newRoomDeal.getContent();
 
-        RoomDealSaveDto roomDealSaveDto = new RoomDealSaveDto(id, roomId, address, searchByStationUnivRequestDto, content);
+        RoomDealSaveDto roomDealSaveDto = new RoomDealSaveDto(id, roomId, address, locationRequestDto, content);
 
-        /* ES 매물 등록 - 추후 Position 수정 */
         try {
             roomDealElasticSearchRepository.save(roomDealSaveDto);
         } catch (Exception e) {
