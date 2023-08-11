@@ -103,7 +103,7 @@ public class RoomDealController {
      * @param searchByStationUnivRequestDto
      * @return
      */
-    @GetMapping("/search-station-univ")
+    @PostMapping("/search-station-univ")
     public BaseResponse<Object> searchByStationUniv(@RequestBody SearchByStationUnivRequestDto searchByStationUnivRequestDto) {
         List<RoomDealSearchResponseDto> roomDealSearchResponseDtoList = roomDealService.searchByLocation(searchByStationUnivRequestDto);
         return responseService.getSuccessResponse(roomDealSearchResponseDtoList);
@@ -115,7 +115,7 @@ public class RoomDealController {
      * @param content
      * @return
      */
-    @GetMapping("/search-content")
+    @PostMapping("/search-content")
     public BaseResponse<Object> searchByContent(@RequestBody String content){
         List<RoomDealSearchResponseDto> roomDealSearchResponseDtoList = roomDealService.searchByContent(content);
         return responseService.getSuccessResponse(roomDealSearchResponseDtoList);
@@ -127,7 +127,7 @@ public class RoomDealController {
      * @param searchByStationUnivRequestDto
      * @return
      */
-    @GetMapping("/search-nearest")
+    @PostMapping("/search-nearest")
     public BaseResponse<Object> searchNearestStationUniv(@RequestBody SearchByStationUnivRequestDto searchByStationUnivRequestDto){
         RoomDealNearestStationUnivResponseDto roomDealNearestStationResponseDto = roomDealService.getNearestStationUniv(searchByStationUnivRequestDto);
         return responseService.getSuccessResponse(roomDealNearestStationResponseDto);
@@ -139,7 +139,7 @@ public class RoomDealController {
      * @param searchRelatedListRequestDto
      * @return
      */
-    @GetMapping("/search-related-list")
+    @PostMapping("/search-related-list")
     public BaseResponse<Object> getRelatedList(@RequestBody SearchRelatedListRequestDto searchRelatedListRequestDto){
         List<SearchRelatedListUniteResponseDto> searchRelatedListUniteResponseDtoList = roomDealService.getSearchRelatedListFinal(searchRelatedListRequestDto);
         return responseService.getSuccessResponse(searchRelatedListUniteResponseDtoList);
