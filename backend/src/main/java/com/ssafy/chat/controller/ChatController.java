@@ -2,9 +2,11 @@ package com.ssafy.chat.controller;
 
 import com.ssafy.chat.domain.Chat;
 import com.ssafy.chat.dto.ChatEnterRequestDto;
-import com.ssafy.chat.dto.ChatSendRequestDto;
+import com.ssafy.chat.dto.ChatSendDto;
 import com.ssafy.chat.service.ChatService;
+import com.ssafy.global.common.response.BaseException;
 import com.ssafy.global.common.response.BaseResponse;
+import com.ssafy.global.common.response.BaseResponseStatus;
 import com.ssafy.global.common.response.ResponseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +22,6 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -45,55 +46,47 @@ public class ChatController {
      * @param headerAccessor
      * @return BaseResponse<List<Chat>> - front로 이전 채팅 이력을 List 형태로 보내줌
      */
-    @MessageMapping("/chat/enterUser")
+    @MessageMapping("/chat/enteruser")
     public BaseResponse<?> enterUser(@Payload ChatEnterRequestDto chatEnterRequestDto, SimpMessageHeaderAccessor headerAccessor) {
 
         try {
-            UUID userId = chatEnterRequestDto.getUserId();
+            UUID userId = chatEnterRequestDto.getMemberId();
             UUID roomId= chatEnterRequestDto.getRoomId();
 
             // 반환 결과를 socket session에 userUUID로 저장
-            headerAccessor.getSessionAttributes().put("userID", chatEnterRequestDto.getUserId());
+            headerAccessor.getSessionAttributes().put("userID", chatEnterRequestDto.getMemberId());
             headerAccessor.getSessionAttributes().put("roomId", chatEnterRequestDto.getRoomId());
 
-            // 과거 채팅 이력
-            List<Chat> history = service.chatHistory(roomId.toString());
-
-            if(history == null) {
-                return responseService.getFailureResponse("No History");
-            }
-            else {
-                return responseService.getSuccessResponse("Load History success", history);
-            }
+            return responseService.getSuccessResponse(service.chatHistory(roomId.toString()));
         } catch (Exception e) {
-            return responseService.getFailureResponse("Connet Fail : not found userId or chatroomId");
+            // Service에서 Exception을 throw 하는 경우는 없지만, 이 메서드에서 발생할 수 있는 에러를 대비
+            return responseService.getFailureResponse(BaseResponseStatus.CHATROOM_CONNECT_FAIL);
         }
     }
 
     /**
      *
-     * @param chatSendRequestDto - front에서 Chat를 담은 JSON을 보냄
+     * @param chatSendDto - Chat객체가 들어있음
      * @return BaseResponse<Chat> - 전송 성공 여부를 return  
      */
-    @MessageMapping("/chat/sendMessage")
-    public BaseResponse<?> sendMessage(@Payload ChatSendRequestDto chatSendRequestDto) {
+    @MessageMapping("/chat/sendmessage")
+    public BaseResponse<?> sendMessage(@Payload ChatSendDto chatSendDto) {
+        Chat chat = chatSendDto.getChat();
+        log.info("CHAT {}", chat);
+
+        // 전송 시간 설정
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        chat.setTime(formatter.format(date));
+
+        // MongoDB에 채팅 메시지 저장
         try {
-            Chat chat = chatSendRequestDto.getChat();
-            log.info("CHAT {}", chat);
-
-            // 전송 시간 설정
-            Date date = new Date();
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            chat.setTime(formatter.format(date));
-
-            // MongoDB에 채팅 메시지 저장
             service.saveChatMessage(chat);
-
+            chatSendDto.setChat(chat);
             template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
-
-            return responseService.getSuccessResponse("send success", chat);
-        } catch (Exception e) {
-            return responseService.getFailureResponse("no chat data");
+            return responseService.getSuccessResponse(chatSendDto);
+        } catch (BaseException e) {
+            return responseService.getFailureResponse(e.getStatus());
         }
     }
 

@@ -1,6 +1,6 @@
 {
   "properties": {
-    "stationName": {
+    "name": {
       "type": "text"
     },
     "location": {

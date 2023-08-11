@@ -1,15 +1,16 @@
 package com.ssafy.chat.dto;
 
+import com.ssafy.chat.domain.Chat;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
-import java.util.UUID;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class ChatCreateResponseDto {
+public class ChatEnterResponseDto {
 
     @NotNull
-    private UUID roomId;
+    private List<Chat> history;
 }
