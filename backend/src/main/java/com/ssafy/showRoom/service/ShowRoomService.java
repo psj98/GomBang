@@ -13,9 +13,7 @@ import com.ssafy.showRoom.dto.ShowRoomResponseDto;
 import com.ssafy.showRoom.repository.ShowRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.elasticsearch.index.query.*;
-import org.elasticsearch.index.search.MatchQuery;
 import org.elasticsearch.search.sort.SortBuilders;
-import org.elasticsearch.search.sort.SortMode;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -37,7 +35,7 @@ public class ShowRoomService {
     private final ShowRoomRepository showRoomRepository;
     private final RoomDealRepository roomDealRepository;
     private final MemberRepository memberRepository;
-    private final ShowRoomElasticSearchRepository showRoomElasticSearchRepositor;
+    private final ShowRoomElasticSearchRepository showRoomElasticSearchRepository;
 
 
     public ShowRoomResponseDto registerShowRoom(ShowRoomRegisterRequestDto showRoomRegisterRequestDto) throws BaseException {
@@ -72,7 +70,7 @@ public class ShowRoomService {
         ShowRoomSaveDto showRoomSaveDto = new ShowRoomSaveDto(id, showRoomId, address, station, univ, hashTag, registerTime);
 
         try {
-            showRoomElasticSearchRepositor.save(showRoomSaveDto);
+            showRoomElasticSearchRepository.save(showRoomSaveDto);
         } catch (Exception e) {
             return new ShowRoomResponseDto(showRoom);
         }

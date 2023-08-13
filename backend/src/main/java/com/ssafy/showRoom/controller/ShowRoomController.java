@@ -8,7 +8,6 @@ import com.ssafy.global.common.response.BaseException;
 import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.global.common.response.ResponseService;
 import com.ssafy.showRoom.dto.ShowRoomRegisterRequestDto;
-import com.ssafy.showRoom.dto.ShowRoomResponseDto;
 import com.ssafy.showRoom.service.ShowRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
