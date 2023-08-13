@@ -37,6 +37,8 @@ public enum BaseResponseStatus implements Serializable {
     ROOM_DEAL_UPDATE_FAILED(false, 3003, "매물 수정에 실패했습니다."),
     ROOM_DEAL_DELETE_FAILED(false, 3004, "매물 삭제에 실패했습니다."),
 
+    NOT_MATCHED_ROOM_DEAL_OPTION_ID(false, 3005, "존재하지 않는 매물옵션입니다."),
+
 
     NOT_AUTHORIZED(false, 3050, "권한이 없는 사용자 입니다."),
 

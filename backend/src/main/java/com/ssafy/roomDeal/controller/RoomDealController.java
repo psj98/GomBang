@@ -5,9 +5,7 @@ import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.global.common.response.BaseException;
 import com.ssafy.global.common.response.ResponseService;
 import com.ssafy.roomDeal.domain.RoomDeal;
-import com.ssafy.roomDeal.dto.RoomDealDeleteRequestDto;
-import com.ssafy.roomDeal.dto.RoomDealRegisterRequestDto;
-import com.ssafy.roomDeal.dto.RoomDealUpdateRequestDto;
+import com.ssafy.roomDeal.dto.*;
 import com.ssafy.roomDeal.service.RoomDealService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
@@ -87,14 +85,14 @@ public class RoomDealController {
     public BaseResponse<Object> searchByAddress(@RequestBody SearchByAddressRequestDto searchByAddressRequestDto) {
         List<RoomDealSearchResponseDto> roomDealSearchResponseDtoList = roomDealService.searchByAddress(searchByAddressRequestDto);
 
-        List<RoomDeal> roomDeals;
+        List<RoomDealListResponseDto> roomDealListResponseDtoList;
         try {
-            roomDeals = roomDealService.getRoomDealByIdAtCache(roomDealSearchResponseDtoList);
+            roomDealListResponseDtoList = roomDealService.getRoomDealByIdAtCache(roomDealSearchResponseDtoList, searchByAddressRequestDto.getAddress());
         } catch (BaseException e) {
             return responseService.getFailureResponse(e.status);
         }
 
-        return responseService.getSuccessResponse(roomDeals);
+        return responseService.getSuccessResponse(roomDealListResponseDtoList);
     }
 
     /**
@@ -143,6 +141,18 @@ public class RoomDealController {
     public BaseResponse<Object> getRelatedList(@RequestBody SearchRelatedListRequestDto searchRelatedListRequestDto){
         List<SearchRelatedListUniteResponseDto> searchRelatedListUniteResponseDtoList = roomDealService.getSearchRelatedListFinal(searchRelatedListRequestDto);
         return responseService.getSuccessResponse(searchRelatedListUniteResponseDtoList);
+    }
+
+    @PostMapping("/filter")
+    public BaseResponse<Object> getFilteredRoomDealList(@RequestBody FilteredRoomDealListRequestDto filteredRoomDealListRequestDto) {
+        List<RoomDealListResponseDto> roomDealListResponseDtoList;
+        try {
+            roomDealListResponseDtoList = roomDealService.filterRoomDeal(filteredRoomDealListRequestDto);
+        } catch (BaseException e) {
+            return responseService.getFailureResponse(e.status);
+        }
+
+        return responseService.getSuccessResponse(roomDealListResponseDtoList);
     }
 
 }

@@ -6,11 +6,13 @@ import com.ssafy.global.common.response.BaseException;
 import com.ssafy.global.common.response.BaseResponseStatus;
 import com.ssafy.member.domain.Member;
 import com.ssafy.member.repository.MemberRepository;
+import com.ssafy.redis.RoomDealRedisStoreDto;
+import com.ssafy.redis.entity.RoomDealInfo;
 import com.ssafy.roomDeal.domain.RoomDeal;
 import com.ssafy.roomDeal.domain.RoomDealOption;
 import com.ssafy.roomDeal.dto.*;
 import com.ssafy.roomDeal.repository.RoomDealOptionReposiroty;
-import com.ssafy.roomDeal.repository.RoomDealRedisRepository;
+import com.ssafy.redis.repository.RoomDealRedisRepository;
 import com.ssafy.roomDeal.repository.RoomDealRepository;
 import lombok.RequiredArgsConstructor;
 import org.elasticsearch.common.unit.DistanceUnit;
@@ -476,20 +478,134 @@ public class RoomDealService {
      * @return List<RoomDeal>
      * @throws BaseException
      */
-    @Cacheable(value="address", key = "#roomDealSearchDtoList", cacheManager = "cacheManager")
-    public List<RoomDeal> getRoomDealByIdAtCache(List<RoomDealSearchResponseDto> roomDealSearchDtoList) throws BaseException {
-        List<RoomDeal> roomDeals = new ArrayList<>();
-
+    public List<RoomDealListResponseDto> getRoomDealByIdAtCache(List<RoomDealSearchResponseDto> roomDealSearchDtoList, String address) throws BaseException {
+        List<RoomDealListResponseDto> roomDealListResponseDtolist = new ArrayList<>();
+        List<RoomDealRedisStoreDto> roomDealRedisStoreDtoList = new ArrayList<>();
         for (RoomDealSearchResponseDto roomDealSearchDto : roomDealSearchDtoList) {
             Optional<RoomDeal> roomDealOptional = roomDealRepository.findById(roomDealSearchDto.getRoomId());
             if (roomDealOptional.isEmpty()) {
                 throw new BaseException(BaseResponseStatus.NOT_MATCHED_ROOM_DEAL_ID);
             }
 
-            roomDeals.add(roomDealOptional.get());
+            Optional<RoomDealOption> roomDealOptionOptional = roomDealOptionReposiroty.findById(roomDealSearchDto.getRoomId());
+            if (roomDealOptionOptional.isEmpty()) {
+                throw new BaseException(BaseResponseStatus.NOT_MATCHED_ROOM_DEAL_OPTION_ID);
+            }
+
+            roomDealRedisStoreDtoList.add(new RoomDealRedisStoreDto(roomDealOptionOptional.get()));
+            // 이걸 dto로 생성해서 넣어야됨
+            roomDealListResponseDtolist.add(new RoomDealListResponseDto(roomDealOptional.get()));
+        }
+            RoomDealInfo roomDealInfo = new RoomDealInfo(address, roomDealRedisStoreDtoList);
+            roomDealRedisRepository.save(roomDealInfo);
+
+        return roomDealListResponseDtolist;
+
+    }
+
+    /**
+     * 2차검색 + 필터링
+     * @param filteredRoomDealListRequestDto
+     * @throws BaseException
+     */
+    public List<RoomDealListResponseDto> filterRoomDeal(FilteredRoomDealListRequestDto filteredRoomDealListRequestDto) throws BaseException {
+
+        List<RoomDealListResponseDto> roomDealListResponseDtoList = new ArrayList<>();
+
+        Optional<RoomDealInfo> roomDealInfoOptional = roomDealRedisRepository.findById(filteredRoomDealListRequestDto.getAddress());
+        if (roomDealInfoOptional.isEmpty()) {
+            throw new BaseException(BaseResponseStatus.NOT_MATCHED_ROOM_DEAL_ID);
         }
 
-        return roomDeals;
 
+        List<RoomDealRedisStoreDto> roomDealRedisStoreDtoList = roomDealInfoOptional.get().getRoomDealRedisStoreDtoList();
+
+
+        for (RoomDealRedisStoreDto searchResult : roomDealRedisStoreDtoList) {
+            // 필터링이랑 일치하면 리스트에 담아서 리턴
+
+            // RoomType 전체가 아니고, 원하는 타입이 아닐 경우 continue
+            if (!filteredRoomDealListRequestDto.getRoomType().contains("전체")) {
+                if (!filteredRoomDealListRequestDto.getRoomType().contains(searchResult.getRoomType())) {
+                    continue;
+                }
+            }
+
+            // OneroomType 전체가 아니고, 원하는 방구조가 아닐 경우 continue
+            if (!filteredRoomDealListRequestDto.getOneroomType().contains("전체")) {
+                if (!filteredRoomDealListRequestDto.getOneroomType().contains(searchResult.getOneroomType())) {
+                    continue;
+                }
+            }
+
+            // Floor 최저층보다 낮거나, 최고층보다 높으면 continue
+            if (filteredRoomDealListRequestDto.getStartFloor() > searchResult.getFloor()
+                || filteredRoomDealListRequestDto.getEndFloor() < searchResult.getFloor()) {
+                continue;
+            }
+
+            // MonthlyFee 최저월세보다 낮거나, 최고월세보다 높으면 continue
+            if (filteredRoomDealListRequestDto.getStartMonthlyFee() > searchResult.getMonthlyFee()
+                || filteredRoomDealListRequestDto.getEndMonthlyFee() < searchResult.getMonthlyFee()) {
+                continue;
+            }
+
+            // Deposit 최저보증금보다 낮거나, 최고보증금보다 높으면 continue
+            if (filteredRoomDealListRequestDto.getStartDeposit() > searchResult.getDeposit()
+                || filteredRoomDealListRequestDto.getEndDeposit() < searchResult.getDeposit()) {
+                continue;
+            }
+
+            // ManagementFee 최저관리비보다 낮거나, 최고관리비보다 높으면 continue
+            if (filteredRoomDealListRequestDto.getStartManagementFee() > searchResult.getManagementFee()
+                || filteredRoomDealListRequestDto.getEndManagementFee() < searchResult.getManagementFee()) {
+                continue;
+            }
+
+            // RoomSize 최저방크기보다 작거나, 최고방크기보다 크면 continue
+            if (filteredRoomDealListRequestDto.getStartRoomSize() > searchResult.getRoomSize()
+                || filteredRoomDealListRequestDto.getEndRoomSize() < searchResult.getRoomSize()) {
+                continue;
+            }
+
+            if (filteredRoomDealListRequestDto.isAirConditioner() && !searchResult.isAirConditioner()) {
+                continue;
+            }
+            if (filteredRoomDealListRequestDto.isRefrigerator() && !searchResult.isRefrigerator()) {
+                continue;
+            }
+            if (filteredRoomDealListRequestDto.isWasher() && !searchResult.isWasher()) {
+                continue;
+            }
+            if (filteredRoomDealListRequestDto.isDryer() && !searchResult.isDryer()) {
+                continue;
+            }
+            if (filteredRoomDealListRequestDto.isSink() && !searchResult.isSink()) {
+                continue;
+            }
+            if (filteredRoomDealListRequestDto.isGasRange() && !searchResult.isGasRange()) {
+                continue;
+            }
+            if (filteredRoomDealListRequestDto.isCloset() && !searchResult.isCloset()) {
+                continue;
+            }
+            if (filteredRoomDealListRequestDto.isShoeCloset() && !searchResult.isCloset()) {
+                continue;
+            }
+            if (filteredRoomDealListRequestDto.isFireAlarm() && !searchResult.isFireAlarm()) {
+                continue;
+            }
+            if (filteredRoomDealListRequestDto.isElevator() && !searchResult.isElevator()) {
+                continue;
+            }
+            if (filteredRoomDealListRequestDto.isParkingLot() && !searchResult.isParkingLot()) {
+                continue;
+            }
+
+            roomDealListResponseDtoList.add(new RoomDealListResponseDto(searchResult));
+
+        }
+
+        return roomDealListResponseDtoList;
     }
 }
