@@ -14,7 +14,7 @@ const Header = () => {
   function handleLogout(){
     setIsAuthorized(false)
     sessionStorage.removeItem("isAuthorized")
-    window.location.href = `https://kauth.kakao.com/oauth/logout?client_id=a20ef37212e1ae86b20e09630f6590ce&logout_redirect_uri=http://localhost:3000/`
+    window.location.href = `https://kauth.kakao.com/oauth/logout?client_id=${process.env.REACT_APP_REST_API_MAP_KEY}&logout_redirect_uri=${process.env.REACT_APP_HOME_URL}`
   }
   
   return (

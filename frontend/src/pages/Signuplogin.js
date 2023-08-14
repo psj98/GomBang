@@ -1,8 +1,9 @@
 import "./Signuplogin.css";
+export const HOME_URL = process.env.REACT_APP_HOME_URL;
 const Loginpage = () => {
 
-  const Rest_api_key='a20ef37212e1ae86b20e09630f6590ce' //REST API KEY
-  const redirect_uri = 'http://localhost:3000/auth' //Redirect URI to backend
+  const Rest_api_key= process.env.REACT_APP_REST_API_MAP_KEY //REST API KEY
+  const redirect_uri = `${HOME_URL}/auth` //Redirect URI to backend
   // oauth 요청 URL
   const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`
   const handleLogin = ()=>{
