@@ -51,7 +51,7 @@ public enum BaseResponseStatus implements Serializable {
     NOT_FOUND_CHAT_ROOM(false, 4001, "일치하는 채팅방이 없습니다."),
     CHAT_MESSAGE_SAVE_FAILED(false, 4002, "채팅 메시지 저장에 실패했습니다."),
     CHATROOM_CONNECT_FAIL(false, 4003, "채팅방 연결에 실패했습니다"),
-    NO_CHATROOM_LIST(false, 4004, "채팅 목록이 없습니다.");
+    NO_CHATROOM_LIST(false, 4004, "채팅 목록이 없습니다."),
 
 
 
@@ -59,7 +59,8 @@ public enum BaseResponseStatus implements Serializable {
      * ShowRoom
      * code: 5000번대
      */
-
+    NOT_MATCHED_SHOW_ROOM_ID(false, 5001, "존재하지 않는 곰방봐입니다."),
+    NOT_MATCHED_SHOW_ROOM_HASH_TAG_ID(false, 5002, "해당 곰방봐에 존재하지 않는 해시태그입니다.");
 
 
 

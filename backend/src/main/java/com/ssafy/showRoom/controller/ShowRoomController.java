@@ -7,13 +7,11 @@ import com.ssafy.elasticsearch.dto.ShowRoomSearchResponseDto;
 import com.ssafy.global.common.response.BaseException;
 import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.global.common.response.ResponseService;
+import com.ssafy.showRoom.dto.ShowRoomDeleteRequestDto;
 import com.ssafy.showRoom.service.ShowRoomService;
 import com.ssafy.showRoomHashTag.dto.ShowRoomHashTagRequestDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,6 +26,7 @@ public class ShowRoomController {
 
     /**
      * 곰방봐 등록
+     *
      * @param showRoomHashTagRequestDto
      * @return BaseResponse<ShowRoomResponseDto>
      */
@@ -41,13 +40,28 @@ public class ShowRoomController {
     }
 
     /**
+     * 곰방봐 삭제
+     *
+     * @param showRoomDeleteRequestDto
+     * @return
+     */
+    @DeleteMapping("/delete")
+    public BaseResponse<Object> deleteShowRoom(@RequestBody ShowRoomDeleteRequestDto showRoomDeleteRequestDto) {
+        try {
+            return responseService.getSuccessResponse(showRoomService.deleteShowRoom(showRoomDeleteRequestDto));
+        } catch (BaseException e) {
+            return responseService.getFailureResponse(e.status);
+        }
+    }
+
+    /**
      * 검색어 목록 가져오기
      *
      * @param searchRelatedListRequestDto
      * @return
      */
     @PostMapping("/search-related-list")
-    public BaseResponse<Object> getRelatedList(@RequestBody SearchRelatedListRequestDto searchRelatedListRequestDto){
+    public BaseResponse<Object> getRelatedList(@RequestBody SearchRelatedListRequestDto searchRelatedListRequestDto) {
         List<SearchRelatedListUniteResponseDto> searchRelatedListUniteResponseDtoList = showRoomService.getSearchRelatedListFinal(searchRelatedListRequestDto);
         return responseService.getSuccessResponse(searchRelatedListUniteResponseDtoList);
     }

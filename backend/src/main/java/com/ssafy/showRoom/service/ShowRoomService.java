@@ -3,6 +3,7 @@ package com.ssafy.showRoom.service;
 import com.ssafy.elasticsearch.dto.*;
 import com.ssafy.elasticsearch.repository.ShowRoomElasticSearchRepository;
 import com.ssafy.global.common.response.BaseException;
+import com.ssafy.global.common.response.BaseResponseStatus;
 import com.ssafy.hashTag.domain.HashTag;
 import com.ssafy.hashTag.dto.HashTagRegisterRequestDto;
 import com.ssafy.hashTag.repository.HashTagRepository;
@@ -11,6 +12,8 @@ import com.ssafy.member.repository.MemberRepository;
 import com.ssafy.roomDeal.domain.RoomDeal;
 import com.ssafy.roomDeal.repository.RoomDealRepository;
 import com.ssafy.showRoom.domain.ShowRoom;
+import com.ssafy.showRoom.dto.ShowRoomDeleteRequestDto;
+import com.ssafy.showRoom.dto.ShowRoomDeleteResponseDto;
 import com.ssafy.showRoom.dto.ShowRoomRegisterRequestDto;
 import com.ssafy.showRoom.dto.ShowRoomResponseDto;
 import com.ssafy.showRoom.repository.ShowRoomRepository;
@@ -48,7 +51,7 @@ public class ShowRoomService {
 
     /**
      * 곰방봐 등록 + 해시태그 등록 + ElasticSearch에 값 저장
-     * 
+     *
      * @param showRoomHashTagRequestDto
      * @return
      * @throws BaseException
@@ -150,6 +153,51 @@ public class ShowRoomService {
             throw new IllegalArgumentException("존재하지 않는 사용자 입니다.");
         }
         return memberOptional.get();
+    }
+
+    /**
+     * 곰방봐 삭제
+     *
+     * @param showRoomDeleteRequestDto
+     * @return
+     * @throws BaseException
+     */
+    public ShowRoomDeleteResponseDto deleteShowRoom(ShowRoomDeleteRequestDto showRoomDeleteRequestDto) throws BaseException {
+        Integer showRoomId = showRoomDeleteRequestDto.getShowRoomId();
+        UUID memberId = showRoomDeleteRequestDto.getMemberId();
+
+        Optional<ShowRoom> showRoomOptional = showRoomRepository.findById(showRoomId);
+        List<Integer> showRoomHashTagIdList = showRoomHashTagRepository.findByShowRoomId(showRoomId);
+
+        // showRoom 등록 여부 확인
+        if (showRoomOptional.isPresent()) {
+            ShowRoom showRoom = showRoomOptional.get();
+
+            // 본인 확인
+            if (showRoom.getMember().getId().equals(memberId)) {
+
+                // showRoomHashTag에서 값 삭제
+                for (Integer hashTagId : showRoomHashTagIdList) {
+                    ShowRoomHashTagId showRoomHashTagId = new ShowRoomHashTagId(showRoomId, hashTagId);
+                    Optional<ShowRoomHashTag> showRoomHashTagOptional = showRoomHashTagRepository.findById(showRoomHashTagId);
+
+                    // showRoomHashTag 등록 여부 확인
+                    if (showRoomHashTagOptional.isPresent()) {
+                        showRoomHashTagRepository.deleteById(new ShowRoomHashTagId(showRoomId, hashTagId));
+                    } else {
+                        throw new BaseException(BaseResponseStatus.NOT_MATCHED_SHOW_ROOM_HASH_TAG_ID);
+                    }
+                }
+
+                showRoomRepository.deleteById(showRoomId);
+
+                return new ShowRoomDeleteResponseDto(showRoomId);
+            } else {
+                throw new BaseException(BaseResponseStatus.NOT_AUTHORIZED);
+            }
+        } else {
+            throw new BaseException(BaseResponseStatus.NOT_MATCHED_SHOW_ROOM_ID);
+        }
     }
 
     /**
@@ -291,7 +339,7 @@ public class ShowRoomService {
 
     /**
      * 곰방봐 검색 결과
-     * 
+     *
      * @param showRoomSearchRequestDto
      * @return
      */
@@ -310,7 +358,7 @@ public class ShowRoomService {
 
     /**
      * 해시태그 Query 생성
-     * 
+     *
      * @param hashTag
      * @return
      */
@@ -357,10 +405,10 @@ public class ShowRoomService {
 
         return showRoomSearchResponseDtoList;
     }
-    
+
     /**
      * 전체 검색 결과 + 해시태그 + 정렬
-     * 
+     *
      * @param showRoomSearchRequestDto
      * @return
      */
