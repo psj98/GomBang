@@ -25,12 +25,4 @@ public class NotificationSendRequestDto {
     @NotNull
     private RelatedUrl relatedUrl;
 
-//    public String getContent() {
-//        return content.getContent();
-//    }
-//
-//    public String getUrl() {
-//        return url.getUrl();
-//    }
-
 }

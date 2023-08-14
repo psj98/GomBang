@@ -5,8 +5,9 @@ import com.ssafy.global.common.response.BaseResponseStatus;
 import com.ssafy.member.domain.Member;
 import com.ssafy.notification.domain.Notification;
 import com.ssafy.notification.domain.NotificationType;
-import com.ssafy.notification.dto.NotificationResponseDto;
-import com.ssafy.notification.dto.NotificationSubscribeResponseDto;
+import com.ssafy.notification.dto.NotificationListResponseDto;
+import com.ssafy.notification.dto.NotificationReadResponseDto;
+import com.ssafy.notification.dto.NotificationSendResponseDto;
 import com.ssafy.notification.repository.EmitterRepositoryImpl;
 import com.ssafy.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,9 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -37,11 +40,7 @@ public class NotificationService {
      * @param memberId 구독하는 클라이언트의 사용자 아이디
      * @return SseEmitter 서버에서 보낸 이벤트 Emitter
      */
-    public NotificationSubscribeResponseDto subscribe(UUID memberId, String lastEventId) throws BaseException {
-        // memberId가 입력되지 않았을 경우 예외처리
-        if (memberId == null)
-            throw new BaseException(BaseResponseStatus.NOT_FOUND_MEMBER_ID);
-
+    public SseEmitter subscribe(UUID memberId, String lastEventId) {
         String emitterId = createIdWithMemberId(memberId);
         SseEmitter emitter = emitterRepositoryImpl.save(emitterId, new SseEmitter(DEFAULT_TIMEOUT));
         // 네트워크 오류로 비동기 요청이 정상 동작할 수 없을 때 Emitter를 삭제한다.
@@ -59,7 +58,7 @@ public class NotificationService {
             sendLostData(lastEventId, memberId, emitterId, emitter);
         }
 
-        return new NotificationSubscribeResponseDto(emitter);
+        return emitter;
     }
 
     /**
@@ -69,14 +68,14 @@ public class NotificationService {
      * @param emitterId 이벤트 emitter의 아이디
      * @param data 전송할 데이터
      */
-    private void sendNotification(SseEmitter emitter, String eventId, String emitterId, Object data) throws BaseException {
+    private void sendNotification(SseEmitter emitter, String eventId, String emitterId, Object data) {
         try {
             emitter.send(SseEmitter.event()
                     .id(eventId)
+                    .name("sse")
                     .data(data));
         } catch (IOException exception) {
             emitterRepositoryImpl.deleteById(emitterId);
-            throw new BaseException(BaseResponseStatus.NOTIFICATION_SEND_FAILED);
         }
     }
 
@@ -114,9 +113,6 @@ public class NotificationService {
         eventCaches.entrySet().stream()
                 .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
                 .forEach(entry -> sendNotification(emitter, entry.getKey(), emitterId, entry.getValue()));
-        /*
-        전송 실패 예외처리
-        */
     }
     
     /*
@@ -142,33 +138,10 @@ public class NotificationService {
         emitters.forEach(
                 (key, emitter) -> {
                     emitterRepositoryImpl.saveEventCache(key, notification);
-                    sendNotification(emitter, eventId, key, new NotificationResponseDto(notification));
-                    /*
-        전송 실패 예외처리
-        */
+                    sendNotification(emitter, eventId, key, new NotificationSendResponseDto(notification));
                 }
         );
     }
-
-//    public void sendList(List receiverList, String content, String type, String urlValue) {
-//        List<Notification> notifications = new ArrayList<>();
-//        Map<String, SseEmitter> sseEmitters;
-//
-//        for (int i = 0; i < receiverList.size(); i++) {
-//            int finalI = i;
-//            sseEmitters = new HashMap<>();
-//            notifications.add(createNotification(receiverList.get(i).toString(), content, type, urlValue));
-//            sseEmitters.putAll(emitterRepository.findAllEmitterStartWithByEmail(receiverList.get(i).toString()));
-//            sseEmitters.forEach(
-//                    (key, emitter) -> {
-//                        // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
-//                        emitterRepository.saveEventCache(key, notifications.get(finalI));
-//                        // 데이터 전송
-//                        sendToClient(emitter, key, notifications.get(finalI));
-//                    }
-//            );
-//        }
-//    }
 
     /**
      * 클라이언트에게 보낼 알림 객체를 생성한다.
@@ -186,5 +159,54 @@ public class NotificationService {
                 .url(url)
                 .isRead(false)
                 .build();
+    }
+    
+    /*
+    알림 조회
+     */
+
+    /**
+     * 알림의 읽음 여부를 true로 바꾼다.
+     * 
+     * @param id 알림의 고유 아이디
+     * @return 읽음 여부를 true로 변경한 알림 객체
+     */
+    @Transactional
+    public NotificationReadResponseDto changeIsReadToTrue(Long id) throws BaseException {
+        Notification notification = getNotificationInfoWithId(id);
+        notification.setIsRead(true);
+        return new NotificationReadResponseDto(notification);
+    }
+
+    /**
+     * 알림의 아이디로 알림 정보를 조회한다.
+     *
+     * @param id 알림의 고유 아이디
+     * @return 아이디로 조회한 알림 객체
+     */
+    private Notification getNotificationInfoWithId(Long id) throws BaseException {
+        Optional<Notification> notification = notificationRepository.findById(id);
+
+        if (notification.isPresent()) {
+            return notification.get();
+        } else {
+            throw new BaseException(BaseResponseStatus.NOT_FOUND_NOTIFICATION);
+        }
+    }
+
+    /**
+     * 사용자 아이디로 알림을 조회한다.
+     *
+     * @param memberId 사용자의 UUID
+     * @return 사용자 아이디로 조회한 알림 리스트
+     */
+    public NotificationListResponseDto searchByMemberId(UUID memberId) throws BaseException {
+        Optional<List<Notification>> notificationList = notificationRepository.findAllByReceiver_Id(memberId);
+
+        if (notificationList.get().size() > 0) {
+            return new NotificationListResponseDto(notificationList.get());
+        } else {
+            throw new BaseException(BaseResponseStatus.NOT_FOUND_NOTIFICATION);
+        }
     }
 }

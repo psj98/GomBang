@@ -64,9 +64,8 @@ public enum BaseResponseStatus implements Serializable {
      * Notification
      * code: 6000번대
      */
-    NOTIFICATION_SEND_FAILED(false, 6001, "알림 전송에 실패했습니다."),
+    NOT_FOUND_NOTIFICATION(false, 6001, "일치하는 알림이 없습니다.");
 
-    NOT_FOUND_MEMBER_ID(false, 6201, "입력된 사용자ID가 없습니다.");
 
 
     private boolean isSuccess;

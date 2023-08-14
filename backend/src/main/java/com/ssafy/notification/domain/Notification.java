@@ -11,6 +11,7 @@ import java.util.UUID;
 
 @Getter
 @Entity
+@Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = "id")
 public class Notification {
@@ -57,7 +58,4 @@ public class Notification {
         return url.getUrl();
     }
 
-//    public void read(){
-//        isRead = true;
-//    }
 }

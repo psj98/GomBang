@@ -2,13 +2,16 @@ package com.ssafy.notification.controller;
 
 import com.ssafy.global.common.response.BaseException;
 import com.ssafy.global.common.response.BaseResponse;
+import com.ssafy.global.common.response.BaseResponseStatus;
 import com.ssafy.global.common.response.ResponseService;
 import com.ssafy.notification.dto.NotificationSendRequestDto;
-import com.ssafy.notification.dto.NotificationSubscribeRequestDto;
 import com.ssafy.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,17 +24,13 @@ public class NotificationController {
     /**
      * 로그인 한 유저를 SSE에 연결한다.
      *
-     * @param notificationSubscribeRequestDto 로그인 한 사용자의 아이디
+     * @param memberId 로그인 한 사용자의 아이디
      * @param lastEventId 클라이언트가 마지막으로 수신한 데이터의 id값
-     * @return
+     * @return emitter
      */
-    @PostMapping(value = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public BaseResponse<Object> subscribe(@RequestBody NotificationSubscribeRequestDto notificationSubscribeRequestDto, @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
-        try {
-            return responseService.getSuccessResponse(notificationService.subscribe(notificationSubscribeRequestDto.getMemberId(), lastEventId));
-        } catch (BaseException e) {
-            return responseService.getFailureResponse(e.status);
-        }
+    @GetMapping(value = "/subscribe/{memberId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter subscribe(@PathVariable UUID memberId, @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
+        return notificationService.subscribe(memberId, lastEventId);
     }
 
     /**
@@ -44,15 +43,34 @@ public class NotificationController {
         notificationService.send(notificationSendRequestDto.getReceiver(), notificationSendRequestDto.getNotificationType(), notificationSendRequestDto.getNotificationContent().getContent(), notificationSendRequestDto.getRelatedUrl().getUrl());
     }
 
-    /*
-    내 알림 목록 조회 기능
+    /**
+     * 알림을 읽음 표시한다.
+     *
+     * @param id 읽음 처리할 알림의 고유 아이디
+     * @retrurn 읽음 처리한 알림 객체
      */
+    @GetMapping("/read/{id}")
+    public BaseResponse<Object> readNotification(@PathVariable Long id) {
+        try {
+            return responseService.getSuccessResponse(notificationService.changeIsReadToTrue(id));
+        } catch (BaseException e) {
+            return responseService.getFailureResponse(e.status);
+        }
+    }
 
-    /*
-    알림 읽음 표시 기능
+    /**
+     * 사용자가 받은 모든 알림을 조회한다.
+     *
+     * @param memberId 사용자의 UUID
+     * @return 사용자가 받은 전체 알림 리스트
      */
+    @GetMapping("/list/{memberId}")
+    public BaseResponse<Object> getNotificationList(@PathVariable UUID memberId) {
+        try {
+            return responseService.getSuccessResponse(notificationService.searchByMemberId(memberId));
+        } catch (BaseException e) {
+            return responseService.getFailureResponse(e.status);
+        }
+    }
 
-    /*
-    알림 보내기 (사용자 리스트로 받아서 단체 알림 보내기)
-     */
 }
