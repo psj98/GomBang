@@ -132,25 +132,46 @@ public class ShowRoomService {
         return new ShowRoomResponseDto(showRoom);
     }
 
-    private RoomDeal verifyRoomDeal(Long roomDealId) {
+    /**
+     * 매물 id 체크
+     * 
+     * @param roomDealId
+     * @return
+     * @throws BaseException
+     */
+    private RoomDeal verifyRoomDeal(Long roomDealId) throws BaseException {
         Optional<RoomDeal> roomDealOptional = roomDealRepository.findById(roomDealId);
         if (roomDealOptional.isEmpty()) {
-            throw new IllegalArgumentException("존재하지 않는 매물입니다.");
+            throw new BaseException(BaseResponseStatus.NOT_MATCHED_ROOM_DEAL_ID);
         }
 
         return roomDealOptional.get();
     }
 
-    private void checkMemberAuthority(RoomDeal roomDeal, UUID memberId) {
+    /**
+     * 매물을 등록한 memberId와 로그인 한 유저의 memberId 체크
+     *
+     * @param roomDeal
+     * @param memberId
+     * @throws BaseException
+     */
+    private void checkMemberAuthority(RoomDeal roomDeal, UUID memberId) throws BaseException {
         if (!roomDeal.getMember().getId().equals(memberId)) {
-            throw new IllegalArgumentException("권한이 없는 사용자 입니다.");
+            throw new BaseException(BaseResponseStatus.NOT_AUTHORIZED);
         }
     }
 
-    private Member verifyMember(UUID memberId) {
+    /**
+     * memberId 체크
+     *
+     * @param memberId
+     * @return
+     * @throws BaseException
+     */
+    private Member verifyMember(UUID memberId) throws BaseException {
         Optional<Member> memberOptional = memberRepository.findById(memberId);
         if (memberOptional.isEmpty()) {
-            throw new IllegalArgumentException("존재하지 않는 사용자 입니다.");
+            throw new BaseException(BaseResponseStatus.NOT_FOUND_MEMBER);
         }
         return memberOptional.get();
     }
