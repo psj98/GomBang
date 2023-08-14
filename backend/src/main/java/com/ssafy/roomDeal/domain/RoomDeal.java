@@ -84,11 +84,7 @@ public class RoomDeal implements Serializable {
 
     private String station;
 
-    private Double stationDistance;
-
     private String univ;
-
-    private Double univDistance;
 
     private String content;
 
