@@ -163,5 +163,5 @@
 }
 
 .buttonbox:hover{
-  border: 1px solid violet;
+  border: 1px solid var(--color-tan1);
 }
