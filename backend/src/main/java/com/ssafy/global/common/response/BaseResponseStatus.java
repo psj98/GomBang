@@ -63,6 +63,12 @@ public enum BaseResponseStatus implements Serializable {
     NOT_MATCHED_SHOW_ROOM_HASH_TAG_ID(false, 5002, "해당 곰방봐에 존재하지 않는 해시태그입니다.");
 
 
+    /**
+     * Notification
+     * code: 6000번대
+     */
+    NOT_FOUND_NOTIFICATION(false, 6001, "일치하는 알림이 없습니다.");
+
 
 
     private boolean isSuccess;
