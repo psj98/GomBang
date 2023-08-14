@@ -3,6 +3,9 @@ package com.ssafy.showRoom.service;
 import com.ssafy.elasticsearch.dto.*;
 import com.ssafy.elasticsearch.repository.ShowRoomElasticSearchRepository;
 import com.ssafy.global.common.response.BaseException;
+import com.ssafy.hashTag.domain.HashTag;
+import com.ssafy.hashTag.dto.HashTagRegisterRequestDto;
+import com.ssafy.hashTag.repository.HashTagRepository;
 import com.ssafy.member.domain.Member;
 import com.ssafy.member.repository.MemberRepository;
 import com.ssafy.roomDeal.domain.RoomDeal;
@@ -11,6 +14,10 @@ import com.ssafy.showRoom.domain.ShowRoom;
 import com.ssafy.showRoom.dto.ShowRoomRegisterRequestDto;
 import com.ssafy.showRoom.dto.ShowRoomResponseDto;
 import com.ssafy.showRoom.repository.ShowRoomRepository;
+import com.ssafy.showRoomHashTag.domain.ShowRoomHashTag;
+import com.ssafy.showRoomHashTag.domain.ShowRoomHashTagId;
+import com.ssafy.showRoomHashTag.dto.ShowRoomHashTagRequestDto;
+import com.ssafy.showRoomHashTag.repository.ShowRoomHashTagRepository;
 import lombok.RequiredArgsConstructor;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.sort.SortBuilders;
@@ -35,10 +42,20 @@ public class ShowRoomService {
     private final ShowRoomRepository showRoomRepository;
     private final RoomDealRepository roomDealRepository;
     private final MemberRepository memberRepository;
+    private final HashTagRepository hashTagRepository;
+    private final ShowRoomHashTagRepository showRoomHashTagRepository;
     private final ShowRoomElasticSearchRepository showRoomElasticSearchRepository;
 
-
-    public ShowRoomResponseDto registerShowRoom(ShowRoomRegisterRequestDto showRoomRegisterRequestDto) throws BaseException {
+    /**
+     * 곰방봐 등록 + 해시태그 등록 + ElasticSearch에 값 저장
+     * 
+     * @param showRoomHashTagRequestDto
+     * @return
+     * @throws BaseException
+     */
+    public ShowRoomResponseDto registerShowRoom(ShowRoomHashTagRequestDto showRoomHashTagRequestDto) throws BaseException {
+        ShowRoomRegisterRequestDto showRoomRegisterRequestDto = showRoomHashTagRequestDto.getShowRoomRegisterRequestDto();
+        HashTagRegisterRequestDto hashTagRegisterRequestDto = showRoomHashTagRequestDto.getHashTagRegisterRequestDto();
 
         RoomDeal roomDeal = verifyRoomDeal(showRoomRegisterRequestDto.getRoomDealId());
 
@@ -59,12 +76,46 @@ public class ShowRoomService {
 
         showRoomRepository.save(showRoom);
 
+        /* 해시태그, 중간 테이블 저장 */
+        StringBuilder sb = new StringBuilder();
+        List<String> hashTagList = hashTagRegisterRequestDto.getHashTagNames(); // 해시태그
+
+        for (String cur : hashTagList) {
+            int check = hashTagRepository.exist(cur); // 기존 테이블에 해시태그 있는지 체크
+
+            HashTag hashTag = HashTag.builder()
+                    .hashTagName(cur)
+                    .build();
+
+            if (check != 0) { // 해시태그가 있는 경우, 기존 해시태그 id를 가져와서 저장
+                int hashTagId = hashTagRepository.getHashTagId(cur);
+                hashTag.setId(hashTagId);
+            } else { // 해시태그가 없는 경우, 저장
+                hashTagRepository.save(hashTag);
+            }
+
+            // 복합키 생성
+            ShowRoomHashTagId showRoomHashTagId = new ShowRoomHashTagId(showRoom.getId(), hashTag.getId());
+
+            // 중간 테이블 생성 및 저장
+            ShowRoomHashTag showRoomHashTag = ShowRoomHashTag.builder()
+                    .id(showRoomHashTagId)
+                    .showRoom(showRoom)
+                    .hashTag(hashTag)
+                    .build();
+
+            showRoomHashTagRepository.save(showRoomHashTag);
+
+            sb.append(cur).append(" "); // ElasticSearch에 저장할 String 생성
+        }
+
+        /* Elastic Search에 저장 */
         String id = String.valueOf(showRoom.getId());
         Integer showRoomId = showRoom.getId();
         String address = showRoom.getJibunAddress();
         String station = showRoom.getStation();
         String univ = showRoom.getUniv();
-        String hashTag = ""; // --------------- 해시태그 완성되어야 함 ---------------
+        String hashTag = sb.toString();
         String registerTime = showRoom.getRegisterTime().toString();
 
         ShowRoomSaveDto showRoomSaveDto = new ShowRoomSaveDto(id, showRoomId, address, station, univ, hashTag, registerTime);

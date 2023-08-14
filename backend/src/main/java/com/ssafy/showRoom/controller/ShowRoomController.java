@@ -7,8 +7,8 @@ import com.ssafy.elasticsearch.dto.ShowRoomSearchResponseDto;
 import com.ssafy.global.common.response.BaseException;
 import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.global.common.response.ResponseService;
-import com.ssafy.showRoom.dto.ShowRoomRegisterRequestDto;
 import com.ssafy.showRoom.service.ShowRoomService;
+import com.ssafy.showRoomHashTag.dto.ShowRoomHashTagRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,15 +28,13 @@ public class ShowRoomController {
 
     /**
      * 곰방봐 등록
-     * @param showRoomRegisterRequestDto
+     * @param showRoomHashTagRequestDto
      * @return BaseResponse<ShowRoomResponseDto>
      */
     @PostMapping("/register")
-    public BaseResponse<Object> registerShowRoom(@RequestBody ShowRoomRegisterRequestDto showRoomRegisterRequestDto) {
-        System.out.println(showRoomRegisterRequestDto.getRoomDealId());
-        System.out.println(showRoomRegisterRequestDto.getMemberId().toString());
+    public BaseResponse<Object> registerShowRoom(@RequestBody ShowRoomHashTagRequestDto showRoomHashTagRequestDto) {
         try {
-            return responseService.getSuccessResponse(showRoomService.registerShowRoom(showRoomRegisterRequestDto));
+            return responseService.getSuccessResponse(showRoomService.registerShowRoom(showRoomHashTagRequestDto));
         } catch (BaseException e) {
             return responseService.getFailureResponse(e.status);
         }
