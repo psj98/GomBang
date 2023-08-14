@@ -9,5 +9,8 @@ import org.springframework.stereotype.Repository;
 public interface HashTagRepository  extends JpaRepository<HashTag, Integer> {
 
     @Query(value = "SELECT COUNT(hashTagName) FROM HashTag WHERE hashTagName = ?1")
-    Long exist(String hashTagName);
+    Integer exist(String hashTagName);
+
+    @Query(value = "SELECT id FROM HashTag WHERE hashTagName = ?1")
+    Integer getHashTagId(String hashTagName);
 }
