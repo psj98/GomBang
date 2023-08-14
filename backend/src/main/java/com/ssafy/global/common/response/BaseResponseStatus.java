@@ -67,8 +67,15 @@ public enum BaseResponseStatus implements Serializable {
      * Notification
      * code: 6000번대
      */
-    NOT_FOUND_NOTIFICATION(false, 6001, "일치하는 알림이 없습니다.");
+    NOT_FOUND_NOTIFICATION(false, 6001, "일치하는 알림이 없습니다."),
 
+
+    /**
+     * LikeShowRoom
+     * code: 7000번대
+     */
+    LIKE_SHOW_ROOM_REGISTER_FAILED(false, 7001, "이미 등록된 좋아요 입니다."),
+    LIKE_SHOW_ROOM_DELETE_FAILED(false, 7002, "좋아요가 등록되어 있지 않습니다.");
 
 
     private boolean isSuccess;
