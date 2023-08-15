@@ -7,15 +7,14 @@ import com.ssafy.global.common.response.BaseResponseStatus;
 import com.ssafy.hashTag.domain.HashTag;
 import com.ssafy.hashTag.dto.HashTagRegisterRequestDto;
 import com.ssafy.hashTag.repository.HashTagRepository;
+import com.ssafy.likeShowRoom.domain.LikeShowRoomId;
+import com.ssafy.likeShowRoom.repository.LikeShowRoomRepository;
 import com.ssafy.member.domain.Member;
 import com.ssafy.member.repository.MemberRepository;
 import com.ssafy.roomDeal.domain.RoomDeal;
 import com.ssafy.roomDeal.repository.RoomDealRepository;
 import com.ssafy.showRoom.domain.ShowRoom;
-import com.ssafy.showRoom.dto.ShowRoomDeleteRequestDto;
-import com.ssafy.showRoom.dto.ShowRoomDeleteResponseDto;
-import com.ssafy.showRoom.dto.ShowRoomRegisterRequestDto;
-import com.ssafy.showRoom.dto.ShowRoomResponseDto;
+import com.ssafy.showRoom.dto.*;
 import com.ssafy.showRoom.repository.ShowRoomRepository;
 import com.ssafy.showRoomHashTag.domain.ShowRoomHashTag;
 import com.ssafy.showRoomHashTag.domain.ShowRoomHashTagId;
@@ -47,6 +46,7 @@ public class ShowRoomService {
     private final MemberRepository memberRepository;
     private final HashTagRepository hashTagRepository;
     private final ShowRoomHashTagRepository showRoomHashTagRepository;
+    private final LikeShowRoomRepository likeShowRoomRepository;
     private final ShowRoomElasticSearchRepository showRoomElasticSearchRepository;
 
     /**
@@ -134,7 +134,7 @@ public class ShowRoomService {
 
     /**
      * 매물 id 체크
-     * 
+     *
      * @param roomDealId
      * @return
      * @throws BaseException
@@ -257,7 +257,7 @@ public class ShowRoomService {
      * @param searchRelatedListRequestDto
      * @return
      */
-    public List<SearchRelatedListResponseDto> getSearchRelatedList(SearchRelatedListRequestDto searchRelatedListRequestDto) {
+    private List<SearchRelatedListResponseDto> getSearchRelatedList(SearchRelatedListRequestDto searchRelatedListRequestDto) {
         String searchWord = searchRelatedListRequestDto.getSearchWord(); // 검색어
 
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder(); // Bool Query 생성
@@ -348,7 +348,7 @@ public class ShowRoomService {
      * @param word
      * @return
      */
-    public boolean checkGuGunDongEupMyeonLi(String word) {
+    private boolean checkGuGunDongEupMyeonLi(String word) {
         if ((word.endsWith("구") || word.endsWith("군") ||
                 word.endsWith("동") || word.endsWith("읍") || word.endsWith("면") || word.endsWith("리"))
                 && word.length() >= 3) {
@@ -364,17 +364,67 @@ public class ShowRoomService {
      * @param showRoomSearchRequestDto
      * @return
      */
-    public List<ShowRoomSearchResponseDto> getSearchResult(ShowRoomSearchRequestDto showRoomSearchRequestDto) {
+    public List<ShowRoomListResponseDto> getSearchResult(ShowRoomSearchRequestDto showRoomSearchRequestDto) throws BaseException {
         String searchType = showRoomSearchRequestDto.getSearchType();
+        UUID memberId = showRoomSearchRequestDto.getMemberId();
 
-        List<ShowRoomSearchResponseDto> showRoomSearchResponseDtoList = new ArrayList<>();
-        if (searchType.equals("total")) {
+        List<ShowRoomSearchResponseDto> showRoomSearchResponseDtoList;
+        if (searchType.equals("total")) { // 전체 검색
             showRoomSearchResponseDtoList = getSearchTotalResult(showRoomSearchRequestDto);
-        } else {
+        } else { // 부분 검색
             showRoomSearchResponseDtoList = getSearchNotTotalResult(showRoomSearchRequestDto);
         }
 
-        return showRoomSearchResponseDtoList;
+        List<ShowRoomListResponseDto> showRoomListResponseDtoList = getShowRoomList(showRoomSearchResponseDtoList);
+
+        return checkLikeShowRoom(memberId, showRoomListResponseDtoList);
+    }
+
+    /**
+     * 검색 결과로 나온 showRoomId로 showRoom 가져오기
+     */
+    private List<ShowRoomListResponseDto> getShowRoomList(List<ShowRoomSearchResponseDto> showRoomSearchResponseDtoList) {
+        List<ShowRoomListResponseDto> showRoomListResponseDtoList = new ArrayList<>();
+
+        for (ShowRoomSearchResponseDto cur : showRoomSearchResponseDtoList) {
+            Integer showRoomId = cur.getShowRoomId(); // 검색 결과로 나온 곰방봐 id
+
+            Optional<ShowRoom> showRoomOptional = showRoomRepository.findById(showRoomId); // 곰방봐 찾기
+            ShowRoom showRoom = showRoomOptional.get();
+
+            ShowRoomListResponseDto showRoomListResponseDto = new ShowRoomListResponseDto(showRoom, false);
+            showRoomListResponseDtoList.add(showRoomListResponseDto);
+        }
+
+        return showRoomListResponseDtoList;
+    }
+
+    /**
+     * 좋아요 체크
+     */
+    private List<ShowRoomListResponseDto> checkLikeShowRoom(UUID memberId, List<ShowRoomListResponseDto> showRoomListResponseDtoList) throws BaseException {
+        /* 로그인 체크 */
+        if (memberId.toString().isEmpty()) { // 로그인 X
+            return showRoomListResponseDtoList;
+        } else { // 로그인 O
+            // 회원 체크
+            verifyMember(memberId);
+
+            // 좋아요 목록 가져옴
+            for(ShowRoomListResponseDto showRoomListResponseDto : showRoomListResponseDtoList) {
+                ShowRoom showRoom = showRoomListResponseDto.getShowRoom();
+                Integer showRoomId = showRoom.getId();
+
+                LikeShowRoomId likeShowRoomId = new LikeShowRoomId(memberId, showRoomId);
+
+                boolean checkLike = likeShowRoomRepository.existsById(likeShowRoomId);
+                if(checkLike) {
+                    showRoomListResponseDto.setCheckLike(true);
+                }
+            }
+
+            return showRoomListResponseDtoList;
+        }
     }
 
     /**
@@ -383,7 +433,7 @@ public class ShowRoomService {
      * @param hashTag
      * @return
      */
-    public ArrayList<QueryBuilder> makeMatchQuery(String hashTag) {
+    private ArrayList<QueryBuilder> makeMatchQuery(String hashTag) {
         ArrayList<QueryBuilder> queryBuilderList = new ArrayList<>(); // Bool Query 안에 넣을 query List 생성
 
         StringTokenizer stk = new StringTokenizer(hashTag);
@@ -404,7 +454,7 @@ public class ShowRoomService {
      * @param sortType
      * @return
      */
-    public ArrayList<ShowRoomSearchResponseDto> makeSearchQuery(BoolQueryBuilder boolQueryBuilder, int pageOffset, String sortType) {
+    private ArrayList<ShowRoomSearchResponseDto> makeSearchQuery(BoolQueryBuilder boolQueryBuilder, int pageOffset, String sortType) {
         /* _search query 생성 */
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
         queryBuilder.withQuery(boolQueryBuilder)
@@ -433,7 +483,7 @@ public class ShowRoomService {
      * @param showRoomSearchRequestDto
      * @return
      */
-    public List<ShowRoomSearchResponseDto> getSearchTotalResult(ShowRoomSearchRequestDto showRoomSearchRequestDto) {
+    private List<ShowRoomSearchResponseDto> getSearchTotalResult(ShowRoomSearchRequestDto showRoomSearchRequestDto) {
         String hashTag = showRoomSearchRequestDto.getHashTag();
         String sortType = showRoomSearchRequestDto.getSortType();
         int pageOffset = showRoomSearchRequestDto.getPageOffset();
@@ -457,7 +507,7 @@ public class ShowRoomService {
      * @param showRoomSearchRequestDto
      * @return
      */
-    public List<ShowRoomSearchResponseDto> getSearchNotTotalResult(ShowRoomSearchRequestDto showRoomSearchRequestDto) {
+    private List<ShowRoomSearchResponseDto> getSearchNotTotalResult(ShowRoomSearchRequestDto showRoomSearchRequestDto) {
         String searchWord = showRoomSearchRequestDto.getSearchWord();
         String searchType = showRoomSearchRequestDto.getSearchType();
         String hashTag = showRoomSearchRequestDto.getHashTag();

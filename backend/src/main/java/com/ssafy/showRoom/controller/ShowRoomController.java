@@ -3,7 +3,6 @@ package com.ssafy.showRoom.controller;
 import com.ssafy.elasticsearch.dto.SearchRelatedListRequestDto;
 import com.ssafy.elasticsearch.dto.SearchRelatedListUniteResponseDto;
 import com.ssafy.elasticsearch.dto.ShowRoomSearchRequestDto;
-import com.ssafy.elasticsearch.dto.ShowRoomSearchResponseDto;
 import com.ssafy.global.common.response.BaseException;
 import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.global.common.response.ResponseService;
@@ -74,7 +73,10 @@ public class ShowRoomController {
      */
     @PostMapping("/search-result")
     public BaseResponse<Object> getSearchResult(@RequestBody ShowRoomSearchRequestDto showRoomSearchRequestDto) {
-        List<ShowRoomSearchResponseDto> showRoomSearchResponseDtoList = showRoomService.getSearchResult(showRoomSearchRequestDto);
-        return responseService.getSuccessResponse(showRoomSearchResponseDtoList);
+        try {
+            return responseService.getSuccessResponse(showRoomService.getSearchResult(showRoomSearchRequestDto));
+        } catch (BaseException e) {
+            return responseService.getFailureResponse(e.status);
+        }
     }
 }
