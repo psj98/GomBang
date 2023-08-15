@@ -200,13 +200,9 @@ public class NotificationService {
      * @param memberId 사용자의 UUID
      * @return 사용자 아이디로 조회한 알림 리스트
      */
-    public NotificationListResponseDto searchByMemberId(UUID memberId) throws BaseException {
+    public NotificationListResponseDto searchByMemberId(UUID memberId) {
         Optional<List<Notification>> notificationList = notificationRepository.findAllByReceiver_Id(memberId);
 
-        if (notificationList.get().size() > 0) {
-            return new NotificationListResponseDto(notificationList.get());
-        } else {
-            throw new BaseException(BaseResponseStatus.NOT_FOUND_NOTIFICATION);
-        }
+        return new NotificationListResponseDto(notificationList.get());
     }
 }
