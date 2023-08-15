@@ -1,106 +1,121 @@
 import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import axios from 'axios';
-
+import styles from './Auth.module.css'
+export const API_BASE_URL = process.env.REACT_APP_API_ROOT;
+export const HOME_URL = process.env.REACT_APP_HOME_URL;
 export default function Auth() {
-    const [c, setcode] = useState('')    
-    const [accessToken,setaccessToken] =useState('')
-    const [userinfo,setuserpp] = useState([])
+    // const [c, setcode] = useState('')
+    const [id, setid] = useState('');    
+    const [name, setName] = useState('');    
+    const [shownameform, setshownameform] = useState(false);    
+    // const [userinfo,setuserinfo] = useState({})
     
+
     
-    useEffect(()=>{
-        
-        const gettoken = async ()=>{
+    useEffect(() => {
+        async function getid() {
             const code = new URL(window.location.href).searchParams.get("code");
-            setcode(code)
-            const Rest_api_key='a20ef37212e1ae86b20e09630f6590ce' //REST API KEY
-            const data ={
-                grant_type: 'authorization_code',
-                client_id :  Rest_api_key,
-                redirect_uri :'http://localhost:3000/auth',
-                code
-            }
-            const headers = {
-                'Content-type' : 'application/x-www-form-urlencoded;charset=utf-8',
-            }
-            const queryString = Object.keys(data)
-            .map(k=>encodeURIComponent(k)+'='+encodeURIComponent(data[k]))
-            .join('&')
+            // setcode(code)
+            // window.location.href = 'http://localhost:3000/auth'
             
             try{        
-                await axios.post("https://kauth.kakao.com/oauth/token",queryString
-                ,headers)
+                await axios.get(`${API_BASE_URL}/member/login?code=${code}`)
                 .then(function(r){
-                    console.log('tokkensuccess',r.data)
-                    setaccessToken(r.data.access_token)
-                    getUserInfo(r.data.access_token)
+                    alert(r.data.message)
+                    if(r.data.code === 2001){ // 로그인 성공 시
+                        // setuserinfo(r.data.data.member);
+                        sessionStorage.setItem("isAuthorized", "true")
+                        sessionStorage.setItem("member",JSON.stringify(r.data.data.member))
+                        setshownameform(false)
+                        window.location.href = HOME_URL
+                    }
+
+                    else if(r.data.code === 2002 || r.data.code === 2003){ // 회원가입 성공 시
+                        setshownameform(true)
+                        setid(r.data.data.id)
+                    }
+                    else if(r.data.code === 2101 || r.data.code === 2201 || r.data.code === 2202 ){
+                        window.location.href = `${HOME_URL}/login`
+                    }
+                    else{alert('warning')}
                 })
             }
             catch(error){
                 console.error('Error fetching data:', error);
             }
         }
-
-        const getUserInfo = async (at)=>{
-            const headers = {
-                'Authorization' : 'Bearer '+ at,
-            }
-            console.log(headers)
-            // 엑세스 토큰 헤더에 담기
-
-            // 카카오 사용자 정보 조회
-            await axios.get("https://kapi.kakao.com/v2/user/me", {headers:headers})
-            .then(function(r){
-                console.log(r.data)
-                console.log(r.data.properties)
-                setuserpp(r.data)
-            })
-            .catch(function(error){console.error('error',error)})
-        }
-        gettoken()
-
+        getid()
     },[])
+
+
+        const postname = async (name) => {
+            const params = {
+                'id':id,
+                'name':name
+            }  
+            const config = {
+                headers: {
+                'Content-Type': 'application/json'
+                }
+            }
+            try {
+                const response = await axios.post(`${API_BASE_URL}/member/update`,params,config);
+                if(response.data.code === 1000){
+                    sessionStorage.setItem("isAuthorized", "true");
+                    // setuserinfo(response.data.data.member);
+                    sessionStorage.setItem("member",JSON.stringify(response.data.data.member))
+                    setshownameform(false);
+                    window.location.href = HOME_URL
+                }
+                else if(response.data.code === 2102){
+                    alert(response.data.message)
+                }
+                else{alert('warning')}
+
+            } catch (error) {
+                console.error('Error posting data:', error);
+            }
+        }
+
+        const handleNameChange = (event) => {
+            setName(event.target.value);
+        }
+    
+        const handleNameSubmit = () => {
+            postname(name);
+        }
     
     
 
     return(
-        <div>
-            <Header/>
-            <div className="auth">
+        <div className={styles.page}>
+            {/* <Header/> */}
+            {/* <div className="auth">
                 인가코드 :  {c}
-            </div>
-            <div>
-                토큰정보 : {accessToken}
-            </div>
-            #properties
-            {userinfo ? (
-            <div>
-                <div>connected: {userinfo.connected_at}</div>
-                <div>channelID: {userinfo.id}</div>
-                <div>
-                kakao_account:
-                {userinfo.kakao_account
-                    ? Object.entries(userinfo.kakao_account).map(([key, value]) => (
-                        <div key={key}>
-                        {key}: {JSON.stringify(value)}
-                        </div>
-                    ))
-                    : ''}
+                {id? <div>uuid : {id}</div> :''}
+            </div> */}
+            <div className={styles.loginpage}>
+                <div className={styles.gombang}><b className='b5'>곰방</b> 회원가입하기</div>
+                <img className={styles.logoimg} alt="곰방로고" src='/assets/logo.png'/>
+                <div className={styles.namestyle}>이름을 입력하세요.</div>
+                <div className={styles.inputcontainer}>
+                    {shownameform &&
+                        <input 
+                            type="text" 
+                            // placeholder='이름을 입력하시오'
+                            value={name}
+                            onChange={handleNameChange}
+                            className={styles.inputbox}
+                        />
+                    }
                 </div>
+                <div>※ 실명이 아닐 경우 추후 계약 진행에 불이익이 있을 수 있습니다.</div>
                 <div>
-                properties:
-                {userinfo.properties
-                    ? Object.entries(userinfo.properties).map(([key, value]) => (
-                        <div key={key}>
-                        {key}: {JSON.stringify(value)}
-                        </div>
-                    ))
-                    : ''}
+                    <button className={ styles.signupbutton } onClick={handleNameSubmit} >회원가입</button>
                 </div>
+                {/* {userinfo && Object.entries(userinfo).map((value,index)=>{return <div key={index}>{value[0]}: {value[1]}</div>})} */}
             </div>
-            ) : (
-            ''
-            )}
         </div>
         
     )

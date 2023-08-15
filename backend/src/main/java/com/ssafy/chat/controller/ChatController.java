@@ -2,9 +2,11 @@ package com.ssafy.chat.controller;
 
 import com.ssafy.chat.domain.Chat;
 import com.ssafy.chat.dto.ChatEnterRequestDto;
-import com.ssafy.chat.dto.ChatSendRequestDto;
+import com.ssafy.chat.dto.ChatSendDto;
 import com.ssafy.chat.service.ChatService;
+import com.ssafy.global.common.response.BaseException;
 import com.ssafy.global.common.response.BaseResponse;
+import com.ssafy.global.common.response.BaseResponseStatus;
 import com.ssafy.global.common.response.ResponseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,16 +18,18 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class ChatController {
     private final SimpMessageSendingOperations template;
 
@@ -45,55 +49,45 @@ public class ChatController {
      * @param headerAccessor
      * @return BaseResponse<List<Chat>> - front로 이전 채팅 이력을 List 형태로 보내줌
      */
-    @MessageMapping("/chat/enterUser")
-    public BaseResponse<?> enterUser(@Payload ChatEnterRequestDto chatEnterRequestDto, SimpMessageHeaderAccessor headerAccessor) {
+    @MessageMapping("/chat/enteruser")
+    public void enterUser(@Payload ChatEnterRequestDto chatEnterRequestDto, SimpMessageHeaderAccessor headerAccessor) {
 
-        try {
-            UUID userId = chatEnterRequestDto.getUserId();
-            UUID roomId= chatEnterRequestDto.getRoomId();
+        UUID userId = chatEnterRequestDto.getMemberId();
+        UUID roomId= chatEnterRequestDto.getRoomId();
 
-            // 반환 결과를 socket session에 userUUID로 저장
-            headerAccessor.getSessionAttributes().put("userID", chatEnterRequestDto.getUserId());
-            headerAccessor.getSessionAttributes().put("roomId", chatEnterRequestDto.getRoomId());
+        // 반환 결과를 socket session에 userUUID로 저장
+        headerAccessor.getSessionAttributes().put("userID", chatEnterRequestDto.getMemberId());
+        headerAccessor.getSessionAttributes().put("roomId", chatEnterRequestDto.getRoomId());
+    }
 
-            // 과거 채팅 이력
-            List<Chat> history = service.chatHistory(roomId.toString());
-
-            if(history == null) {
-                return responseService.getFailureResponse("No History");
-            }
-            else {
-                return responseService.getSuccessResponse("Load History success", history);
-            }
-        } catch (Exception e) {
-            return responseService.getFailureResponse("Connet Fail : not found userId or chatroomId");
-        }
+    @GetMapping("/chat/history/{roomId}")
+    public BaseResponse<?> gethistory(@PathVariable("roomId") String roomId) {
+        return responseService.getSuccessResponse(service.chatHistory(roomId));
     }
 
     /**
      *
-     * @param chatSendRequestDto - front에서 Chat를 담은 JSON을 보냄
+     * @param chatSendDto - Chat객체가 들어있음
      * @return BaseResponse<Chat> - 전송 성공 여부를 return  
      */
-    @MessageMapping("/chat/sendMessage")
-    public BaseResponse<?> sendMessage(@Payload ChatSendRequestDto chatSendRequestDto) {
+    @MessageMapping("/chat/sendmessage")
+    public BaseResponse<?> sendMessage(@Payload ChatSendDto chatSendDto) {
+        Chat chat = chatSendDto.getChat();
+        log.info("CHAT {}", chat);
+
+        // 전송 시간 설정
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        chat.setTime(formatter.format(date));
+
+        // MongoDB에 채팅 메시지 저장
         try {
-            Chat chat = chatSendRequestDto.getChat();
-            log.info("CHAT {}", chat);
-
-            // 전송 시간 설정
-            Date date = new Date();
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            chat.setTime(formatter.format(date));
-
-            // MongoDB에 채팅 메시지 저장
             service.saveChatMessage(chat);
-
+            chatSendDto.setChat(chat);
             template.convertAndSend("/sub/chat/room/" + chat.getRoomId(), chat);
-
-            return responseService.getSuccessResponse("send success", chat);
-        } catch (Exception e) {
-            return responseService.getFailureResponse("no chat data");
+            return responseService.getSuccessResponse(chatSendDto);
+        } catch (BaseException e) {
+            return responseService.getFailureResponse(e.getStatus());
         }
     }
 

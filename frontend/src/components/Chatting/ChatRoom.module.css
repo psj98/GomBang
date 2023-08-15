@@ -1,0 +1,65 @@
+/* .chatlist{
+    position: relative;
+    display: flex;
+    justify-content: left;
+    align-items: start;
+    flex-direction: column;
+} */
+
+.chatmessage {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+    /* width: 100vh; */
+}
+
+.yourchatbox {
+    display: flex;
+    justify-content: left;
+    align-items: end;
+}
+
+.yourballoon{
+    background-color: rgb(217, 217, 217, 0.8);
+    border-radius: 10px;
+    padding: 5px;
+    margin-left: 10px;
+}
+.yourballoontime{
+    display: flex;
+    justify-content: flex-end;
+    margin-left: 5px;
+}
+
+.mychatbox {
+    display: flex;
+    justify-content: right;
+    align-items: end;
+}
+.myballoon{
+    background-color: rgba( 199, 173, 146, 0.8 );
+    border-radius: 10px;
+    padding: 5px;
+    margin-right: 10px;
+}
+
+.myballoontime{
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 5px;
+}
+
+.sendmessage{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.sendmessage input{
+    margin-right: 8px;
+    width: 100vh;
+    height: 20px;
+}

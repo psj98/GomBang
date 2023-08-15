@@ -1,7 +1,9 @@
 package com.ssafy.elasticsearch.repository;
 
-import com.ssafy.elasticsearch.dto.RoomDealSearchDto;
+import com.ssafy.elasticsearch.dto.RoomDealSaveDto;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import org.springframework.stereotype.Repository;
 
-public interface RoomDealElasticSearchRepository extends ElasticsearchRepository<RoomDealSearchDto, String> {
+@Repository
+public interface RoomDealElasticSearchRepository extends ElasticsearchRepository<RoomDealSaveDto, String> {
 }

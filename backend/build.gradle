@@ -201,6 +201,16 @@ dependencies {
 //    implementation('org.projectreactor:reactor-spring:1.0.1.RELEASE')
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'it.ozimov:embedded-redis:0.7.2'
+
+    // Cache
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+
+    // S3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
 }
 
 test {
