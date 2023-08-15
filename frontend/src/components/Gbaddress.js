@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import axios from 'axios';
-import DaumPostcode from 'react-daum-postcode';
+import { useDaumPostcodePopup }  from 'react-daum-postcode';
 
 function Gbaddress() {
-    const [showDaumPostcode, setShowDaumPostcode] = useState(false);
+    const scriptUrl="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"
+    const open = useDaumPostcodePopup(scriptUrl);
+    const handleClick = () => {
+        open({ onComplete: handleExecDaumPostcode });
+    };
+
     const handleExecDaumPostcode = (data) => {
 
         // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
@@ -28,16 +33,16 @@ function Gbaddress() {
         }
 
         // 우편번호와 주소 정보를 해당 필드에 넣는다.
-        document.getElementById('sample4_postcode').value = data.zonecode;
-        document.getElementById("sample4_roadAddress").value = roadAddr;
-        document.getElementById("sample4_jibunAddress").value = data.jibunAddress;
+        document.getElementById('postcode').value = data.zonecode;
+        document.getElementById("roadAddress").value = roadAddr;
+        document.getElementById("jibunAddress").value = data.jibunAddress;
                 
         // 참고항목 문자열이 있을 경우 해당 필드에 넣는다.
-        if (roadAddr !== '') {
-            document.getElementById("sample4_extraAddress").value = extraRoadAddr;
-        } else {
-            document.getElementById("sample4_extraAddress").value = '';
-        }
+        // if (roadAddr !== '') {
+        //     document.getElementById("extraAddress").value = extraRoadAddr;
+        // } else {
+        //     document.getElementById("extraAddress").value = '';
+        // }
 
         var guideTextBox = document.getElementById("guide");
         // 사용자가 '선택 안함'을 클릭한 경우, 예상 주소라는 표시를 해준다.
@@ -55,11 +60,11 @@ function Gbaddress() {
             guideTextBox.style.display = 'none';
         }
         const apiUrl = `https://dapi.kakao.com/v2/local/search/address.json?query=${data.roadAddress}`;
-        const REST_API_KEY = 'a20ef37212e1ae86b20e09630f6590ce';
+        
         axios
         .get(apiUrl, {
             headers: {
-            Authorization: `KakaoAK ${REST_API_KEY}`,
+            Authorization: `KakaoAK ${process.env.REST_API_KEY}`,
             },
         })
         .then((response) => {
@@ -75,18 +80,31 @@ function Gbaddress() {
         .catch((error) => {
             console.error('Error fetching data:', error);
         });
-        setShowDaumPostcode(false);
-}
+    }
 
 return (
     <div>
-        <input type="text" id="postcode" placeholder="우편번호" />
-        <input type="button" onClick={() => setShowDaumPostcode(true)} value="우편번호 찾기" /><br />
-        <input type="text" id="roadAddress" placeholder="도로명주소" />
-        <input type="text" id="jibunAddress" placeholder="지번주소" />
+        <input type="text" id="postcode" placeholder="우편번호" disabled/>
+        <input
+            type="button"
+            onClick={handleClick}
+            value="우편번호 찾기"
+            style={{
+                padding: '8px 16px',
+                fontSize: '16px',
+                // fontWeight: 'bold',
+                color: 'white',
+                backgroundColor: '#C7AD92',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                // marginTop: '10px',
+            }}/><br />
+        <input type="text" id="roadAddress" placeholder="도로명주소" disabled/>
+        <input type="text" id="jibunAddress" placeholder="지번주소" disabled/>
         <span id="guide" style={{ color: '#999', display: 'none' }}></span>
         <input type="text" id="detailAddress" placeholder="상세주소" />
-        {showDaumPostcode && <DaumPostcode onComplete={handleExecDaumPostcode} />}
+        {/* {<DaumPostcode onComplete={handleExecDaumPostcode} />} */}
     </div>
 )
 };

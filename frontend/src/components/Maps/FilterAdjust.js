@@ -35,6 +35,10 @@ const FilterAdjust = () => {
     else{setAdditionaloption([...additionaloption,e.target.id])}
   };
   
+  const [floorrange,setFloorrange] = useState([0,10])
+  const handleFloorrangeChange = (e) => {
+    setFloorrange(e)
+  }
   const [depositrange,setDepositrange] = useState([0,10090])
   const handleDepositrangeChange = (e) => {
     setDepositrange(e)
@@ -129,9 +133,32 @@ const FilterAdjust = () => {
           {/* 방 층수 */}    
           <div className={styles.container} id="roomfloor">
           <div className={styles.headline}>층 수</div>
+          <div className={styles.sliderparent} style={{height:"100px"}} id="층 수">
+              <div className={styles.sliderindex}><span>층 수</span><span>{floorrange[0]<1?"반지하":addComma(floorrange[0])}~{floorrange[1]>9?"옥상":addComma(floorrange[1])}{'층'}</span></div>
+              <Slider
+                vertical
+                range
+                min={0}
+                max={10}
+                step={1}
+                trackStyle={{ backgroundColor: '#c7ad92' }}
+                handleStyle={{ backgroundColor: '#c7ad92', borderColor:'#c7ad92' }}
+                dotStyle={{borderColor:'#c7ad92'}}
+                value={floorrange}
+                onChange={handleFloorrangeChange}
+                marks={{
+                  0: <span style={{ whiteSpace: 'nowrap', display: 'inline-block', textAlign: 'right' }}>반지층</span>,
+                  10: <span style={{ whiteSpace: 'nowrap', display: 'inline-block', textAlign: 'right' }}>옥탑방</span>
+                }}
+                />
+            </div>
+          </div>
+          
+          {/* <div className={styles.container} id="roomfloor">
+          <div className={styles.headline}>층 수</div>
           <div className={styles.subheadline}>중복선택이 가능합니다.</div>
           <div className={styles.optionbody}>
-            <label className={styles.roomoption} htmlFor='roomfloor_total' onClick={()=>{if(floor.length!==floorlist.length){setFloor([...floorlist])}else{setFloor([])}}} id='roomstructure_total'>
+            <label className={styles.roomoption} htmlFor='roomfloor_total' onClick={()=>{if(floor.length!==floorlist.length){setFloor([...floorlist])}else{setFloor([])}}} id='roomfloor_total'>
               <input 
                 type="checkbox"
                 className={styles.mycheckbox}
@@ -149,14 +176,14 @@ const FilterAdjust = () => {
                 className={styles.mycheckbox}
                 key={floor.includes(value)}
                 id={value}
-                onChange={handleClickStructureButton}
+                onChange={handleClickFloorButton}
                 checked={floor.includes(value)} 
                 />
                 {value}
               </label>
               ))}
           </div>
-          </div>
+          </div> */}
         </div>
 
         {/*framechild2*/}
@@ -245,7 +272,7 @@ const FilterAdjust = () => {
                 }}
                 />
             </div>
-            <div className={styles.gender}>
+            {/* <div className={styles.gender}>
               <div className={styles.headline}>성별</div>
               <div className={styles.FrameChild}>
               {genderlist.map((value,index) => (
@@ -262,7 +289,7 @@ const FilterAdjust = () => {
                 </label>
                 ))}
               </div>
-            </div>
+            </div> */}
           
           </div>
         </div>

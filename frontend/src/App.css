@@ -40,3 +40,9 @@ button:hover {
 label:hover {
   cursor: pointer;
 }
+
+
+/* 스크롤바 숨김 */
+::-webkit-scrollbar {
+  display: none;
+}
