@@ -6,9 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
- * showRoom 검색 (검색어 + 해시태그)
+ * showRoom 검색 (검색어 + 해시태그) 리스트
  */
 @Data
 @Builder
@@ -16,6 +17,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class ShowRoomSearchRequestDto implements Serializable {
 
+    private UUID memberId; // 로그인 한 유저 id
     private String searchWord; // 검색어
     private String searchType; // 검색어 유형 (주소, 역, 대학교)
     private String hashTag; // 해시 태그
