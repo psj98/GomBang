@@ -67,7 +67,15 @@ public enum BaseResponseStatus implements Serializable {
      * Notification
      * code: 6000번대
      */
-    NOT_FOUND_NOTIFICATION(false, 6001, "일치하는 알림이 없습니다.");
+    NOT_FOUND_NOTIFICATION(false, 6001, "일치하는 알림이 없습니다."),
+
+    /**
+     * S3
+     * code: 7000번대
+     */
+    PUT_FILE_FAILED(false, 7001, "사진 업로드에 실패했습니다."),
+    GET_FILE_URL_FAILED(false, 7002, "사진 경로 반환에 실패했습니다."),
+    SAVE_FILE_FAILED(false, 7003, "사진 저장에 실패했습니다.");
 
 
 
