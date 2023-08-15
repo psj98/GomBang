@@ -4,11 +4,12 @@ import com.ssafy.global.common.response.BaseException;
 import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.global.common.response.ResponseService;
 import com.ssafy.starRoomDeal.dto.StarRoomDealDeleteRequestDto;
-import com.ssafy.starRoomDeal.dto.StarRoomDealMyListRequestDto;
 import com.ssafy.starRoomDeal.dto.StarRoomDealRegisterRequestDto;
 import com.ssafy.starRoomDeal.service.StarRoomDealService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,13 +52,28 @@ public class StarRoomDealController {
     /**
      * 사용자가 찜한 매물 글 목록을 조회한다.
      *
-     * @param starRoomDealMyListRequestDto 사용자의 UUID
+     * @param memberId 사용자의 UUID
      * @return 사용자가 찜한 매물 글 리스트
      */
-    @PostMapping("/my-list")
-    public BaseResponse<Object> getMyStarRoomDealList(@RequestBody StarRoomDealMyListRequestDto starRoomDealMyListRequestDto) {
+    @GetMapping("/my-list/{memberId}")
+    public BaseResponse<Object> getMyStarRoomDealList(@PathVariable UUID memberId) {
         try {
-            return responseService.getSuccessResponse(starRoomDealService.getMyStarRoomDealList(starRoomDealMyListRequestDto));
+            return responseService.getSuccessResponse(starRoomDealService.getMyStarRoomDealList(memberId));
+        } catch (BaseException e) {
+            return responseService.getFailureResponse(e.status);
+        }
+    }
+
+    /**
+     * 매물을 찜한 사용자 목록을 조회한다.
+     *
+     * @param roomDealId 매물 글의 id
+     * @return 매물을 찜한 사용자 리스트
+     */
+    @GetMapping("/member-list/{roomDealId}")
+    public BaseResponse<Object> getRoomDealStarredMemberList(@PathVariable Long roomDealId) {
+        try {
+            return responseService.getSuccessResponse(starRoomDealService.getRoomDealStarredMemberList(roomDealId));
         } catch (BaseException e) {
             return responseService.getFailureResponse(e.status);
         }

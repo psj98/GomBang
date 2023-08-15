@@ -6,6 +6,7 @@ import com.ssafy.member.domain.Member;
 import com.ssafy.member.repository.MemberRepository;
 import com.ssafy.roomDeal.domain.RoomDeal;
 import com.ssafy.roomDeal.repository.RoomDealRepository;
+import com.ssafy.starRoomDeal.domain.StarMemberMapping;
 import com.ssafy.starRoomDeal.domain.StarRoomDeal;
 import com.ssafy.starRoomDeal.domain.StarRoomDealId;
 import com.ssafy.starRoomDeal.domain.StarRoomDealMapping;
@@ -86,19 +87,30 @@ public class StarRoomDealService {
     /**
      * 사용자가 찜한 매물 글 목록을 조회한다.
      *
-     * @param starRoomDealMyListRequestDto 사용자의 UUID
+     * @param memberId 사용자의 UUID
      * @return 사용자가 찜한 매물 글 리스트
      */
-    public StarRoomDealMyListResponseDto getMyStarRoomDealList(StarRoomDealMyListRequestDto starRoomDealMyListRequestDto) throws BaseException {
-        UUID memberId = starRoomDealMyListRequestDto.getMemberId();
-
+    public StarRoomDealMyListResponseDto getMyStarRoomDealList(UUID memberId) throws BaseException {
         verifyMember(memberId); // 사용자 정보 확인
 
-        Optional<List<StarRoomDealMapping>> myStarRoomDealList = starRoomDealRepository.findAllByMember_Id(memberId);
+        Optional<List<StarRoomDealMapping>> myStarRoomDealList = starRoomDealRepository.findAllByMemberId(memberId);
 
         return new StarRoomDealMyListResponseDto(myStarRoomDealList.get());
     }
 
+    /**
+     * 매물을 찜한 사용자 목록을 조회한다.
+     *
+     * @param roomDealId 매물 글의 id
+     * @return 매물을 찜한 사용자 리스트
+     */
+    public StarRoomDealMemberListResponseDto getRoomDealStarredMemberList(Long roomDealId) throws BaseException {
+        verifyRoomDeal(roomDealId); // 매물 글 정보 확인
+
+        Optional<List<StarMemberMapping>> roomDealStarMemberList = starRoomDealRepository.findAllByRoomDealId(roomDealId);
+
+        return new StarRoomDealMemberListResponseDto(roomDealStarMemberList.get());
+    }
 
     /**
      * 사용자의 UUID를 기준으로 사용자 정보를 조회한다.
