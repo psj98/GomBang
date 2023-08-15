@@ -2,8 +2,10 @@ package com.ssafy.roomDeal.service;
 
 import com.ssafy.elasticsearch.dto.*;
 import com.ssafy.elasticsearch.repository.RoomDealElasticSearchRepository;
+import com.ssafy.elasticsearch.repository.ShowRoomElasticSearchRepository;
 import com.ssafy.global.common.response.BaseException;
 import com.ssafy.global.common.response.BaseResponseStatus;
+import com.ssafy.likeShowRoom.repository.LikeShowRoomRepository;
 import com.ssafy.member.domain.Member;
 import com.ssafy.member.repository.MemberRepository;
 import com.ssafy.redis.RoomDealRedisStoreDto;
@@ -16,6 +18,11 @@ import com.ssafy.roomDeal.repository.RoomDealImageInfoRepository;
 import com.ssafy.roomDeal.repository.RoomDealOptionReposiroty;
 import com.ssafy.redis.repository.RoomDealRedisRepository;
 import com.ssafy.roomDeal.repository.RoomDealRepository;
+import com.ssafy.showRoom.domain.ShowRoom;
+import com.ssafy.showRoom.repository.ShowRoomRepository;
+import com.ssafy.showRoomHashTag.domain.ShowRoomHashTag;
+import com.ssafy.showRoomHashTag.domain.ShowRoomHashTagId;
+import com.ssafy.showRoomHashTag.repository.ShowRoomHashTagRepository;
 import lombok.RequiredArgsConstructor;
 import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.*;
@@ -45,6 +52,10 @@ public class RoomDealService {
     private final RoomDealRedisRepository roomDealRedisRepository;
     private final RoomDealElasticSearchRepository roomDealElasticSearchRepository;
     private final RoomDealImageInfoRepository roomDealImageInfoRepository;
+    private final ShowRoomRepository showRoomRepository;
+    private final ShowRoomHashTagRepository showRoomHashTagRepository;
+    private final LikeShowRoomRepository likeShowRoomRepository;
+    private final ShowRoomElasticSearchRepository showRoomElasticSearchRepository;
 
     // 매물 등록
     @Transactional
@@ -128,8 +139,11 @@ public class RoomDealService {
         if (roomDealOptional.isPresent() && roomDealOptionOptional.isPresent()) {
             RoomDeal roomDeal = roomDealOptional.get();
             RoomDealOption roomDealOption = roomDealOptionOptional.get();
+
             // 본인 확인
             if (roomDeal.getMember().getId().equals(roomDealDeleteRequestDto.getMemberId())) {
+                deleteShowRoom(roomDeal.getId(), roomDeal.getMember().getId());
+
                 roomDealOptionReposiroty.deleteById(roomDealDeleteRequestDto.getRoomDealId());
                 roomDealRepository.deleteById(roomDealDeleteRequestDto.getRoomDealId());
                 return new RoomDealDeleteResponseDto(roomDealDeleteRequestDto.getRoomDealId());
@@ -138,6 +152,53 @@ public class RoomDealService {
             }
         } else {
             throw new BaseException(BaseResponseStatus.NOT_MATCHED_ROOM_DEAL_ID);
+        }
+    }
+
+    /**
+     * 곰방봐 삭제
+     *
+     * @param roomDealId
+     * @param memberId
+     * @throws BaseException
+     */
+    @Transactional
+    public void deleteShowRoom(Long roomDealId, UUID memberId) throws BaseException {
+        ShowRoom showRoom = showRoomRepository.findByRoomDealId(roomDealId);
+
+        // showRoom 등록 여부 확인
+        if (showRoom == null) {
+            throw new BaseException(BaseResponseStatus.NOT_MATCHED_SHOW_ROOM_ID);
+        }
+
+        Integer showRoomId = showRoom.getId();
+        List<Integer> showRoomHashTagIdList = showRoomHashTagRepository.findByShowRoomId(showRoomId);
+
+        // 본인 확인
+        if (!showRoom.getMember().getId().equals(memberId)) {
+            throw new BaseException(BaseResponseStatus.NOT_AUTHORIZED);
+        }
+
+        // showRoomHashTag에서 값 삭제
+        for (Integer hashTagId : showRoomHashTagIdList) {
+            ShowRoomHashTagId showRoomHashTagId = new ShowRoomHashTagId(showRoomId, hashTagId);
+            Optional<ShowRoomHashTag> showRoomHashTagOptional = showRoomHashTagRepository.findById(showRoomHashTagId);
+
+            // showRoomHashTag 등록 여부 확인
+            if (!showRoomHashTagOptional.isPresent()) {
+                throw new BaseException(BaseResponseStatus.NOT_MATCHED_SHOW_ROOM_HASH_TAG_ID);
+            }
+
+            showRoomHashTagRepository.deleteById(showRoomHashTagId);
+        }
+
+        likeShowRoomRepository.deleteByShowRoomId(showRoomId); // 좋아요 삭제
+        showRoomRepository.deleteById(showRoomId); // showRoom 삭제
+
+        try {
+            showRoomElasticSearchRepository.deleteById(showRoomId.toString()); // Elastic Search에 저장된 ShowRoom 삭제
+        } catch (Exception e) {
+            return ;
         }
     }
 
@@ -495,6 +556,7 @@ public class RoomDealService {
 
     /**
      * Cache에 있는 RoomDeal 가져오기
+     *
      * @param roomDealSearchDtoList
      * @return List<RoomDeal>
      * @throws BaseException
@@ -517,8 +579,8 @@ public class RoomDealService {
             // 이걸 dto로 생성해서 넣어야됨
             roomDealListResponseDtolist.add(new RoomDealListResponseDto(roomDealOptional.get()));
         }
-            RoomDealInfo roomDealInfo = new RoomDealInfo(address, roomDealRedisStoreDtoList);
-            roomDealRedisRepository.save(roomDealInfo);
+        RoomDealInfo roomDealInfo = new RoomDealInfo(address, roomDealRedisStoreDtoList);
+        roomDealRedisRepository.save(roomDealInfo);
 
         return roomDealListResponseDtolist;
 
@@ -526,6 +588,7 @@ public class RoomDealService {
 
     /**
      * 2차검색 + 필터링
+     *
      * @param filteredRoomDealListRequestDto
      * @throws BaseException
      */
@@ -561,31 +624,31 @@ public class RoomDealService {
 
             // Floor 최저층보다 낮거나, 최고층보다 높으면 continue
             if (filteredRoomDealListRequestDto.getStartFloor() > searchResult.getFloor()
-                || filteredRoomDealListRequestDto.getEndFloor() < searchResult.getFloor()) {
+                    || filteredRoomDealListRequestDto.getEndFloor() < searchResult.getFloor()) {
                 continue;
             }
 
             // MonthlyFee 최저월세보다 낮거나, 최고월세보다 높으면 continue
             if (filteredRoomDealListRequestDto.getStartMonthlyFee() > searchResult.getMonthlyFee()
-                || filteredRoomDealListRequestDto.getEndMonthlyFee() < searchResult.getMonthlyFee()) {
+                    || filteredRoomDealListRequestDto.getEndMonthlyFee() < searchResult.getMonthlyFee()) {
                 continue;
             }
 
             // Deposit 최저보증금보다 낮거나, 최고보증금보다 높으면 continue
             if (filteredRoomDealListRequestDto.getStartDeposit() > searchResult.getDeposit()
-                || filteredRoomDealListRequestDto.getEndDeposit() < searchResult.getDeposit()) {
+                    || filteredRoomDealListRequestDto.getEndDeposit() < searchResult.getDeposit()) {
                 continue;
             }
 
             // ManagementFee 최저관리비보다 낮거나, 최고관리비보다 높으면 continue
             if (filteredRoomDealListRequestDto.getStartManagementFee() > searchResult.getManagementFee()
-                || filteredRoomDealListRequestDto.getEndManagementFee() < searchResult.getManagementFee()) {
+                    || filteredRoomDealListRequestDto.getEndManagementFee() < searchResult.getManagementFee()) {
                 continue;
             }
 
             // RoomSize 최저방크기보다 작거나, 최고방크기보다 크면 continue
             if (filteredRoomDealListRequestDto.getStartRoomSize() > searchResult.getRoomSize()
-                || filteredRoomDealListRequestDto.getEndRoomSize() < searchResult.getRoomSize()) {
+                    || filteredRoomDealListRequestDto.getEndRoomSize() < searchResult.getRoomSize()) {
                 continue;
             }
 
