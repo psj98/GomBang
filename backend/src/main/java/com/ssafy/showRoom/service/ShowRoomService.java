@@ -194,41 +194,40 @@ public class ShowRoomService {
         List<Integer> showRoomHashTagIdList = showRoomHashTagRepository.findByShowRoomId(showRoomId);
 
         // showRoom 등록 여부 확인
-        if (showRoomOptional.isPresent()) {
-            ShowRoom showRoom = showRoomOptional.get();
-
-            // 본인 확인
-            if (showRoom.getMember().getId().equals(memberId)) {
-
-                // showRoomHashTag에서 값 삭제
-                for (Integer hashTagId : showRoomHashTagIdList) {
-                    ShowRoomHashTagId showRoomHashTagId = new ShowRoomHashTagId(showRoomId, hashTagId);
-                    Optional<ShowRoomHashTag> showRoomHashTagOptional = showRoomHashTagRepository.findById(showRoomHashTagId);
-
-                    // showRoomHashTag 등록 여부 확인
-                    if (showRoomHashTagOptional.isPresent()) {
-                        showRoomHashTagRepository.deleteById(new ShowRoomHashTagId(showRoomId, hashTagId));
-                    } else {
-                        throw new BaseException(BaseResponseStatus.NOT_MATCHED_SHOW_ROOM_HASH_TAG_ID);
-                    }
-                }
-
-                likeShowRoomRepository.deleteByShowRoomId(showRoomId); // 좋아요 삭제
-                showRoomRepository.deleteById(showRoomId); // showRoom 삭제
-
-                try {
-                    showRoomElasticSearchRepository.deleteById(showRoomId.toString()); // Elastic Search에 저장된 ShowRoom 삭제
-                } catch (Exception e) {
-                    return new ShowRoomDeleteResponseDto(showRoomId);
-                }
-
-                return new ShowRoomDeleteResponseDto(showRoomId);
-            } else {
-                throw new BaseException(BaseResponseStatus.NOT_AUTHORIZED);
-            }
-        } else {
+        if (!showRoomOptional.isPresent()) {
             throw new BaseException(BaseResponseStatus.NOT_MATCHED_SHOW_ROOM_ID);
         }
+
+        ShowRoom showRoom = showRoomOptional.get();
+
+        // 본인 확인
+        if (!showRoom.getMember().getId().equals(memberId)) {
+            throw new BaseException(BaseResponseStatus.NOT_AUTHORIZED);
+        }
+
+        // showRoomHashTag에서 값 삭제
+        for (Integer hashTagId : showRoomHashTagIdList) {
+            ShowRoomHashTagId showRoomHashTagId = new ShowRoomHashTagId(showRoomId, hashTagId);
+            Optional<ShowRoomHashTag> showRoomHashTagOptional = showRoomHashTagRepository.findById(showRoomHashTagId);
+
+            // showRoomHashTag 등록 여부 확인
+            if (!showRoomHashTagOptional.isPresent()) {
+                throw new BaseException(BaseResponseStatus.NOT_MATCHED_SHOW_ROOM_HASH_TAG_ID);
+            }
+
+            showRoomHashTagRepository.deleteById(showRoomHashTagId);
+        }
+
+        likeShowRoomRepository.deleteByShowRoomId(showRoomId); // 좋아요 삭제
+        showRoomRepository.deleteById(showRoomId); // showRoom 삭제
+
+        try {
+            showRoomElasticSearchRepository.deleteById(showRoomId.toString()); // Elastic Search에 저장된 ShowRoom 삭제
+        } catch (Exception e) {
+            return new ShowRoomDeleteResponseDto(showRoomId);
+        }
+
+        return new ShowRoomDeleteResponseDto(showRoomId);
     }
 
     /**
@@ -421,14 +420,14 @@ public class ShowRoomService {
             verifyMember(memberId);
 
             // 좋아요 목록 가져옴
-            for(ShowRoomListResponseDto showRoomListResponseDto : showRoomListResponseDtoList) {
+            for (ShowRoomListResponseDto showRoomListResponseDto : showRoomListResponseDtoList) {
                 ShowRoom showRoom = showRoomListResponseDto.getShowRoom();
                 Integer showRoomId = showRoom.getId();
 
                 LikeShowRoomId likeShowRoomId = new LikeShowRoomId(memberId, showRoomId);
 
                 boolean checkLike = likeShowRoomRepository.existsById(likeShowRoomId);
-                if(checkLike) {
+                if (checkLike) {
                     showRoomListResponseDto.setCheckLike(true);
                 }
             }
