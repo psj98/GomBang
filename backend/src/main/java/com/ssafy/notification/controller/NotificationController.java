@@ -66,11 +66,7 @@ public class NotificationController {
      */
     @GetMapping("/list/{memberId}")
     public BaseResponse<Object> getNotificationList(@PathVariable UUID memberId) {
-        try {
-            return responseService.getSuccessResponse(notificationService.searchByMemberId(memberId));
-        } catch (BaseException e) {
-            return responseService.getFailureResponse(e.status);
-        }
+        return responseService.getSuccessResponse(notificationService.searchByMemberId(memberId));
     }
 
 }
