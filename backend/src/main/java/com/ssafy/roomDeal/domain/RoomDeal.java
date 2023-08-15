@@ -111,7 +111,6 @@ public class RoomDeal implements Serializable {
         this.lat = roomDealRegisterDefaultDto.getLat();
         this.lon = roomDealRegisterDefaultDto.getLon();
         this.dealStatus = DealStatus.dealable;
-        this.thumbnail = roomDealRegisterDefaultDto.getThumbnail();
         this.station = roomDealRegisterDefaultDto.getStation();
         this.univ = roomDealRegisterDefaultDto.getUniv();
         this.content = roomDealRegisterDefaultDto.getContent();
@@ -124,6 +123,12 @@ public class RoomDeal implements Serializable {
         this.monthlyFee = roomDealUpdateRequestDto.getMonthlyFee();
         this.deposit = roomDealUpdateRequestDto.getDeposit();
         this.managementFee = roomDealUpdateRequestDto.getManagementFee();
+
+        return this;
+    }
+
+    public RoomDeal saveThumbnail(String fileUrl) {
+        this.thumbnail = fileUrl;
 
         return this;
     }

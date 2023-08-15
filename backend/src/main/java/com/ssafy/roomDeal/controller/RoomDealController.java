@@ -4,13 +4,15 @@ import com.ssafy.elasticsearch.dto.*;
 import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.global.common.response.BaseException;
 import com.ssafy.global.common.response.ResponseService;
-import com.ssafy.roomDeal.domain.RoomDeal;
 import com.ssafy.roomDeal.dto.*;
 import com.ssafy.roomDeal.service.RoomDealService;
+import com.ssafy.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -20,6 +22,7 @@ public class RoomDealController {
 
     private final ResponseService responseService;
     private final RoomDealService roomDealService;
+    private final S3Service s3Service;
 
     /**
      * 매물 등록
@@ -27,8 +30,16 @@ public class RoomDealController {
      * @return
      */
     @PostMapping("/register")
-    public BaseResponse<Object> registerRoomDeal(@RequestBody RoomDealRegisterRequestDto roomDealRegisterRequestDto) {
-        return responseService.getSuccessResponse(roomDealService.registerRoomDeal(roomDealRegisterRequestDto));
+    public BaseResponse<Object> registerRoomDeal(@RequestPart(name="files")List<MultipartFile> files, @RequestPart RoomDealRegisterRequestDto roomDealRegisterRequestDto) {
+        RoomDealResponseDto roomDealResponseDto = roomDealService.registerRoomDeal(roomDealRegisterRequestDto);
+        List<String> fileUrls;
+        try {
+            fileUrls = s3Service.uploadFiles(files, roomDealResponseDto.getRoomDeal().getId());
+            roomDealService.saveImages(fileUrls, roomDealResponseDto);
+        } catch (BaseException e) {
+            responseService.getFailureResponse(e.status);
+        }
+        return responseService.getSuccessResponse(roomDealResponseDto);
     }
 
     /**
@@ -37,7 +48,6 @@ public class RoomDealController {
      * @return
      */
     @GetMapping("/{id}")
-    @Cacheable(value="RoomDeal")
     public BaseResponse<Object> getRoomDeal(@PathVariable("id") Long id) {
         try {
             return responseService.getSuccessResponse(roomDealService.getRoomDeal(id));
@@ -45,7 +55,6 @@ public class RoomDealController {
             return responseService.getFailureResponse(e.status);
         }
     }
-//    여기다가 캐시어블 할게 아니라 메인검색에서 캐싱하자, 그리고 키는 검색어로 해야돼
 
     /**
      * 매물 수정

@@ -9,8 +9,10 @@ import com.ssafy.member.repository.MemberRepository;
 import com.ssafy.redis.RoomDealRedisStoreDto;
 import com.ssafy.redis.entity.RoomDealInfo;
 import com.ssafy.roomDeal.domain.RoomDeal;
+import com.ssafy.roomDeal.domain.RoomDealImageInfo;
 import com.ssafy.roomDeal.domain.RoomDealOption;
 import com.ssafy.roomDeal.dto.*;
+import com.ssafy.roomDeal.repository.RoomDealImageInfoRepository;
 import com.ssafy.roomDeal.repository.RoomDealOptionReposiroty;
 import com.ssafy.redis.repository.RoomDealRedisRepository;
 import com.ssafy.roomDeal.repository.RoomDealRepository;
@@ -20,7 +22,6 @@ import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortMode;
 import org.elasticsearch.search.sort.SortOrder;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -43,6 +44,7 @@ public class RoomDealService {
     private final RoomDealOptionReposiroty roomDealOptionReposiroty;
     private final RoomDealRedisRepository roomDealRedisRepository;
     private final RoomDealElasticSearchRepository roomDealElasticSearchRepository;
+    private final RoomDealImageInfoRepository roomDealImageInfoRepository;
 
     // 매물 등록
     @Transactional
@@ -76,8 +78,14 @@ public class RoomDealService {
         Optional<RoomDeal> roomDeal = roomDealRepository.findById(id);
         Optional<RoomDealOption> roomDealOption = roomDealOptionReposiroty.findById(id);
 
+        List<RoomDealImageInfo> roomDealImageInfoList = roomDealImageInfoRepository.findAllByRoomDealId(id);
+        List<String> roomDealImageUrls = new ArrayList<>();
+        for (RoomDealImageInfo imageInfo : roomDealImageInfoList) {
+            roomDealImageUrls.add(imageInfo.getFileUrl());
+        }
+
         if (roomDeal.isPresent() && roomDealOption.isPresent()) {
-            return new RoomDealResponseDto(roomDeal.get(), roomDealOption.get());
+            return new RoomDealResponseDto(roomDeal.get(), roomDealOption.get(), roomDealImageUrls);
         } else {
             throw new BaseException(BaseResponseStatus.NOT_MATCHED_ROOM_DEAL_ID);
         }
@@ -89,13 +97,19 @@ public class RoomDealService {
         Optional<RoomDeal> roomDealOptional = roomDealRepository.findById(roomDealUpdateRequestDto.getRoomDealId());
         Optional<RoomDealOption> roomDealOptionOptional = roomDealOptionReposiroty.findById(roomDealUpdateRequestDto.getRoomDealId());
 
+        List<RoomDealImageInfo> roomDealImageInfoList = roomDealImageInfoRepository.findAllByRoomDealId(roomDealUpdateRequestDto.getRoomDealId());
+        List<String> roomDealImageUrls = new ArrayList<>();
+        for (RoomDealImageInfo imageInfo : roomDealImageInfoList) {
+            roomDealImageUrls.add(imageInfo.getFileUrl());
+        }
+
         if (roomDealOptional.isPresent() && roomDealOptionOptional.isPresent()) {
             RoomDeal roomDeal = roomDealOptional.get();
 
             // 본인 확인
             if (roomDeal.getMember().getId().equals(roomDealUpdateRequestDto.getMemberId())) {
                 roomDeal.roomDealUpdate(roomDealUpdateRequestDto);
-                return new RoomDealResponseDto(roomDealOptional.get(), roomDealOptionOptional.get());
+                return new RoomDealResponseDto(roomDealOptional.get(), roomDealOptionOptional.get(), roomDealImageUrls);
             } else {
                 throw new BaseException(BaseResponseStatus.NOT_AUTHORIZED);
             }
@@ -125,6 +139,13 @@ public class RoomDealService {
         } else {
             throw new BaseException(BaseResponseStatus.NOT_MATCHED_ROOM_DEAL_ID);
         }
+    }
+
+    @Transactional
+    public void saveImages(List<String> files, RoomDealResponseDto roomDealResponseDto) {
+        roomDealResponseDto.addFileUrls(files);
+
+        roomDealResponseDto.getRoomDeal().saveThumbnail(files.get(0));
     }
 
     /**

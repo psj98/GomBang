@@ -1,4 +1,4 @@
-package com.ssafy.s3;
+package com.ssafy.s3.controller;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -12,7 +12,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/upload")
 @RequiredArgsConstructor
-public class FileUploadController {
+public class S3Controller {
 
     private final AmazonS3Client amazonS3Client;
 
@@ -20,7 +20,7 @@ public class FileUploadController {
     private String bucket;
 
     @PostMapping
-    public String uploadFile(@RequestParam("file") MultipartFile file) {
+    public String uploadFile(@RequestPart("file") MultipartFile file) {
         try {
             String fileName=file.getOriginalFilename();
             String fileUrl= "https://" + bucket + "/test" +fileName;
