@@ -4,9 +4,15 @@ import com.ssafy.elasticsearch.dto.*;
 import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.global.common.response.BaseException;
 import com.ssafy.global.common.response.ResponseService;
+import com.ssafy.member.domain.Member;
+import com.ssafy.notification.domain.NotificationType;
+import com.ssafy.notification.service.NotificationService;
 import com.ssafy.roomDeal.dto.*;
 import com.ssafy.roomDeal.service.RoomDealService;
 import com.ssafy.s3.service.S3Service;
+import com.ssafy.starRoomDeal.domain.StarMemberMapping;
+import com.ssafy.starRoomDeal.dto.StarRoomDealMemberListResponseDto;
+import com.ssafy.starRoomDeal.service.StarRoomDealService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +29,8 @@ public class RoomDealController {
     private final ResponseService responseService;
     private final RoomDealService roomDealService;
     private final S3Service s3Service;
+    private final StarRoomDealService starRoomDealService;
+    private final NotificationService notificationService;
 
     /**
      * 매물 등록
@@ -64,7 +72,19 @@ public class RoomDealController {
     @PutMapping("/update")
     public BaseResponse<Object> updateRoomDeal(@RequestBody RoomDealUpdateRequestDto roomDealUpdateRequestDto) {
         try {
-            return responseService.getSuccessResponse(roomDealService.updateRoomDeal(roomDealUpdateRequestDto));
+            // 매물 수정
+            RoomDealResponseDto roomDealResponseDto = roomDealService.updateRoomDeal(roomDealUpdateRequestDto);
+
+            // 해당 매물을 찜 한 사용자 리스트 조회
+            StarRoomDealMemberListResponseDto starRoomDealMemberListResponseDto = starRoomDealService.getRoomDealStarredMemberList(roomDealResponseDto.getRoomDeal().getId());
+
+            // 찜 한 사용자들에게 매물 가격 변동 알림 전송
+            for (StarMemberMapping starMemberMapping : starRoomDealMemberListResponseDto.getStarMemberList()) {
+                Member member = starMemberMapping.getMember(); // StarMemberMapping을 Member로 변환
+                notificationService.send(member, NotificationType.LIKED, member.getName() + "님이 찜 한 매물의 가격이 변동되었습니다.", "/roomdeal/" + roomDealResponseDto.getRoomDeal().getId());
+            }
+
+            return responseService.getSuccessResponse(roomDealResponseDto);
         } catch (BaseException e){
             return responseService.getFailureResponse(e.status);
         }
