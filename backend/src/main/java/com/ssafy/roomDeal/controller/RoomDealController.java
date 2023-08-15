@@ -38,7 +38,7 @@ public class RoomDealController {
      * @return
      */
     @PostMapping("/register")
-    public BaseResponse<Object> registerRoomDeal(@RequestPart(name="files")List<MultipartFile> files, @RequestPart RoomDealRegisterRequestDto roomDealRegisterRequestDto) {
+    public BaseResponse<Object> registerRoomDeal(@RequestPart("files") List<MultipartFile> files, @RequestPart RoomDealRegisterRequestDto roomDealRegisterRequestDto) {
         RoomDealResponseDto roomDealResponseDto = roomDealService.registerRoomDeal(roomDealRegisterRequestDto);
         List<String> fileUrls;
         try {
