@@ -85,6 +85,11 @@ public enum BaseResponseStatus implements Serializable {
     SAVE_FILE_FAILED(false, 8003, "사진 저장에 실패했습니다.");
 
 
+    /**
+     * WebRTC
+     * code : 7000번대
+     */
+    NOT_FOUND_RTC_ROOM(false, 7001, "라이브 방을 찾을 수 없습니다.");
 
 
 
@@ -97,5 +102,7 @@ public enum BaseResponseStatus implements Serializable {
         this.code = code;
         this.message = message;
     }
+
+
 
 }
