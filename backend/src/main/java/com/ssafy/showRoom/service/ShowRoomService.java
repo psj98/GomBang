@@ -32,6 +32,7 @@ import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.sql.Date;
 import java.util.*;
 
@@ -56,6 +57,7 @@ public class ShowRoomService {
      * @return
      * @throws BaseException
      */
+    @Transactional
     public ShowRoomResponseDto registerShowRoom(ShowRoomHashTagRequestDto showRoomHashTagRequestDto) throws BaseException {
         ShowRoomRegisterRequestDto showRoomRegisterRequestDto = showRoomHashTagRequestDto.getShowRoomRegisterRequestDto();
         HashTagRegisterRequestDto hashTagRegisterRequestDto = showRoomHashTagRequestDto.getHashTagRegisterRequestDto();
@@ -183,6 +185,7 @@ public class ShowRoomService {
      * @return
      * @throws BaseException
      */
+    @Transactional
     public ShowRoomDeleteResponseDto deleteShowRoom(ShowRoomDeleteRequestDto showRoomDeleteRequestDto) throws BaseException {
         Integer showRoomId = showRoomDeleteRequestDto.getShowRoomId();
         UUID memberId = showRoomDeleteRequestDto.getMemberId();
@@ -210,7 +213,14 @@ public class ShowRoomService {
                     }
                 }
 
-                showRoomRepository.deleteById(showRoomId);
+                likeShowRoomRepository.deleteByShowRoomId(showRoomId); // 좋아요 삭제
+                showRoomRepository.deleteById(showRoomId); // showRoom 삭제
+
+                try {
+                    showRoomElasticSearchRepository.deleteById(showRoomId.toString()); // Elastic Search에 저장된 ShowRoom 삭제
+                } catch (Exception e) {
+                    return new ShowRoomDeleteResponseDto(showRoomId);
+                }
 
                 return new ShowRoomDeleteResponseDto(showRoomId);
             } else {
