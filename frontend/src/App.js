@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import Map from "./pages/MapPage";
-import Zzimlist from "./pages/Zimlist";
-import Roomout from "./pages/Roomout";
+import Zzimlist from "./pages/ZzimList";
+import Roomout from "./pages/RoomOut";
 import Signuplogin from "./pages/Signuplogin";
-import GbbList from "./pages/List";
-import GbbCreate from "./pages/Create";
-// import TestApp from "./components/TestApp";
+import GbbList from "./pages/GbbList";
+import GbbCreate from "./pages/GbbCreate";
 import ChatRoom from "./components/Chatting/ChatRoom";
 import ChatList from "./components/Chatting/ChatList";
 import AssigneeRtcRoom from "./components/Rtc/AssigneeRtcRoom";
