@@ -28,6 +28,8 @@ public class RoomDealListResponseDto {
 
     private Integer floor;
 
+    private String thumbnail;
+
     public RoomDealListResponseDto(RoomDeal roomDeal) {
         this.roomDealId = roomDeal.getId();
         this.jibunAddress = roomDeal.getJibunAddress();
@@ -38,6 +40,7 @@ public class RoomDealListResponseDto {
         this.managementFee = roomDeal.getManagementFee();
         this.roomSize = roomDeal.getRoomSize();
         this.floor = roomDeal.getFloor();
+        this.thumbnail = roomDeal.getThumbnail();
     }
 
     public RoomDealListResponseDto(RoomDealRedisStoreDto roomDealRedisStoreDto) {
@@ -50,5 +53,6 @@ public class RoomDealListResponseDto {
         this.managementFee = roomDealRedisStoreDto.getManagementFee();
         this.roomSize = roomDealRedisStoreDto.getRoomSize();
         this.floor = roomDealRedisStoreDto.getFloor();
+        this.thumbnail = roomDealRedisStoreDto.getThumbnail();
     }
 }

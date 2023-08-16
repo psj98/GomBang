@@ -32,6 +32,8 @@ public class RoomDealRedisStoreDto {
 
     private Integer floor;
 
+    private String thumbnail;
+
     private boolean airConditioner;
 
     private boolean refrigerator;
@@ -66,6 +68,8 @@ public class RoomDealRedisStoreDto {
         this.managementFee = roomDealOption.getRoomdeal().getManagementFee();
         this.deposit = roomDealOption.getRoomdeal().getDeposit();
         this.floor = roomDealOption.getRoomdeal().getFloor();
+        this.thumbnail = roomDealOption.getRoomdeal().getThumbnail();
+        this.airConditioner = roomDealOption.isAirConditioner();
         this.refrigerator = roomDealOption.isRefrigerator();
         this.washer = roomDealOption.isWasher();
         this.dryer = roomDealOption.isDryer();

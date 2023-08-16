@@ -576,7 +576,6 @@ public class RoomDealService {
             }
 
             roomDealRedisStoreDtoList.add(new RoomDealRedisStoreDto(roomDealOptionOptional.get()));
-            // 이걸 dto로 생성해서 넣어야됨
             roomDealListResponseDtolist.add(new RoomDealListResponseDto(roomDealOptional.get()));
         }
         RoomDealInfo roomDealInfo = new RoomDealInfo(address, roomDealRedisStoreDtoList);
