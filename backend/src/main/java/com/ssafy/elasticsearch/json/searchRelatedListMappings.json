@@ -35,6 +35,9 @@
     },
     "searchType": {
       "type": "text"
+    },
+    "location": {
+      "type": "geo_point"
     }
   }
 }
