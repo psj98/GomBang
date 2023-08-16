@@ -39,6 +39,21 @@ public class ShowRoomController {
     }
 
     /**
+     * 곰방봐 상세보기
+     * 
+     * @param showRoomDeleteRequestDto
+     * @return
+     */
+    @PostMapping("/detail")
+    public BaseResponse<Object> getShowRoom(@RequestBody ShowRoomDeleteRequestDto showRoomDeleteRequestDto) {
+        try {
+            return responseService.getSuccessResponse(showRoomService.getShowRoom(showRoomDeleteRequestDto));
+        } catch (BaseException e) {
+            return responseService.getFailureResponse(e.status);
+        }
+    }
+
+    /**
      * 곰방봐 삭제
      *
      * @param showRoomDeleteRequestDto
