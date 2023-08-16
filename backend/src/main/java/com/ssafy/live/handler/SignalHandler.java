@@ -48,7 +48,6 @@ public class SignalHandler extends TextWebSocketHandler {
     // 소켓 연결되었을 때 이벤트 처리
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
-        // 나중에 바꿔야 함
         sendMessage(session, new WebSocketMessage("Server", JOIN, Boolean.toString(!rooms.isEmpty()), null, null));
     }
 
@@ -101,9 +100,6 @@ public class SignalHandler extends TextWebSocketHandler {
                 case JOIN:
                     // message.data contains connected room id
                     logger.debug("[ws] {} has joined Room: #{}", userUUID, message.getData());
-
-//                    room = rtcChatService.findRoomByRoomId(roomId)
-//                            .orElseThrow(() -> new IOException("Invalid room number received!"));
                     rtcRoom = RtcRoomMap.getInstance().getRooms().get(roomId);
 
                     // room 안에 있는 userList 에 유저 추가
@@ -128,8 +124,12 @@ public class SignalHandler extends TextWebSocketHandler {
                             // 3. 하여튼 동일한 것만 가져온다
                             .findAny();
 
-                    // 만약 client 의 값이 존재한다면 - Optional 임으로 isPersent 사용 , null  아니라면 - removeClientByName 을 실행
+                    // 만약 client 의  값이 존재한다면 - Optional 임으로 isPersent 사용 , null  아니라면 - removeClientByName 을 실행
                     client.ifPresent(userID -> rtcService.removeClientById(rtcRoom, userID));
+
+                    // 테스트 (방에 인원이 없으면 방 삭제)
+                    if(rtcService.getClients(rtcRoom).size() == 0)
+                        rtcService.deleteRtcRoom(rtcRoom.getRoomId());
 
                     logger.debug("삭제 완료 [{}] ",client);
                     break;

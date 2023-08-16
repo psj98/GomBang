@@ -37,6 +37,10 @@ public class RtcService {
         return new RtcCreateResponseDto(room);
     }
 
+    public void deleteRtcRoom(String roomId) {
+        RtcRoom exist = RtcRoomMap.getInstance().getRooms().remove(roomId);
+    }
+
     public Map<String, WebSocketSession> getClients(RtcRoom room) {
         return room.getUserList() == null ? null : room.getUserList();
     }
