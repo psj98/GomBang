@@ -17,5 +17,17 @@ public class ShowRoomDetailResponseDto {
 
     private ShowRoom showRoom;
     private List<HashTag> hashTag;
+    private List<String> fileUrls;
     private boolean checkLike;
+
+    public ShowRoomDetailResponseDto(ShowRoom showroom, List<HashTag> hashTag, List<String> fileUrls) {
+        this.showRoom = showroom;
+        this.hashTag = hashTag;
+        this.fileUrls = fileUrls;
+    }
+
+    public ShowRoomDetailResponseDto addCheckLike(boolean checkLike) {
+        this.checkLike = checkLike;
+        return this;
+    }
 }

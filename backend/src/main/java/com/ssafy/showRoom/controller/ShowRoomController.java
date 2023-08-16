@@ -8,6 +8,8 @@ import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.global.common.response.ResponseService;
 import com.ssafy.s3.service.S3Service;
 import com.ssafy.showRoom.dto.ShowRoomDeleteRequestDto;
+import com.ssafy.showRoom.dto.ShowRoomDetailRequestDto;
+import com.ssafy.showRoom.dto.ShowRoomDetailResponseDto;
 import com.ssafy.showRoom.dto.ShowRoomResponseDto;
 import com.ssafy.showRoom.service.ShowRoomService;
 import com.ssafy.showRoomHashTag.dto.ShowRoomHashTagRequestDto;
@@ -50,13 +52,14 @@ public class ShowRoomController {
     /**
      * 곰방봐 상세보기
      * 
-     * @param showRoomDeleteRequestDto
+     * @param showRoomDetailRequestDto
      * @return
      */
     @PostMapping("/detail")
-    public BaseResponse<Object> getShowRoom(@RequestBody ShowRoomDeleteRequestDto showRoomDeleteRequestDto) {
+    public BaseResponse<Object> getShowRoom(@RequestBody ShowRoomDetailRequestDto showRoomDetailRequestDto) {
+
         try {
-            return responseService.getSuccessResponse(showRoomService.getShowRoom(showRoomDeleteRequestDto));
+            return responseService.getSuccessResponse(showRoomService.getShowRoom(showRoomDetailRequestDto));
         } catch (BaseException e) {
             return responseService.getFailureResponse(e.status);
         }

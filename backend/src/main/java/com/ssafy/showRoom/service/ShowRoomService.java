@@ -14,7 +14,9 @@ import com.ssafy.member.repository.MemberRepository;
 import com.ssafy.roomDeal.domain.RoomDeal;
 import com.ssafy.roomDeal.repository.RoomDealRepository;
 import com.ssafy.showRoom.domain.ShowRoom;
+import com.ssafy.showRoom.domain.ShowRoomImageInfo;
 import com.ssafy.showRoom.dto.*;
+import com.ssafy.showRoom.repository.ShowRoomImageInfoRepository;
 import com.ssafy.showRoom.repository.ShowRoomRepository;
 import com.ssafy.showRoomHashTag.domain.ShowRoomHashTag;
 import com.ssafy.showRoomHashTag.domain.ShowRoomHashTagId;
@@ -49,6 +51,7 @@ public class ShowRoomService {
     private final ShowRoomHashTagRepository showRoomHashTagRepository;
     private final LikeShowRoomRepository likeShowRoomRepository;
     private final ShowRoomElasticSearchRepository showRoomElasticSearchRepository;
+    private final ShowRoomImageInfoRepository showRoomImageInfoRepository;
 
     /**
      * 곰방봐 등록 + 해시태그 등록 + ElasticSearch에 값 저장
@@ -233,13 +236,13 @@ public class ShowRoomService {
     /**
      * 곰방봐 상세보기
      *
-     * @param showRoomDeleteRequestDto
+     * @param showRoomDetailRequestDto
      * @return
      * @throws BaseException
      */
-    public ShowRoomDetailResponseDto getShowRoom(ShowRoomDeleteRequestDto showRoomDeleteRequestDto) throws BaseException {
-        UUID memberId = showRoomDeleteRequestDto.getMemberId();
-        Integer showRoomId = showRoomDeleteRequestDto.getShowRoomId();
+    public ShowRoomDetailResponseDto getShowRoom(ShowRoomDetailRequestDto showRoomDetailRequestDto) throws BaseException {
+        UUID memberId = showRoomDetailRequestDto.getMemberId();
+        Integer showRoomId = showRoomDetailRequestDto.getShowRoomId();
 
         Optional<ShowRoom> showRoom = showRoomRepository.findById(showRoomId);
 
@@ -248,6 +251,11 @@ public class ShowRoomService {
         }
 
         // 이미지 가져오기
+        List<ShowRoomImageInfo> showRoomImageInfoList = showRoomImageInfoRepository.findAllByShowRoomId(showRoomId);
+        List<String> showRoomImageUrls = new ArrayList<>();
+        for (ShowRoomImageInfo imageInfo : showRoomImageInfoList) {
+            showRoomImageUrls.add(imageInfo.getFileUrl());
+        }
 
         // 태그 가져오기
         List<Integer> hashTagIdList = showRoomHashTagRepository.findByShowRoomId(showRoomId);
@@ -256,14 +264,11 @@ public class ShowRoomService {
             hashTagList.add(hashTagRepository.findById(hashTagId).get());
         }
 
-        ShowRoomDetailResponseDto showRoomDetailResponseDto = new ShowRoomDetailResponseDto();
-        showRoomDetailResponseDto.setShowRoom(showRoom.get());
-        showRoomDetailResponseDto.setHashTag(hashTagList);
+        ShowRoomDetailResponseDto showRoomDetailResponseDto = new ShowRoomDetailResponseDto(showRoom.get(), hashTagList, showRoomImageUrls);
 
         // 로그인 체크
         if (memberId.toString().isEmpty()) { // 로그인 X
-            showRoomDetailResponseDto.setCheckLike(false);
-            return showRoomDetailResponseDto;
+            return showRoomDetailResponseDto.addCheckLike(false);
         } else { // 로그인 O
             // 회원 체크
             verifyMember(memberId);
@@ -273,11 +278,9 @@ public class ShowRoomService {
             // 좋아요 목록 가져옴
             boolean checkLike = likeShowRoomRepository.existsById(likeShowRoomId);
             if (checkLike) {
-                showRoomDetailResponseDto.setCheckLike(false);
-                return showRoomDetailResponseDto;
+                return showRoomDetailResponseDto.addCheckLike(true);
             } else {
-                showRoomDetailResponseDto.setCheckLike(true);
-                return showRoomDetailResponseDto;
+                return showRoomDetailResponseDto.addCheckLike(false);
             }
         }
     }
