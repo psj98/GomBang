@@ -103,8 +103,8 @@ public class ChatController {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
         // stomp 세션에 있던 uuid와 roomId를 확인해서 채팅방 유저 리스트와 room에서 해당 유저를 삭제
-        String userUUID = (String) headerAccessor.getSessionAttributes().get("userUUID");
-        String roomId = (String) headerAccessor.getSessionAttributes().get("roomId");
+        String userUUID = headerAccessor.getSessionAttributes().get("userID").toString();
+        String roomId = headerAccessor.getSessionAttributes().get("roomId").toString();
 
         log.info("headAccessor {}", headerAccessor);
     }
