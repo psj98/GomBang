@@ -15,7 +15,7 @@ public class ElasticSearchConfig extends AbstractElasticsearchConfiguration {
     public RestHighLevelClient elasticsearchClient() {
 
         // http port와 통신할 주소
-        ClientConfiguration configuration = ClientConfiguration.builder().connectedTo("i9a804.p.ssafy.io:9200").build();
+        ClientConfiguration configuration = ClientConfiguration.builder().connectedTo("localhost:9200").build();
 //        System.out.println("Elastic Search 연결 완료");
         return RestClients.create(configuration).rest();
     }

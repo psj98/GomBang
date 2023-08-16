@@ -22,4 +22,5 @@ public class SearchRelatedListResponseDto {
     private String station; // 역 이름
     private String univ; // 대학교 이름
     private String searchType; // 검색어 종류 (주소, 역, 대학교)
+    private LocationRequestDto location; // 위도, 경도
 }
