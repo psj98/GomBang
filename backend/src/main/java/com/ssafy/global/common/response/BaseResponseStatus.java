@@ -81,13 +81,13 @@ public enum BaseResponseStatus implements Serializable {
      * code: 9000번대
      */
     STAR_ROOM_DEAL_REGISTER_FAILED(false, 9001, "이미 등록된 찜 입니다."),
-    STAR_ROOM_DEAL_DELETE_FAILED(false, 9002, "찜이 등록되어 있지 않습니다.");
+    STAR_ROOM_DEAL_DELETE_FAILED(false, 9002, "찜이 등록되어 있지 않습니다."),
 
     /**
      * WebRTC
-     * code : 9000번대
+     * code : 10000번대
      */
-    NOT_FOUND_RTC_ROOM(false, 9001, "라이브 방을 찾을 수 없습니다.");
+    NOT_FOUND_RTC_ROOM(false, 10001, "라이브 방을 찾을 수 없습니다.");
 
 
     private boolean isSuccess;
