@@ -38,6 +38,8 @@ public class ShowRoom {
     @NotNull
     private String jibunAddress;
 
+    private String thumbnail;
+
     private String station;
 
     private String univ;
@@ -45,5 +47,11 @@ public class ShowRoom {
     private Date registerTime;
 
     private DealStatus dealStatus;
+
+    public ShowRoom saveThumbnail(String fileUrl) {
+        this.thumbnail = fileUrl;
+
+        return this;
+    }
 
 }

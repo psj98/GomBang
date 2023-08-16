@@ -6,11 +6,14 @@ import com.ssafy.elasticsearch.dto.ShowRoomSearchRequestDto;
 import com.ssafy.global.common.response.BaseException;
 import com.ssafy.global.common.response.BaseResponse;
 import com.ssafy.global.common.response.ResponseService;
+import com.ssafy.s3.service.S3Service;
 import com.ssafy.showRoom.dto.ShowRoomDeleteRequestDto;
+import com.ssafy.showRoom.dto.ShowRoomResponseDto;
 import com.ssafy.showRoom.service.ShowRoomService;
 import com.ssafy.showRoomHashTag.dto.ShowRoomHashTagRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,7 +23,7 @@ import java.util.List;
 public class ShowRoomController {
 
     private final ResponseService responseService;
-
+    private final S3Service s3Service;
     private final ShowRoomService showRoomService;
 
     /**
@@ -30,12 +33,18 @@ public class ShowRoomController {
      * @return BaseResponse<ShowRoomResponseDto>
      */
     @PostMapping("/register")
-    public BaseResponse<Object> registerShowRoom(@RequestBody ShowRoomHashTagRequestDto showRoomHashTagRequestDto) {
+    public BaseResponse<Object> registerShowRoom(@RequestPart("files") List<MultipartFile> files, @RequestPart ShowRoomHashTagRequestDto showRoomHashTagRequestDto) {
+        ShowRoomResponseDto showRoomResponseDto;
+        List<String> fileUrls;
         try {
-            return responseService.getSuccessResponse(showRoomService.registerShowRoom(showRoomHashTagRequestDto));
+            showRoomResponseDto = showRoomService.registerShowRoom(showRoomHashTagRequestDto);
+            fileUrls = s3Service.uploadFiles(files, showRoomResponseDto.getShowRoom().getId());
+            showRoomService.saveImages(fileUrls, showRoomResponseDto);
         } catch (BaseException e) {
             return responseService.getFailureResponse(e.status);
         }
+
+        return responseService.getSuccessResponse(showRoomResponseDto);
     }
 
     /**

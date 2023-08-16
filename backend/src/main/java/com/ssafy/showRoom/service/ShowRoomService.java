@@ -539,4 +539,11 @@ public class ShowRoomService {
 
         return makeSearchQuery(boolQueryBuilder, pageOffset, sortType);
     }
+
+    @Transactional
+    public void saveImages(List<String> fileUrls, ShowRoomResponseDto showRoomResponseDto) {
+        showRoomResponseDto.addFileUrls(fileUrls);
+
+        showRoomResponseDto.getShowRoom().saveThumbnail(fileUrls.get(0));
+    }
 }
