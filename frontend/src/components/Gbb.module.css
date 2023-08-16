@@ -1,0 +1,78 @@
+
+.gbbcreateform {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+  .hash-button{
+    background-color: #d9d9d9;
+    margin-right: 10px;
+  }
+
+  .hash-button:hover {
+    background-color: #d9d9d9;
+    color: black;
+  }
+  .header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    /* position:absolute; */
+  }
+  .plusbutton {
+    /* justify-content: flex-end; */
+    font-size: 30px;
+    position:absolute;
+    right: 5%;
+  }
+  .h1 {
+    font-size: 45px;
+  }
+  .h2 {
+    font-weight: bold;
+  }
+  .h3{
+    font-size: 35px;
+    font-weight: bold;
+    /* justify-content: center; */
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+  }
+  .searchbox{
+    margin-top: 30px;
+    margin-right: 20px;
+    font-size: 15px;
+    height: 30px;
+    width: 40vw
+  }
+
+  .inputbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    /* position:absolute; */
+    margin-bottom: 15px;
+  }
+  .searchclick {
+    /* justify-content: flex-end; */
+    /* font-size: 30px; */
+    position:absolute;
+    right: 5%;
+    margin-top: 30px;
+  }
+.imageinput {
+  font-size: 15px;
+  /* justify-content: center;
+  align-items: center; */
+  margin-bottom: 15px;
+
+}
+.taginput {
+  height:30px;
+  width: 30vw;
+  margin-bottom: 15px;
+}

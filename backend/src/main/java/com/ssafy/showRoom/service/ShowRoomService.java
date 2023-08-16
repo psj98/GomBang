@@ -231,12 +231,65 @@ public class ShowRoomService {
     }
 
     /**
+     * 곰방봐 상세보기
+     *
+     * @param showRoomDeleteRequestDto
+     * @return
+     * @throws BaseException
+     */
+    public ShowRoomDetailResponseDto getShowRoom(ShowRoomDeleteRequestDto showRoomDeleteRequestDto) throws BaseException {
+        UUID memberId = showRoomDeleteRequestDto.getMemberId();
+        Integer showRoomId = showRoomDeleteRequestDto.getShowRoomId();
+
+        Optional<ShowRoom> showRoom = showRoomRepository.findById(showRoomId);
+
+        if (!showRoom.isPresent()) {
+            throw new BaseException(BaseResponseStatus.NOT_MATCHED_SHOW_ROOM_ID);
+        }
+
+        // 이미지 가져오기
+
+        // 태그 가져오기
+        List<Integer> hashTagIdList = showRoomHashTagRepository.findByShowRoomId(showRoomId);
+        List<HashTag> hashTagList = new ArrayList<>();
+        for (Integer hashTagId : hashTagIdList) {
+            hashTagList.add(hashTagRepository.findById(hashTagId).get());
+        }
+
+        ShowRoomDetailResponseDto showRoomDetailResponseDto = new ShowRoomDetailResponseDto();
+        showRoomDetailResponseDto.setShowRoom(showRoom.get());
+        showRoomDetailResponseDto.setHashTag(hashTagList);
+
+        // 로그인 체크
+        if (memberId.toString().isEmpty()) { // 로그인 X
+            showRoomDetailResponseDto.setCheckLike(false);
+            return showRoomDetailResponseDto;
+        } else { // 로그인 O
+            // 회원 체크
+            verifyMember(memberId);
+
+            LikeShowRoomId likeShowRoomId = new LikeShowRoomId(memberId, showRoomId);
+
+            // 좋아요 목록 가져옴
+            boolean checkLike = likeShowRoomRepository.existsById(likeShowRoomId);
+            if (checkLike) {
+                showRoomDetailResponseDto.setCheckLike(false);
+                return showRoomDetailResponseDto;
+            } else {
+                showRoomDetailResponseDto.setCheckLike(true);
+                return showRoomDetailResponseDto;
+            }
+        }
+    }
+
+    /**
      * 검색어 목록 가져오기
      *
      * @param searchRelatedListRequestDto
      * @return
      */
-    public List<SearchRelatedListUniteResponseDto> getSearchRelatedListFinal(SearchRelatedListRequestDto searchRelatedListRequestDto) {
+    public List<SearchRelatedListUniteResponseDto> getSearchRelatedListFinal(SearchRelatedListRequestDto
+                                                                                     searchRelatedListRequestDto) {
         List<SearchRelatedListResponseDto> searchRelatedListResponseDtoList = getSearchRelatedList(searchRelatedListRequestDto);
 
         List<SearchRelatedListUniteResponseDto> searchRelatedListUniteResponseDtoList = new ArrayList<>();
@@ -266,7 +319,8 @@ public class ShowRoomService {
      * @param searchRelatedListRequestDto
      * @return
      */
-    private List<SearchRelatedListResponseDto> getSearchRelatedList(SearchRelatedListRequestDto searchRelatedListRequestDto) {
+    private List<SearchRelatedListResponseDto> getSearchRelatedList(SearchRelatedListRequestDto
+                                                                            searchRelatedListRequestDto) {
         String searchWord = searchRelatedListRequestDto.getSearchWord(); // 검색어
 
         BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder(); // Bool Query 생성
@@ -373,7 +427,8 @@ public class ShowRoomService {
      * @param showRoomSearchRequestDto
      * @return
      */
-    public List<ShowRoomListResponseDto> getSearchResult(ShowRoomSearchRequestDto showRoomSearchRequestDto) throws BaseException {
+    public List<ShowRoomListResponseDto> getSearchResult(ShowRoomSearchRequestDto showRoomSearchRequestDto) throws
+            BaseException {
         String searchType = showRoomSearchRequestDto.getSearchType();
         UUID memberId = showRoomSearchRequestDto.getMemberId();
 
@@ -392,7 +447,8 @@ public class ShowRoomService {
     /**
      * 검색 결과로 나온 showRoomId로 showRoom 가져오기
      */
-    private List<ShowRoomListResponseDto> getShowRoomList(List<ShowRoomSearchResponseDto> showRoomSearchResponseDtoList) {
+    private List<ShowRoomListResponseDto> getShowRoomList
+    (List<ShowRoomSearchResponseDto> showRoomSearchResponseDtoList) {
         List<ShowRoomListResponseDto> showRoomListResponseDtoList = new ArrayList<>();
 
         for (ShowRoomSearchResponseDto cur : showRoomSearchResponseDtoList) {
@@ -411,7 +467,8 @@ public class ShowRoomService {
     /**
      * 좋아요 체크
      */
-    private List<ShowRoomListResponseDto> checkLikeShowRoom(UUID memberId, List<ShowRoomListResponseDto> showRoomListResponseDtoList) throws BaseException {
+    private List<ShowRoomListResponseDto> checkLikeShowRoom(UUID
+                                                                    memberId, List<ShowRoomListResponseDto> showRoomListResponseDtoList) throws BaseException {
         /* 로그인 체크 */
         if (memberId.toString().isEmpty()) { // 로그인 X
             return showRoomListResponseDtoList;
@@ -463,7 +520,8 @@ public class ShowRoomService {
      * @param sortType
      * @return
      */
-    private ArrayList<ShowRoomSearchResponseDto> makeSearchQuery(BoolQueryBuilder boolQueryBuilder, int pageOffset, String sortType) {
+    private ArrayList<ShowRoomSearchResponseDto> makeSearchQuery(BoolQueryBuilder boolQueryBuilder,
+                                                                 int pageOffset, String sortType) {
         /* _search query 생성 */
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
         queryBuilder.withQuery(boolQueryBuilder)
@@ -516,7 +574,8 @@ public class ShowRoomService {
      * @param showRoomSearchRequestDto
      * @return
      */
-    private List<ShowRoomSearchResponseDto> getSearchNotTotalResult(ShowRoomSearchRequestDto showRoomSearchRequestDto) {
+    private List<ShowRoomSearchResponseDto> getSearchNotTotalResult(ShowRoomSearchRequestDto
+                                                                            showRoomSearchRequestDto) {
         String searchWord = showRoomSearchRequestDto.getSearchWord();
         String searchType = showRoomSearchRequestDto.getSearchType();
         String hashTag = showRoomSearchRequestDto.getHashTag();
