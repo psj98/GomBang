@@ -1,75 +1,130 @@
 .gbbcreateform {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
+
+.gbblist {
+	margin: auto 100px;
+}
+
 .hash-button {
-  background-color: #d9d9d9;
-  margin-right: 10px;
+	background-color: #d9d9d9;
+	margin-right: 10px;
 }
 
 .hash-button:hover {
-  background-color: #d9d9d9;
-  color: black;
+	background-color: #d9d9d9;
+	color: black;
 }
 .header {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  /* position:absolute; */
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	align-items: flex-start;
+	/* position:absolute; */
+	margin: 20px;
 }
 .plusbutton {
-  /* justify-content: flex-end; */
-  font-size: 30px;
-  position: absolute;
-  right: 5%;
+	/* justify-content: flex-end; */
+	font-size: 30px;
+	/* position: absolute;
+  right: 5%; */
 }
 .h1 {
-  font-size: 45px;
+	font-size: 40px;
 }
 .h2 {
-  font-weight: bold;
+	font-weight: bold;
+	font-size: 40px;
 }
 .h3 {
-  font-size: 35px;
-  font-weight: bold;
-  /* justify-content: center; */
-  text-align: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
+	font-size: 35px;
+	font-weight: bold;
+	/* justify-content: center; */
+	text-align: center;
+	margin-top: 20px;
+	margin-bottom: 20px;
 }
-.searchbox {
-  margin-top: 30px;
-  margin-right: 20px;
-  font-size: 15px;
-  height: 30px;
-  width: 40vw;
+
+.search {
+	display: flex;
+	justify-content: center;
+	align-items: baseline;
+	flex-direction: row;
+	/* position:absolute; */
+	margin-bottom: 15px;
 }
 
 .inputbox {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  /* position:absolute; */
-  margin-bottom: 15px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
 }
-.searchclick {
-  /* justify-content: flex-end; */
-  /* font-size: 30px; */
-  position: absolute;
-  right: 5%;
-  margin-top: 30px;
+
+.searchbox {
+	margin-top: 30px;
+	margin-bottom: 10px;
+	margin-right: 25px;
+	font-size: 18px;
+	height: 30px;
+	width: 40vw;
+	box-sizing: border-box;
+	border-radius: var(--br-3xs);
+	border-color: transparent;
+	text-indent: 50px;
+	background-color: var(--color-tan);
+	background-size: 35px;
+	background-position: 10px center;
+	background-repeat: no-repeat;
 }
+
+.searchbox:focus {
+	outline: none;
+}
+
+.tag {
+	box-sizing: border-box;
+	border-radius: 10px;
+	border-color: var(--color-tan2);
+	border-style: solid;
+	/* background-color: transparent; */
+	margin: 3px;
+	padding: 1px;
+}
+
 .imageinput {
-  font-size: 15px;
-  /* justify-content: center;
-  align-items: center; */
-  margin-bottom: 15px;
+	font-size: 15px;
+	/* justify-content: center;
+align-items: center; */
+	margin-bottom: 30px;
 }
+
+.tagsearch {
+	margin: 10px;
+}
+
 .taginput {
-  height: 30px;
-  width: 30vw;
-  margin-bottom: 15px;
+	height: 30px;
+	width: 30vw;
+	margin-bottom: 20px;
+	font-size: 18px;
+	box-sizing: border-box;
+	border-radius: var(--br-3xs);
+	border-color: transparent;
+	text-indent: 50px;
+	background-color: var(--color-tan);
+	background-size: 35px;
+	background-position: 10px center;
+	background-repeat: no-repeat;
+}
+
+.taginput:focus {
+	outline: none;
+}
+
+.uploadbutton {
+	margin: 30px;
 }
