@@ -691,4 +691,14 @@ public class RoomDealService {
 
         return roomDealListResponseDtoList;
     }
+
+    public List<RoomDeal> getMyRoomDealList(UUID memberId) {
+        Optional<Member> memberOptional = memberRepository.findById(memberId);
+
+        Member member = memberOptional.get();
+
+        List<RoomDeal> roomDealList = roomDealRepository.findAllByMember(member);
+
+        return roomDealList;
+    }
 }

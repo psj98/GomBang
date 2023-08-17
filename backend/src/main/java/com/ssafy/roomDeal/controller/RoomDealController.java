@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -182,6 +183,11 @@ public class RoomDealController {
         }
 
         return responseService.getSuccessResponse(roomDealListResponseDtoList);
+    }
+
+    @GetMapping("/myroomdeal/{memberId}")
+    public BaseResponse<Object> getMyRoomDealList(@PathVariable("memberId")UUID memberId) {
+        return responseService.getSuccessResponse(roomDealService.getMyRoomDealList(memberId));
     }
 
 }
