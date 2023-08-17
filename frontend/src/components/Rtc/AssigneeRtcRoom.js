@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Header from "../Header";
 
-// import { useNavigate, useParams } from 'react-router-dom';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import styles from "../Chatting/ChatRoom.module.css";
 import axios from "axios";
 import ChatRoom from "../Chatting/ChatRoom";
 // import { click } from "@testing-library/user-event/dist/click";
 
 const AssigneeRtcRoom = () => {
-  // const navigate = useNavigate();
+  const location = useLocation();
+  const navigate = useNavigate();
   const { id } = useParams();
   //   const [message, setMessage] = useState("");
   //   const [messages, setMessages] = useState([]);
@@ -38,6 +38,12 @@ const AssigneeRtcRoom = () => {
     start();
   }, []);
 
+  useEffect(() => {
+    return () => {
+      stop();
+    };
+  }, [location]);
+
   // WebRTC 관련 코드 -------------------------------------------------------
   // WebRTC STUN servers
   // WebRTC STUN 서버 정보
@@ -51,11 +57,7 @@ const AssigneeRtcRoom = () => {
   // WebRTC media
   const mediaConstraints = {
     video: true,
-    audio: {
-      echoCancellation: true,
-      noiseSuppression: true,
-      sampleRate: 44100,
-    },
+    audio: false,
   };
 
   // WebRTC variables
@@ -243,6 +245,7 @@ const AssigneeRtcRoom = () => {
   // room exit button handler
   function exitLive() {
     stop();
+    navigate(-1);
   }
 
   function log(message) {
@@ -475,80 +478,15 @@ const AssigneeRtcRoom = () => {
       <div className="col-lg-12 mb-3">
         <div className="col-lg-12 mb-3">
           <div className="d-flex justify-content-around mb-3">
-            <div id="buttons" className="row">
-              <div className="btn-group mr-2" role="group">
-                <div className="mr-2" data-toggle="buttons">
-                  <label
-                    className="btn btn-outline-success"
-                    id="video_off"
-                    onClick={() => videoOff()}
-                  >
-                    <input
-                      type="radio"
-                      name="options"
-                      style={{ display: "none" }}
-                      autoComplete="off"
-                    />
-                    Video On
-                  </label>
-                  <label
-                    className="btn btn-outline-warning active"
-                    id="video_on"
-                    onClick={() => videoOn()}
-                  >
-                    <input
-                      type="radio"
-                      name="options"
-                      style={{ display: "none" }}
-                      autoComplete="off"
-                      defaultChecked={true}
-                    />
-                    Video Off
-                  </label>
-                </div>
-                <div className="mr-2" data-toggle="buttons">
-                  <label
-                    className="btn btn-outline-success"
-                    id="audio_off"
-                    onClick={() => audioOff()}
-                  >
-                    <input
-                      type="radio"
-                      name="options"
-                      style={{ display: "none" }}
-                      autoComplete="off"
-                    />
-                    Audio On
-                  </label>
-                  <label
-                    className="btn btn-outline-warning active"
-                    id="audio_on"
-                    onClick={() => audioOn()}
-                  >
-                    <input
-                      type="radio"
-                      name="options"
-                      style={{ display: "none" }}
-                      autoComplete="off"
-                      defaultChecked={true}
-                    />
-                    Audio Off
-                  </label>
-                </div>
-              </div>
-
-              <a href="/">
-                <button
-                  type="button"
-                  className="btn btn-outline-danger"
-                  id="exit"
-                  name="exit"
-                  onClick={() => exitLive()}
-                >
-                  Exit Room
-                </button>
-              </a>
-            </div>
+            <button
+              type="button"
+              className="btn btn-outline-danger"
+              id="exit"
+              name="exit"
+              onClick={() => exitLive()}
+            >
+              Exit Room
+            </button>
           </div>
         </div>
 
