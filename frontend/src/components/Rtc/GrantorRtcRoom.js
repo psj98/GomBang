@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Header from "../Header";
-
-import { useParams } from "react-router-dom";
-import styles from "../Chatting/ChatRoom.module.css";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import styles from "./RtcRoom.module.css";
 import axios from "axios";
-import ChatRoom from "../Chatting/ChatRoom";
+import ChatRoomComponent from "../Chatting/ChatRoomComponent";
 
 const GrantorRtcRoom = () => {
-  const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { id, roomDealId } = useParams();
 
   var socket;
 
@@ -23,6 +24,12 @@ const GrantorRtcRoom = () => {
 
     start();
   }, []);
+
+  useEffect(() => {
+    return () => {
+      stop();
+    };
+  }, [location]);
 
   // WebRTC 관련 코드 -------------------------------------------------------
   // WebRTC STUN servers
@@ -198,54 +205,10 @@ const GrantorRtcRoom = () => {
     }
   }
 
-  /*
- UI Handlers
-  */
-  // mute video buttons handler
-  async function videoOff() {
-    // localVideoTracks = localStream.getVideoTracks();
-    // localVideoTracks.forEach((track) => localStream.removeTrack(track));
-    // localVideo.setAttribute(styles, "display:none");
-    localStream = null;
-    localVideo.style.display = "none"; // 스타일 적용
-    console.log("Video Off");
-  }
-
-  async function videoOn() {
-    console.log('~~~~~~~~~~~~~~~~~~~~~~~`', localVideoTracks);
-    
-    // 비디오 트랙 가져오기
-    localStream = await navigator.mediaDevices.getUserMedia({ video: true });
-    localVideoTracks = localStream.getVideoTracks();
-    
-    if (localStream) {
-      localVideoTracks.forEach((track) => {
-        if (track.kind === 'video') {
-          localStream.addTrack(track); // 비디오 트랙 추가
-        }
-      });
-  
-      // 오디오 트랙 관련 코드는 그대로 유지
-      // ...
-  
-      localVideo.style.display = "inline"; // 스타일 적용
-      localVideo.srcObject = localStream; // 비디오 요소에 스트림 연결
-      console.log("Video On");
-    }
-  }
-  // mute audio buttons handler
-  function audioOff() {
-    localVideo.muted = true;
-    log("Audio Off");
-  }
-  function audioOn() {
-    localVideo.muted = false;
-    log("Audio On");
-  }
-
   // room exit button handler
   function exitLive() {
     stop();
+    navigate(-1);
   }
 
   function log(message) {
@@ -469,92 +432,22 @@ const GrantorRtcRoom = () => {
   // -------------------------------------------------------------------------
 
   return (
-    <div className={styles.ChatRoom}>
-      <ChatRoom />
-      <div className="col-lg-12 mb-3">
-        <div className="col-lg-12 mb-3">
-          <div className="d-flex justify-content-around mb-3">
-            <div id="buttons" className="row">
-              <div className="btn-group mr-2" role="group">
-                <div className="mr-2" data-toggle="buttons">
-                  <label
-                    className="btn btn-outline-success"
-                    id="video_off"
-                    onClick={() => videoOff()}
-                  >
-                    <input
-                      type="radio"
-                      name="options"
-                      style={{ display: "none" }}
-                      autoComplete="off"
-                    />
-                    Video Off
-                  </label>
-                  <label
-                    className="btn btn-outline-warning active"
-                    id="video_on"
-                    onClick={() => videoOn()}
-                  >
-                    <input
-                      type="radio"
-                      name="options"
-                      style={{ display: "none" }}
-                      autoComplete="off"
-                      defaultChecked={true}
-                    />
-                    Video On
-                  </label>
-                </div>
-                <div className="mr-2" data-toggle="buttons">
-                  <label
-                    className="btn btn-outline-success"
-                    id="audio_off"
-                    onClick={() => audioOff()}
-                  >
-                    <input
-                      type="radio"
-                      name="options"
-                      style={{ display: "none" }}
-                      autoComplete="off"
-                    />
-                    Audio On
-                  </label>
-                  <label
-                    className="btn btn-outline-warning active"
-                    id="audio_on"
-                    onClick={() => audioOn()}
-                  >
-                    <input
-                      type="radio"
-                      name="options"
-                      style={{ display: "none" }}
-                      autoComplete="off"
-                      defaultChecked={true}
-                    />
-                    Audio Off
-                  </label>
-                </div>
-              </div>
-
-              <a href="/">
-                <button
-                  type="button"
-                  className="btn btn-outline-danger"
-                  id="exit"
-                  name="exit"
-                  onClick={() => exitLive()}
-                >
-                  Exit Room
-                </button>
-              </a>
-            </div>
-          </div>
+    <div>
+      <button
+        type="button"
+        className="btn btn-outline-danger"
+        id="exit"
+        name="exit"
+        onClick={() => exitLive()}
+      >
+        Exit Room
+      </button>
+      <div className={styles.flexContainer}>
+        <div className={styles.videoArea}>
+          <video id="local_video" className={styles.videoElem} autoPlay playsInline></video>
         </div>
-
-        <div className="row justify-content-around mb-3">
-          <div className="col-lg-6 mb-3">
-            <video id="local_video" style={{width:'100px'}} autoPlay playsInline></video>
-          </div>
+        <div className={styles.chatArea}>
+          <ChatRoomComponent id={id} roomDealId={roomDealId} />
         </div>
       </div>
     </div>

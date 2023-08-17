@@ -1,0 +1,100 @@
+.content {
+    margin: auto 100px;
+  }
+  
+  .detail {
+    margin: 50px auto;
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .contentTab:first-child {
+    flex-grow: 1.2;
+    padding-right: 100px;
+  }
+  
+  .contentTab:last-child {
+    flex-grow: 1;
+  }
+  
+  .contentDetail {
+    margin-bottom: 80px;
+  }
+  
+  .contentDetail:last-child h1 {
+    margin-top: 20px;
+  }
+  
+  .detailInfo {
+    display: flex;
+  }
+  
+  .detailInfoItem {
+    flex: 1 1;
+  }
+  
+  .detailInfo .detailInfoItem:nth-child(2) h2 {
+    font-weight: normal;
+  }
+  
+  .contentDetail:first-child .detailInfo:last-child .detailInfoItem:last-child {
+    line-height: 1.5;
+  }
+  
+  .expectedFeeFont {
+    font-weight: bold;
+    color: #c7ad92;
+  }
+  
+  .detailInfoGrid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+  }
+  
+  .detailInfoGridItem {
+    text-align: center;
+  }
+  
+  .contentDetailRoadAddress {
+    font-weight: normal;
+    font-size: 20px;
+  }
+  
+  .fixedTab {
+    position: fixed;
+    padding: 0px 10px;
+    border: 3px solid;
+    border-color: #c7ad92;
+    border-radius: 10px;
+    top: 20vh;
+  }
+  
+  .fixedInfo {
+    display: flex;
+    padding: 20px 15px;
+  }
+  
+  .fixedInfoNotFlex {
+    padding: 20px 15px;
+  }
+  
+  .fixedTopInfoRight {
+    text-align: end;
+  }
+  
+  .fixedInfoGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .fixedInfoBottomTab {
+    display: flex;
+    justify-content: center;
+    padding: 20px 15px;
+  }
+  
+  .chatButton {
+    padding: 5px 30px;
+    border-radius: 15px;
+  }
+  
