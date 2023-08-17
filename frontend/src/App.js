@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Map from "./pages/MapPage";
-import Zzimlist from "./pages/Zimlist";
-import Roomout from "./pages/Roomout";
+import Zzimlist from "./pages/ZzimList";
+import Roomout from "./pages/RoomOut";
 import Signuplogin from "./pages/Signuplogin";
 import GbbList from "./pages/GbbList";
 import GbbCreate from "./pages/GbbCreate";
@@ -14,7 +14,6 @@ import Auth from "./pages/Auth";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import RoomDetail from "./pages/RoomDetail";
-import RoomList from "./components/Maps/RoomList";
 import GbbDetail from "./pages/GbbDetail";
 import MyPage from "./pages/MyPage";
 
