@@ -10,6 +10,7 @@
     "axios": "^1.4.0",
     "format": "^0.2.2",
     "net": "^1.0.2",
+    "qrcode.react": "^3.1.0",
     "rc-slider": "^10.2.1",
     "react": "^18.2.0",
     "react-datepicker": "^4.16.0",
