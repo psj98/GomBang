@@ -81,7 +81,7 @@ public class RoomDealController {
             // 찜 한 사용자들에게 매물 가격 변동 알림 전송
             for (StarMemberMapping starMemberMapping : starRoomDealMemberListResponseDto.getStarMemberList()) {
                 Member member = starMemberMapping.getMember(); // StarMemberMapping을 Member로 변환
-                notificationService.send(member, NotificationType.LIKED, member.getName() + "님이 찜 한 매물의 가격이 변동되었습니다.", "/roomdeal/" + roomDealResponseDto.getRoomDeal().getId());
+                notificationService.send(member, NotificationType.LIKED, member.getName() + "님이 찜 한 매물의 가격이 변동되었습니다.", String.valueOf(roomDealResponseDto.getRoomDeal().getId()));
             }
 
             return responseService.getSuccessResponse(roomDealResponseDto);
