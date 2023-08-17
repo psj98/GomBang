@@ -1,50 +1,49 @@
-.chatlistpage{
-    position: relative;
-    /* height: 100vh; */
-    display: flex;
-    flex-direction: column;
-    align-items:center;
-    justify-content: center;
-    margin-top: 50px;
+.chatlistpage {
+  margin-top: 20px;
+  position: relative;
+  /* height: 100vh; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-.chatlist{
-    margin-top: 30px;
-    flex-direction: column;
-    /* align-items:center; */
-    position: relative;
-    display: flex;
-    height: 40px;
-
+.chatlist {
+  margin-top: 30px;
+  flex-direction: column;
+  /* align-items:center; */
+  position: relative;
+  display: flex;
+  height: 40px;
 }
 
 .chatlistnickname {
-    cursor: pointer;
-     /* 마우스 커서 모양을 포인터로 변경 */
-    width: 400px;
-    height: 40px;
-    border-radius: 10px;
-    display: flex;
-    align-items:center;
-    justify-content: center;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    margin-bottom: 3px;
-    /* font-size: 18px; */
+  cursor: pointer;
+  /* 마우스 커서 모양을 포인터로 변경 */
+  width: 400px;
+  height: 40px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0px;
+  margin: 0px 20px;
+  margin-bottom: 3px;
+  /* font-size: 18px; */
 }
 .chatlistnickname:hover {
-    background-color: #d9d9d9;
-    font-weight: bold;
-     /* 마우스 오버 시 배경색 변경 */
+  background-color: #d9d9d9;
+  font-weight: bold;
+  /* 마우스 오버 시 배경색 변경 */
 }
 
-
-.h1{
-    font-size: 40px;
+.h1 {
+  margin-top: 50px;
+  text-align: center;
+  font-size: 40px;
 }
 
-
-.nochat{
-    font-size: 2px;
-    margin-top: 40px;
+.nochat {
+  font-size: 2px;
+  margin-top: 40px;
 }
