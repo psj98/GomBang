@@ -123,8 +123,12 @@ export default function Auth() {
                     {/* {userinfo && Object.entries(userinfo).map((value,index)=>{return <div key={index}>{value[0]}: {value[1]}</div>})} */}
                 </div>
             }
-            <img className={styles.logoimg} alt="곰방로고" src='/assets/logo.png'/>
-            <div className={styles.gombang}>로딩중...</div>
+            {!shownameform &&
+                <div>
+                    <img className={styles.logoimg} alt="곰방로고" src='/assets/logo.png' />
+                    <div className={styles.gombang}>로딩중...</div>
+                </div>}
+
         </div>
         
     )
