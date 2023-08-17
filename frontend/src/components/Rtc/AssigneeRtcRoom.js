@@ -1,29 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import Header from "../Header";
 
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import styles from "../Chatting/ChatRoom.module.css";
+import styles from "./RtcRoom.module.css";
 import axios from "axios";
-import ChatRoom from "../Chatting/ChatRoom";
-// import { click } from "@testing-library/user-event/dist/click";
+import ChatRoomComponent from "../Chatting/ChatRoomComponent";
 
 const AssigneeRtcRoom = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { id } = useParams();
-  //   const [message, setMessage] = useState("");
-  //   const [messages, setMessages] = useState([]);
-  //   const [previousmessage, setPreviousmessage] = useState([]);
-  //   const [connecting, setConnecting] = useState(true);
-
+  const { id, roomDealId } = useParams();
   var socket;
-
-  // UI elements
-  //   const videoButtonOff = document.querySelector("#video_off");
-  //   const videoButtonOn = document.querySelector("#video_on");
-  //   const audioButtonOff = document.querySelector("#audio_off");
-  //   const audioButtonOn = document.querySelector("#audio_on");
-  //   const exitButton = document.querySelector("#exit");
   var localVideo = document.getElementById("local_video");
   var remoteVideo = document.getElementById("remote_video");
   var localUserName;
@@ -34,7 +21,6 @@ const AssigneeRtcRoom = () => {
     remoteVideo = document.getElementById("remote_video");
     localUserName = member.id;
     socket = new WebSocket(`${process.env.REACT_APP_WS_URL}/signal`);
-
     start();
   }, []);
 
@@ -62,7 +48,6 @@ const AssigneeRtcRoom = () => {
 
   // WebRTC variables
   let localStream;
-  let localVideoTracks;
   let myPeerConnection;
 
   async function start() {
@@ -217,31 +202,6 @@ const AssigneeRtcRoom = () => {
     }
   }
 
-  /*
- UI Handlers
-  */
-  // mute video buttons handler
-  function videoOff() {
-    localVideoTracks = localStream.getVideoTracks();
-    localVideoTracks.forEach((track) => localStream.removeTrack(track));
-    localVideo.setAttribute(styles, "display:none");
-    log("Video Off");
-  }
-  function videoOn() {
-    localVideoTracks.forEach((track) => localStream.addTrack(track));
-    localVideo.setAttribute(styles, "display:inline");
-    log("Video On");
-  }
-  // mute audio buttons handler
-  function audioOff() {
-    localVideo.muted = true;
-    log("Audio Off");
-  }
-  function audioOn() {
-    localVideo.muted = false;
-    log("Audio On");
-  }
-
   // room exit button handler
   function exitLive() {
     stop();
@@ -276,11 +236,6 @@ const AssigneeRtcRoom = () => {
     } catch (error) {
       handleGetUserMediaError(error);
     }
-
-    // navigator.mediaDevices
-    //   .getUserMedia(constraints)
-    //   .then(getLocalMediaStream)
-    //   .catch(handleGetUserMediaError);
   }
 
   // create peer connection, get media, start negotiating when second participant appears
@@ -301,13 +256,7 @@ const AssigneeRtcRoom = () => {
     // event handlers for the ICE negotiation process
     myPeerConnection.onicecandidate = handleICECandidateEvent;
     myPeerConnection.ontrack = handleTrackEvent;
-
-    // the following events are optional and could be realized later if needed
-    // myPeerConnection.onremovetrack = handleRemoveTrackEvent;
-
     myPeerConnection.oniceconnectionstatechange = handleICEConnectionStateChangeEvent;
-    // myPeerConnection.onicegatheringstatechange = handleICEGatheringStateChangeEvent;
-    // myPeerConnection.onsignalingstatechange = handleSignalingStateChangeEvent;
   }
 
   /** peerConnection 과 관련된 이벤트 처리
@@ -474,32 +423,20 @@ const AssigneeRtcRoom = () => {
 
   return (
     <div className={styles.ChatRoom}>
-      <ChatRoom />
-      <div className="col-lg-12 mb-3">
-        <div className="col-lg-12 mb-3">
-          <div className="d-flex justify-content-around mb-3">
-            <button
-              type="button"
-              className="btn btn-outline-danger"
-              id="exit"
-              name="exit"
-              onClick={() => exitLive()}
-            >
-              Exit Room
-            </button>
-          </div>
-        </div>
-
-        <div className="row justify-content-around mb-3">
-          <div className="col-lg-6 mb-3">
-            <video id="local_video" autoPlay playsInline hidden></video>
-          </div>
-          <div className="col-lg-6 mb-3">
-            <video id="remote_video" autoPlay playsInline></video>
-          </div>
-          <div className="col-lg-6 mb-3">
-            <video id="share-video" autoPlay=""></video>
-          </div>
+      <button
+        type="button"
+        className="btn btn-outline-danger"
+        id="exit"
+        name="exit"
+        onClick={() => exitLive()}
+      >
+        Exit Room
+      </button>
+      <video id="local_video" autoPlay playsInline hidden></video>
+      <div className="FlexContainer">
+        <video className={styles.VideoArea} id="remote_video" autoPlay playsInline></video>
+        <div className={styles.ChatArea}>
+          <ChatRoomComponent id={id} roomDealId={roomDealId} />
         </div>
       </div>
     </div>

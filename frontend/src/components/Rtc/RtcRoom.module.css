@@ -1,0 +1,20 @@
+.flexContainer {
+  display: flex;
+  justify-content: space-between; /* 좌우 정렬 */
+  align-items: flex-start; /* 상단 정렬 */
+  /* 추가적인 스타일링을 원하면 여기에 추가 */
+}
+
+.videoElem {
+  width: 80vw;
+  max-height: 90vh;
+  overflow: hidden;
+}
+
+.videoArea {
+  flex: 8;
+}
+
+.chatArea {
+  flex: 2;
+}
