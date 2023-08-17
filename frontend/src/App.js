@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Map from "./pages/MapPage";
 import Zzimlist from "./pages/ZzimList";
 import Roomout from "./pages/RoomOut";
+import RoomDetail from "./pages/RoomDetail";
 import Signuplogin from "./pages/Signuplogin";
 import GbbList from "./pages/GbbList";
 import GbbCreate from "./pages/GbbCreate";
@@ -33,6 +34,7 @@ const App = () => {
           <Route path="/gbbcreate" element={<GbbCreate onImageUpload={handleImageUpload} />} />
           <Route path="/zzim" element={<Zzimlist />} />
           <Route path="/roomout" element={<Roomout />} />
+          <Route path="/roomdetail/:roomDealid" element={<RoomDetail />} />
           <Route path="/login" element={<Signuplogin />} />
           <Route path="/auth" element={<Auth />} />
           {/* <Route path="/test" element={<TestApp />} /> */}
