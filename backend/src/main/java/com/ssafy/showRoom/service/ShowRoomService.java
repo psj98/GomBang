@@ -285,6 +285,20 @@ public class ShowRoomService {
         }
     }
 
+    public List<ShowRoom> getAllShowRoom() {
+        List<ShowRoom> all = showRoomRepository.findAll();
+        List<ShowRoom> result = new ArrayList<>();
+        if (all.size() > 20) {
+            for (int i = 0; i < 20; i++) {
+                result.add(all.get(i));
+            }
+
+            return result;
+        } else {
+            return all;
+        }
+    }
+
     /**
      * 검색어 목록 가져오기
      *

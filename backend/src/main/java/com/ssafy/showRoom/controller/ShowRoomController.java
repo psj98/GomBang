@@ -14,6 +14,7 @@ import com.ssafy.showRoom.dto.ShowRoomResponseDto;
 import com.ssafy.showRoom.service.ShowRoomService;
 import com.ssafy.showRoomHashTag.dto.ShowRoomHashTagRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.mongodb.core.schema.TypedJsonSchemaObject;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -63,6 +64,11 @@ public class ShowRoomController {
         } catch (BaseException e) {
             return responseService.getFailureResponse(e.status);
         }
+    }
+
+    @GetMapping
+    public BaseResponse<Object> getAllShowRoom() {
+        return responseService.getSuccessResponse(showRoomService.getAllShowRoom());
     }
 
     /**
