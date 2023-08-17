@@ -7,6 +7,7 @@ import com.ssafy.starRoomDeal.domain.StarRoomDealId;
 import com.ssafy.starRoomDeal.domain.StarRoomDealMapping;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,5 +20,5 @@ public interface StarRoomDealRepository extends JpaRepository<StarRoomDeal, Star
     Optional<List<StarRoomDealMapping>> findAllByMemberId(UUID memberId);
 
     @Query("SELECT s FROM StarRoomDeal s JOIN FETCH s.member m JOIN FETCH s.roomDeal r WHERE r.id = :roomDealId")
-    Optional<List<StarMemberMapping>> findAllByRoomDealId(Long roomDealId);
+    Optional<List<StarMemberMapping>> findAllByRoomDealId(@Param("roomDealId") Long roomDealId);
 }

@@ -15,6 +15,7 @@ import com.ssafy.starRoomDeal.repository.StarRoomDealRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,6 +35,7 @@ public class StarRoomDealService {
      * @return 사용자 정보, 매물 글 정보
      * @throws BaseException
      */
+    @Transactional
     public StarRoomDealRegisterResponseDto registerStarRoomDeal(StarRoomDealRegisterRequestDto starRoomDealRegisterRequestDto) throws BaseException {
         UUID memberId = starRoomDealRegisterRequestDto.getMemberId();
         Long roomDealId = starRoomDealRegisterRequestDto.getRoomDealId();
@@ -65,6 +67,7 @@ public class StarRoomDealService {
      * @param starRoomDealDeleteRequestDto 찜 할 사용자의 UUID, 찜 할 매물 글의 id
      * @return 사용자의 UUID, 매물 글의 id
      */
+    @Transactional
     public StarRoomDealDeleteResponseDto deleteStarRoomDeal(StarRoomDealDeleteRequestDto starRoomDealDeleteRequestDto) throws BaseException {
         UUID memberId = starRoomDealDeleteRequestDto.getMemberId();
         Long roomDealId = starRoomDealDeleteRequestDto.getRoomDealId();
