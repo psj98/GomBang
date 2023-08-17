@@ -128,7 +128,7 @@ public class NotificationService {
      * @param content 알림 내용
      * @param url 연결 url
      */
-//    @Transactional
+    @Transactional
     public void send(Member receiver, NotificationType notificationType, String content, String url) {
         Notification notification = notificationRepository.save(createNotification(receiver, notificationType, content, url));
 

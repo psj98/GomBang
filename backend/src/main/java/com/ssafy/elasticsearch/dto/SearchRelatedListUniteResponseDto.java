@@ -14,4 +14,6 @@ public class SearchRelatedListUniteResponseDto {
 
     private String searchWord; // 검색어
     private String searchType; // 검색어 타입
+    private String lat; // 위도
+    private String lon; // 경도
 }

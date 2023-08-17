@@ -299,18 +299,18 @@ public class ShowRoomService {
         for (SearchRelatedListResponseDto s : searchRelatedListResponseDtoList) {
             /* 주소 매핑 */
             if (s.getAddress() != null) {
-                searchRelatedListUniteResponseDtoList.add(new SearchRelatedListUniteResponseDto(s.getAddress(), "address"));
+                searchRelatedListUniteResponseDtoList.add(new SearchRelatedListUniteResponseDto(s.getAddress(), "address", "", ""));
                 continue;
             }
 
             /* 역 매핑 */
             if (s.getStation() != null) {
-                searchRelatedListUniteResponseDtoList.add(new SearchRelatedListUniteResponseDto(s.getStation(), "station"));
+                searchRelatedListUniteResponseDtoList.add(new SearchRelatedListUniteResponseDto(s.getStation(), "station", s.getLocation().getLat(), s.getLocation().getLon()));
                 continue;
             }
 
             /* 대학교 매핑 */
-            searchRelatedListUniteResponseDtoList.add(new SearchRelatedListUniteResponseDto(s.getUniv(), "univ"));
+            searchRelatedListUniteResponseDtoList.add(new SearchRelatedListUniteResponseDto(s.getUniv(), "univ", s.getLocation().getLat(), s.getLocation().getLon()));
         }
 
         return searchRelatedListUniteResponseDtoList;
