@@ -1,5 +1,6 @@
 package com.ssafy.redis.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
@@ -20,9 +21,14 @@ import java.time.Duration;
 @EnableCaching
 public class RedisConfig extends CachingConfigurerSupport{
 
+    @Value("${spring.redis.host}")
+    private String host;
+
+    @Value("${spring.redis.port}")
+    private Integer port;
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory();
+        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(host, port);
         return lettuceConnectionFactory;
     }
 
