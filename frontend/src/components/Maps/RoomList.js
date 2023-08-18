@@ -8,7 +8,7 @@ import axios from 'axios';
 
 const RoomList = (props) => {
     const [hasMore, sethasMore] = useState(true);
-    const [roomids, setRoomids] = useState([0,1,2,3,4,5,6,7,8]);
+    const [roomids, setRoomids] = useState([]);
     useEffect(() => {
         if(!props.let || !props.lon || !props.word) return
         const SearchByAddressRequestDto = {

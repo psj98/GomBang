@@ -11,8 +11,8 @@ const FilterNav = (props) => {
   useEffect(()=>{
     if(props.word){
       setlocation(props.word)
-      const locsearch = document.querySelector("#locsearch")
-      locsearch.disabled = true
+      // const locsearch = document.querySelector("#locsearch")
+      // locsearch.disabled = true
     }
   },[props.word])
 
