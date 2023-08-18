@@ -432,16 +432,7 @@ const GrantorRtcRoom = () => {
   // -------------------------------------------------------------------------
 
   return (
-    <div>
-      <button
-        type="button"
-        className="btn btn-outline-danger"
-        id="exit"
-        name="exit"
-        onClick={() => exitLive()}
-      >
-        Exit Room
-      </button>
+    <div className={styles.outerContainer}>
       <div className={styles.flexContainer}>
         <div className={styles.videoArea}>
           <video id="local_video" className={styles.videoElem} autoPlay playsInline></video>
@@ -450,6 +441,16 @@ const GrantorRtcRoom = () => {
           <ChatRoomComponent id={id} roomDealId={roomDealId} />
         </div>
       </div>
+      <div className="cropper"></div>
+      <button
+        type="button"
+        className={styles.leaveLiveBtn}
+        id="exit"
+        name="exit"
+        onClick={() => exitLive()}
+      >
+        Exit Room
+      </button>
     </div>
   );
 };
