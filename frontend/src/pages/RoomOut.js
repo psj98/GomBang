@@ -537,7 +537,7 @@ export default function Roomout() {
                     min="0"
                     placeholder="보증금"
                   />
-                  원
+                  만원
                 </div>
               </div>
               <div>
@@ -552,7 +552,7 @@ export default function Roomout() {
                     min="0"
                     placeholder="월세"
                   />
-                  원
+                  만원
                 </div>
               </div>
               <div>
@@ -567,7 +567,7 @@ export default function Roomout() {
                     min="0"
                     placeholder="관리비 (없을 경우 0 입력)"
                   />
-                  원
+                  만원
                 </div>
               </div>
             </div>
