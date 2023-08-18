@@ -7,9 +7,14 @@ import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/esm/locale";
 import axios from "axios";
 import { useDaumPostcodePopup } from "react-daum-postcode";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Roomout() {
+  const navigate = useNavigate();
+
   const [userid, setUserid] = useState("");
+  const [roomid, setRoomid] = useState("");
   useEffect(() => {
     const member = JSON.parse(sessionStorage.getItem("member"));
     const useruuid = member.id;
@@ -164,25 +169,21 @@ export default function Roomout() {
   const onRealSubmit = useCallback(
     async (e) => {
       e.preventDefault();
+      const btn = document.querySelector('#gombangregister')
+      btn.style.display='none'
       const formData = new FormData();
       // console.log(selectedImages);
       // formData.append("checkFiles", selectedImages);
       // console.log(formData);
       selectedImages.forEach((image) => {
         formData.append("files", image);
-        console.log("중간점검", formData.file);
+        console.log("중간점검",image);
       });
       // formData.append('file', selectedImages);
 
-      for (let file of formData.getAll("files")) {
-        console.log("File Name:", file["name"]);
-        console.log("File Type:", file.type);
-        console.log("File Size:", file.size);
-        // You can log other properties as needed
-      }
       const roomDealRegisterRequestDto = {
         roomDealRegisterDefaultDto: {
-          memberId: userid,
+          id: userid,
           roomType: info,
           roomSize: pyeong,
           roomCount: roomCount,
@@ -220,57 +221,12 @@ export default function Roomout() {
         },
       };
       // console.log(value)
-      const jh = new Blob([JSON.stringify(roomDealRegisterRequestDto)], {
+      const blob = new Blob([JSON.stringify(roomDealRegisterRequestDto)], {
         type: "application/json",
       });
-      formData.append("roomDealRegisterRequestDto", jh);
-      // const formData = {
-      //     "files": selectedImages,
-      //     "roomDealRegisterRequestDto": {
-      //         "roomDealRegisterDefaultDto": {
-      //             'id': userid,
-      //             "roomType": info,
-      //             "roomSize": pyeong,
-      //             "roomCount": roomCount,
-      //             "oneroomType": struc,
-      //             "bathroomCount": bathroomCount,
-      //             "roadAddress": doroaddress,
-      //             "jibunAddress": jibunaddress,
-      //             "monthlyFee": monthlyRent,
-      //             "deposit": deposit,
-      //             "managementFee": managementFee,
-      //             "usageDate": approveDate,
-      //             "moveInDate": startDate,
-      //             "expirationDate": endDate,
-      //             "floor": floor,
-      //             "totalFloor": totalFloor,
-      //             "lat": lat,
-      //             "lon": lon,
-      //             "station": nearstation,
-      //             "univ": nearschool,
-      //             "content": content,
-      //             // 다른 속성들도 유사하게 추가해주세요
-      //         },
-      //         "roomDealRegisterOptionDto": {
-      //             "airConditioner": checkedList.includes("에어컨"),
-      //             "refrigerator": checkedList.includes("냉장고"),
-      //             "washer": checkedList.includes("세탁기"),
-      //             "dryer": checkedList.includes("건조기"),
-      //             "sink": checkedList.includes("싱크대"),
-      //             "gasRange": checkedList.includes("가스레인지"),
-      //             "closet": checkedList.includes("장롱"),
-      //             "shoeCloset": checkedList.includes("신발장"),
-      //             "fireAlarm": checkedList.includes("화재경보기"),
-      //             "elevator": elevator === "elevatoryes",
-      //             "parkingLot": parking === "parkingyes"
-      //         }
-      //     }
-      // };
-      // console.log(formData)
+      formData.append("roomDealRegisterRequestDto", blob);
+      console.log(roomDealRegisterRequestDto);
       try {
-        // for (let value of formData.values()) {
-        //     console.log(value);
-        //   }
         const response = await axios.post(
           `${process.env.REACT_APP_API_ROOT}/roomdeal/register`,
           formData,
@@ -281,9 +237,9 @@ export default function Roomout() {
             },
           }
         );
-        console.log(formData);
         console.log("데이터 전송 성공:", response.data);
-
+        // setRoomid(response.data.data.roomDeal.id)
+        navigate(`/roomdetail/${response.data.data.roomDeal.id}`)
         // 선택적으로 성공을 처리하거나 사용자에게 성공 메시지를 보여줄 수 있습니다
       } catch (error) {
         console.error("데이터 전송 오류:", error);
@@ -291,7 +247,7 @@ export default function Roomout() {
       }
     },
     [
-      info,
+      info,navigate,
       struc,
       formattedStartDate,
       nearstation,
@@ -830,7 +786,7 @@ export default function Roomout() {
               <span className="pilsoo">(필수)</span>
             </label>
           </div>
-          <button onClick={onRealSubmit}>곰방 내놓기</button>
+          <button id="gombangregister" onClick={onRealSubmit}>곰방 내놓기</button>
         </div>
       </div>
     </div>

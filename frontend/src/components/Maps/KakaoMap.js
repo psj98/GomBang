@@ -17,9 +17,9 @@ const KakaoMap = () => {
         const container = document.getElementById('map');
         const map = new window.kakao.maps.Map(container, {
           center: new window.kakao.maps.LatLng(37.5019, 127.0397),
-          level: 1,
+          level: 6,
         });
-        map.setMinLevel(1);
+        map.setMinLevel(5);
         const clusterer = new window.kakao.maps.MarkerClusterer({
           map: map,
           averageCenter: true,

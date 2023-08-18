@@ -422,23 +422,25 @@ const AssigneeRtcRoom = () => {
   // -------------------------------------------------------------------------
 
   return (
-    <div className={styles.ChatRoom}>
+    <div className={styles.outerContainer}>
+      <div className={styles.flexContainer}>
+        <video id="local_video" autoPlay playsInline hidden></video>
+        <div className={styles.videoArea}>
+          <video className={styles.videoElem} id="remote_video" autoPlay playsInline></video>
+        </div>
+        <div className={styles.chatArea}>
+          <ChatRoomComponent id={id} roomDealId={roomDealId} />
+        </div>
+      </div>
       <button
         type="button"
-        className="btn btn-outline-danger"
+        className={styles.leaveLiveBtn}
         id="exit"
         name="exit"
         onClick={() => exitLive()}
       >
         Exit Room
       </button>
-      <video id="local_video" autoPlay playsInline hidden></video>
-      <div className="FlexContainer">
-        <video className={styles.VideoArea} id="remote_video" autoPlay playsInline></video>
-        <div className={styles.ChatArea}>
-          <ChatRoomComponent id={id} roomDealId={roomDealId} />
-        </div>
-      </div>
     </div>
   );
 };

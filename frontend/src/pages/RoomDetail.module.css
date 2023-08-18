@@ -1,100 +1,164 @@
+hr {
+  margin: 0;
+}
+
 .content {
-    margin: auto 100px;
-  }
-  
-  .detail {
-    margin: 50px auto;
-    display: flex;
-    flex-direction: row;
-  }
-  
-  .contentTab:first-child {
-    flex-grow: 1.2;
-    padding-right: 100px;
-  }
-  
-  .contentTab:last-child {
-    flex-grow: 1;
-  }
-  
-  .contentDetail {
-    margin-bottom: 80px;
-  }
-  
-  .contentDetail:last-child h1 {
-    margin-top: 20px;
-  }
-  
-  .detailInfo {
-    display: flex;
-  }
-  
-  .detailInfoItem {
-    flex: 1 1;
-  }
-  
-  .detailInfo .detailInfoItem:nth-child(2) h2 {
-    font-weight: normal;
-  }
-  
-  .contentDetail:first-child .detailInfo:last-child .detailInfoItem:last-child {
-    line-height: 1.5;
-  }
-  
-  .expectedFeeFont {
-    font-weight: bold;
-    color: #c7ad92;
-  }
-  
-  .detailInfoGrid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-  }
-  
-  .detailInfoGridItem {
-    text-align: center;
-  }
-  
-  .contentDetailRoadAddress {
-    font-weight: normal;
-    font-size: 20px;
-  }
-  
-  .fixedTab {
-    position: fixed;
-    padding: 0px 10px;
-    border: 3px solid;
-    border-color: #c7ad92;
-    border-radius: 10px;
-    top: 20vh;
-  }
-  
-  .fixedInfo {
-    display: flex;
-    padding: 20px 15px;
-  }
-  
-  .fixedInfoNotFlex {
-    padding: 20px 15px;
-  }
-  
-  .fixedTopInfoRight {
-    text-align: end;
-  }
-  
-  .fixedInfoGrid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .fixedInfoBottomTab {
-    display: flex;
-    justify-content: center;
-    padding: 20px 15px;
-  }
-  
-  .chatButton {
-    padding: 5px 30px;
-    border-radius: 15px;
-  }
-  
+  margin: auto 250px;
+}
+
+.swiper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  margin-bottom: 2rem;
+}
+
+.swiperSlide {
+  text-align: center;
+  background-position: center;
+  background-size: cover;
+}
+
+.swiperImg {
+  width: 450px;
+  height: 280px;
+}
+
+.detail {
+  margin: 50px auto;
+  display: flex;
+  flex-direction: row;
+}
+
+.contentTab:first-child {
+  flex-grow: 10;
+  margin-right: 50px;
+}
+
+.contentTab:last-child {
+  flex-grow: 0;
+}
+
+.contentDetail {
+  margin-bottom: 80px;
+}
+
+.contentDetail:last-child h1 {
+  margin-top: 20px;
+}
+
+.detailInfo {
+  display: flex;
+}
+
+.detailInfoItem {
+  flex: 1 1;
+}
+
+.detailInfo .detailInfoItem:nth-child(2) h2 {
+  font-weight: normal;
+}
+
+.contentDetail:first-child .detailInfo:last-child .detailInfoItem:last-child {
+  line-height: 1.5;
+}
+
+.expectedFeeFont {
+  font-weight: bold;
+  color: #c7ad92;
+}
+
+.detailInfoGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  margin-top: 50px;
+}
+
+.detailInfoGridItem {
+  text-align: center;
+}
+
+.roomOptionImg {
+  width: 50px;
+  height: 50px;
+}
+
+.contentDetailRoadAddress {
+  font-weight: normal;
+  font-size: 20px;
+}
+
+.fixedTab {
+  position: sticky;
+  padding: 0px 15px;
+  border: 3px solid;
+  border-color: #c7ad92;
+  border-radius: 10px;
+  top: 20vh;
+}
+
+.fixedInfo {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0px;
+}
+
+.fixedInfoNotFlex {
+  padding: 10px 0px;
+}
+
+.fixedTopInfoRight {
+  text-align: end;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.fixedTopInfoItem {
+  flex-grow: 1 1;
+}
+
+.moveToShowRoom {
+  display: flex;
+  align-items: center;
+}
+
+.fixedInfoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.fixedInfoGridItem {
+  display: flex;
+  align-items: center;
+}
+
+.fixedIntoGridImg {
+  margin-right: 20px;
+}
+
+.fixedIntoGridImgSize {
+  width: 40px;
+  height: 40px;
+}
+
+.fixedInfoBottomTab {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0px 20px;
+}
+
+.fixedInfoBottomBtn {
+  padding: 5px 30px;
+  border-radius: 15px;
+}
+
+.fixedInfoBottomBtn:first-child {
+  margin-right: 30px;
+}
+
+.moveToShowRoomLink {
+  color: black;
+}
