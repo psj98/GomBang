@@ -220,10 +220,10 @@ export default function Roomout() {
         },
       };
       // console.log(value)
-      const jh = new Blob([JSON.stringify(roomDealRegisterRequestDto)], {
+      const blob = new Blob([JSON.stringify(roomDealRegisterRequestDto)], {
         type: "application/json",
       });
-      formData.append("roomDealRegisterRequestDto", jh);
+      formData.append("roomDealRegisterRequestDto", blob);
       // const formData = {
       //     "files": selectedImages,
       //     "roomDealRegisterRequestDto": {
@@ -283,7 +283,7 @@ export default function Roomout() {
         );
         console.log(formData);
         console.log("데이터 전송 성공:", response.data);
-
+        
         // 선택적으로 성공을 처리하거나 사용자에게 성공 메시지를 보여줄 수 있습니다
       } catch (error) {
         console.error("데이터 전송 오류:", error);
