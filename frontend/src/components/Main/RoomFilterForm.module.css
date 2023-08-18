@@ -4,17 +4,14 @@
   cursor: pointer;
   text-decoration: underline;
 }
-.option{
+.option {
   font-size: var(--font-size-xl);
   cursor: pointer;
-
-
 }
-.head{
+.head {
   font-size: var(--font-size-16xl);
   font-weight: 600;
 }
-
 
 .group {
   display: flex;
@@ -38,36 +35,67 @@
   color: var(--color-gray-100);
 }
 
-.bbody{
+.bbody {
   position: relative;
   margin: 0;
   width: 100%;
   height: 70vh;
   background-color: var(--color-tan2);
   font-family: var(--font-istok-web);
+}
 
+.roomFilterBody {
+  margin: 0px 150px;
 }
 
 .myinput {
-  width: 160vh;
-  padding: 20px 20px;
-  margin: 8px 0;
+  width: 145vh;
+  padding: 15px;
+  margin-top: 12px;
   font-size: var(--font-size-3xl);
   box-sizing: border-box;
-  border-radius: var(--br-3xs) ;
+  border-radius: var(--br-3xs);
   border-color: transparent;
   text-indent: 50px;
   background-color: var(--color-white-60);
-  background-image: url(https://cdn1.iconfinder.com/data/icons/hawcons/32/698627-icon-111-search-256.png) ;
-  background-size:  35px;
-  background-position:  20px center;
+  background-image: url(https://cdn1.iconfinder.com/data/icons/hawcons/32/698627-icon-111-search-256.png);
+  background-size: 35px;
+  background-position: 20px center;
   background-repeat: no-repeat;
 }
 
-.myinput:focus{
+.myinput:focus {
   outline: none;
 }
-.myinput::placeholder{
+
+.myinput::placeholder {
   text-indent: 50px;
   font-size: var(--font-size-xl);
+}
+
+.searchResultScroll {
+  width: 100%;
+  overflow: scroll;
+  max-height: 280px;
+  margin-top: 10px;
+  border-radius: 10px;
+}
+
+.searchResultFlex {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 30%;
+}
+
+.searchResultDiv {
+  border: 1px solid #ddd;
+  margin-top: -1px;
+  background-color: #f6f6f6;
+  padding: 12px;
+}
+
+.searchResultDiv:hover:not(.header) {
+  background-color: #eee;
+  cursor: pointer;
 }
