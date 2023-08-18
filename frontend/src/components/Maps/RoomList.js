@@ -8,7 +8,7 @@ import axios from 'axios';
 
 const RoomList = (props) => {
     const [hasMore, sethasMore] = useState(true);
-    const [roomids, setRoomids] = useState([0,1,2,3,4,5,6,7,8]);
+    const [roomids, setRoomids] = useState([]);
     useEffect(() => {
         if(!props.lat || !props.lon || !props.word) return
         const SearchByAddressRequestDto = {
@@ -24,7 +24,7 @@ const RoomList = (props) => {
             axios.post(`${process.env.REACT_APP_API_ROOT}/roomdeal/search-address`, SearchByAddressRequestDto
             ).then((response) => {
                 console.log("주소주소", response.data)
-                setRoomids(response.data.data)
+                response.data.data.map((value,index)=>( setRoomids([...roomids,value.roomDealId])))
             }).catch((error) => {
                 console.error('API 호출 에러:', error);
             })
@@ -33,7 +33,7 @@ const RoomList = (props) => {
             axios.post(`${process.env.REACT_APP_API_ROOT}/roomdeal/search-station-univ`, SearchByStationUnivRequestDto
             ).then((response) => {
                 console.log("역역", response.data)
-                setRoomids(response.data.data)
+                response.data.data.map((value,index)=>( setRoomids([...roomids,value.roomDealId])))
             }).catch((error) => {
                 console.error('API 호출 에러:', error);
             })
