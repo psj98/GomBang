@@ -16,9 +16,13 @@ const GbbCreate = ({ onImageUpload }) => {
   // 아이디 가져오는 거
   useEffect(() => {
     const member = JSON.parse(sessionStorage.getItem("member"));
+    if (!member || !member.id) {
+      navigate("/login");
+      return; 
+  }
     const useruuid = member.id;
     setUserid(useruuid);
-  }, [setUserid]);
+  }, [setUserid,navigate]);
   // 아이디 가지고 내가 올린 매물 방 아이디 가져오는 거
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_ROOT}/roomdeal/myroomdeal/${userid}`

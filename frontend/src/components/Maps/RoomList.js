@@ -10,7 +10,7 @@ const RoomList = (props) => {
     const [hasMore, sethasMore] = useState(true);
     const [roomids, setRoomids] = useState([0,1,2,3,4,5,6,7,8]);
     useEffect(() => {
-        if(!props.let || !props.lon || !props.word) return
+        if(!props.lat || !props.lon || !props.word) return
         const SearchByAddressRequestDto = {
             "address": props.word,
             "content": '',

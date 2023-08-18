@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "./ChatList.module.css";
+import { useNavigate } from "react-router-dom";
+
 
 const ChatListComponent = () => {
   const [chatData, setChatData] = useState([]);
   const [useruuid, setUserUuid] = useState("");
-
+  const navigate = useNavigate();
   useEffect(() => {
     const member = JSON.parse(sessionStorage.getItem("member"));
+    if (!member || !member.id) {
+      navigate("/login");
+      return; 
+  }
     setUserUuid(member.id);
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     if (useruuid === "") return;

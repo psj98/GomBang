@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import Header from "../Header";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import styles from "./RtcRoom.module.css";
 import axios from "axios";
@@ -18,12 +17,16 @@ const GrantorRtcRoom = () => {
 
   useEffect(() => {
     const member = JSON.parse(sessionStorage.getItem("member"));
+    if (!member || !member.id) {
+      navigate("/login");
+      return; 
+  }
     localVideo = document.getElementById("local_video");
     localUserName = member.id;
     socket = new WebSocket(`${process.env.REACT_APP_WS_URL}/signal`);
 
     start();
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     return () => {

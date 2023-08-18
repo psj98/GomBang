@@ -2,14 +2,21 @@ import Header from "../components/Header";
 import styles from "./MyPage.module.css"
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+
 
 const MyPage = () => {
+    const navigate = useNavigate();
     const [zzimdata, setZzimdata] = useState([]);
     const [likedata, setLikedata] = useState([]);
     const [username, setUsername] = useState('');
     const [userid, setUserid] = useState('');
     useEffect(() => {
         const member = JSON.parse(sessionStorage.getItem("member"));
+        if (!member || !member.id) {
+            navigate("/login");
+            return; 
+        }
         const usernickname = member.nickname;
         setUsername(usernickname)
         const useruuid = member.id;
@@ -22,7 +29,7 @@ const MyPage = () => {
         // }).catch(error => {
         //     console.log('오류:', error);
         // });
-    }, []);
+    }, [navigate]);
     useEffect(() => {
             axios.get(`${process.env.REACT_APP_API_ROOT}/star/my-list/${userid}`)
         .then(response => {

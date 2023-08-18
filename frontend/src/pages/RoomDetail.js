@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../components/Header";
 import styles from "./RoomDetail.module.css";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams,useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 // import { EffectCoverflow, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -11,6 +11,7 @@ import "swiper/css/pagination";
 import "swiper/css/effect-coverflow";
 
 const RoomDetail = () => {
+  const navigate = useNavigate();
   const { roomDealid } = useParams();
   const [roomdata, setRoomData] = useState([]);
   const [roomoption, setRoomOption] = useState([]);
@@ -20,9 +21,13 @@ const RoomDetail = () => {
 
   useEffect(() => {
     const member = JSON.parse(sessionStorage.getItem("member"));
+    if (!member || !member.id) {
+      navigate("/login");
+      return; 
+  }
     const useruuid = member.id;
     setUserid(useruuid);
-  }, [setUserid]);
+  }, [setUserid,navigate]);
 
   useEffect(() => {
     console.log(roomDealid);

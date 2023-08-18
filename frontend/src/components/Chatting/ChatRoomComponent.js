@@ -3,6 +3,8 @@ import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import axios from "axios";
 import styles from "./ChatRoom.module.css";
+import { useNavigate } from "react-router-dom";
+
 
 var stompClient = null;
 var useruuid;
@@ -11,13 +13,17 @@ const ChatRoomComponent = (props) => {
   const [messages, setMessages] = useState([]);
   const [previousmessage, setPreviousmessage] = useState([]);
   const messageEndRef = useRef(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const member = JSON.parse(sessionStorage.getItem("member"));
+    if (!member || !member.id) {
+      navigate("/login");
+      return; 
+  }
     useruuid = member.id;
     connect();
     gethistory();
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     messageEndRef.current.scrollIntoView({ behavior: "smooth" });

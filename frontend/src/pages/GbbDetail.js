@@ -20,9 +20,13 @@ const GbbDetail = () => {
     // showroom/{articleId}
     useEffect(() => {
         const member = JSON.parse(sessionStorage.getItem("member"));
+        if (!member || !member.id) {
+            navigate("/login");
+            return; 
+        }
         const useruuid = member.id;
         setUserid(useruuid);
-    }, [setUserid]);
+    }, [setUserid,navigate]);
 
     useEffect(() => {
         const showRoomDetailRequestDto = {

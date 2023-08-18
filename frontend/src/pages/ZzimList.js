@@ -2,16 +2,21 @@ import Header from "../components/Header";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "./Zimlist.module.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Zimlist() {
 	const [userid, setUserid] = useState("");
 	const [starroomDeal, SetStarroomDeal] = useState([]);
-
+	const navigate = useNavigate();
 	useEffect(() => {
 		const member = JSON.parse(sessionStorage.getItem("member"));
+		if (!member || !member.id) {
+			navigate("/login");
+			return; 
+		}
 		const useruuid = member.id;
 		setUserid(useruuid);
-	}, []);
+	}, [navigate]);
 	useEffect(() => {
 		if (userid) {
 			axios

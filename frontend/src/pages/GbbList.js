@@ -16,9 +16,13 @@ const GbbList = ({ imageList }) => {
 
     useEffect(() => {
         const member = JSON.parse(sessionStorage.getItem("member"));
+        if (!member || !member.id) {
+            navigate("/login");
+            return; 
+        }
         const useruuid = member.id;
         setUserid(useruuid);
-    }, [setUserid]);
+    }, [setUserid,navigate]);
 
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_ROOT}/showroom`
