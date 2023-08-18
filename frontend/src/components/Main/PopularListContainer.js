@@ -16,7 +16,7 @@ const PopularListContainer = () => {
       <div className={styles.frame}>
         <div className={styles.textparent}>
           <div className={styles.b}>곰방에서 인기 많은 매물</div>
-          <Link to='/map' className={styles.b1}>더보기</Link>
+          <Link to='/gombangba' className={styles.b1}>더보기</Link>
         </div>
         <div className={styles.imageParent}>
           {imgtags}
