@@ -161,7 +161,7 @@ const GbbList = ({ imageList }) => {
                                 setSearchText(event.target.value)
                             }
                             onKeyDown={handleKeyPress}
-                            placeholder="보고 싶은 지역을 입력하세요"
+                            placeholder = {searchText ? ({searchText}) : ("보고 싶은 지역을 입력하세요")}
                         />
                         <div className={gbbListStyles.gbbXBtnDiv}>
                             <button className={gbbListStyles.gbbXBtn} onClick={() => handleXClick()}>X</button>
