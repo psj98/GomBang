@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 const Header = () => {
 	const [isAuthorized, setIsAuthorized] = useState("");
 	const [userinfo, setUserinfo] = useState({});
-	const [eventSource, setEventSource] = useState(() => { });
+	const [eventSource, setEventSource] = useState(() => {});
 	useEffect(() => {
 		setIsAuthorized(sessionStorage.getItem("isAuthorized"));
 		setUserinfo(JSON.parse(sessionStorage.getItem("member")));
@@ -67,7 +67,7 @@ const Header = () => {
 				}
 			})();
 		});
-	}, [eventSource]);
+	});
 
 	function handleLogout() {
 		setIsAuthorized(false);
@@ -102,17 +102,30 @@ const Header = () => {
 					<>
 						<div className={styles.rightTabRightDiv}>반가워요, {userinfo?.name}!</div>
 						<div className={styles.rightTabRightDiv}>
-							<Link to="/chatlist" >
-								<img src={`${process.env.PUBLIC_URL}/images/chat.png`} alt="noImage" className={styles.rightTabImg} />
+							<Link to="/chatlist">
+								<img
+									src={`${process.env.PUBLIC_URL}/images/chat.png`}
+									alt="noImage"
+									className={styles.rightTabImg}
+								/>
 							</Link>
 						</div>
 						<div className={styles.rightTabRightDiv}>
-							<Link to="/mypage" >
-								<img src={`${process.env.PUBLIC_URL}/images/user.png`} alt="noImage" className={styles.rightTabImg} />
+							<Link to="/mypage">
+								<img
+									src={`${process.env.PUBLIC_URL}/images/user.png`}
+									alt="noImage"
+									className={styles.rightTabImg}
+								/>
 							</Link>
 						</div>
 						<div className={styles.rightTabRightDiv}>
-							<img onClick={handleLogout} src={`${process.env.PUBLIC_URL}/images/logout.png`} alt="noImage" className={styles.rightTabImg} />
+							<img
+								onClick={handleLogout}
+								src={`${process.env.PUBLIC_URL}/images/logout.png`}
+								alt="noImage"
+								className={styles.rightTabImg}
+							/>
 						</div>
 					</>
 				) : (
@@ -125,7 +138,7 @@ const Header = () => {
 					</>
 				)}
 			</div>
-		</div >
+		</div>
 	);
 };
 
