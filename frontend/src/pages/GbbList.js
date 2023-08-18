@@ -16,13 +16,9 @@ const GbbList = ({ imageList }) => {
 
     useEffect(() => {
         const member = JSON.parse(sessionStorage.getItem("member"));
-        if (!member || !member.id) {
-            navigate("/login");
-            return; 
-        }
         const useruuid = member.id;
         setUserid(useruuid);
-    }, [setUserid,navigate]);
+    }, [setUserid]);
 
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_API_ROOT}/showroom`
@@ -39,7 +35,7 @@ const GbbList = ({ imageList }) => {
             "memberId": userid,
             "searchWord": searchText,
             "searchType": 'station',
-            "hashTag": selectedTags,
+            "hashTag": selectedTags.join(' '),
             "sortType": 'desc',
             "pageOffset": 0
         }
@@ -134,7 +130,6 @@ const GbbList = ({ imageList }) => {
     function handlegotoDetail(id) {
         navigate(`/gbblist/${id}`)
     }
-
 
     return (
         <div>

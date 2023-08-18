@@ -20,13 +20,9 @@ const GbbDetail = () => {
     // showroom/{articleId}
     useEffect(() => {
         const member = JSON.parse(sessionStorage.getItem("member"));
-        if (!member || !member.id) {
-            navigate("/login");
-            return; 
-        }
         const useruuid = member.id;
         setUserid(useruuid);
-    }, [setUserid,navigate]);
+    }, [setUserid]);
 
     useEffect(() => {
         const showRoomDetailRequestDto = {
@@ -61,9 +57,8 @@ const GbbDetail = () => {
 
         if (gbbdata.checkLike) {
             axios
-                .delete(`${process.env.REACT_APP_API_ROOT}/like/delete`, {
-                    data: LikeShowRoomRegisterRequestDto,
-                })
+                .delete(`${process.env.REACT_APP_API_ROOT}/like/delete`,
+                LikeShowRoomRegisterRequestDto)
                 .then((response) => {
                     console.log(response.data.data);
                 })
@@ -73,9 +68,9 @@ const GbbDetail = () => {
                 .then(window.location.reload());
         } else {
             axios
-                .post(`${process.env.REACT_APP_API_ROOT}/like/register`, {
-                    data: LikeShowRoomRegisterRequestDto,
-                })
+                .post(`${process.env.REACT_APP_API_ROOT}/like/register`, 
+                 LikeShowRoomRegisterRequestDto,
+                )
                 .then((response) => {
                     console.log(response.data.data);
                 })
@@ -128,7 +123,11 @@ const GbbDetail = () => {
                         <div onClick={() => handlelike()}>
                             {gbbdata.checkLike ? "♥" : "♡"}
                         </div>
-                        {/* <div>얘도 배열임{gbbdata.hashTag}</div> */}
+                        <div className={styles.tagList}>{gbbdata.hashTag.map((value, index) => (
+
+                                <div key={index} className={styles.tagListItem}>{ value.hashTagName }</div>
+
+                        ))}</div>
                         <div>
                             위치 :{" "}
                             {gbbdata.showRoom.jibunAddress
