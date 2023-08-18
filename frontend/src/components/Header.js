@@ -19,7 +19,9 @@ const Header = () => {
 			return;
 		}
 		setEventSource(
-			new EventSource(`http://localhost:8081/notification/subscribe/${userinfo.id}`)
+			new EventSource(
+				`${process.env.REACT_APP_REST_API_MAP_KEY}/notification/subscribe/${userinfo.id}`
+			)
 		);
 		sessionStorage.setItem("notification_issubscribe", true);
 	}, [userinfo]);
