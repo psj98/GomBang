@@ -7,7 +7,7 @@
 
 .videoElem {
   width: 80vw;
-  max-height: 90vh;
+  max-height: 85vh;
   overflow: hidden;
 }
 
@@ -17,4 +17,23 @@
 
 .chatArea {
   flex: 2;
+  height: 80vh;
+  overflow: auto;
+  padding: 20px;
+}
+
+.outerContainer {
+  margin-top: 30px;
+}
+
+.leaveLiveBtn {
+  background-color: rgb(164, 118, 83);
+  color: white;
+  border-radius: 15px;
+  position: fixed;
+  bottom: 0px;
+  padding: 20px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+  right: 3vw;
 }
