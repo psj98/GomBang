@@ -128,3 +128,8 @@ align-items: center; */
 .uploadbutton {
 	margin: 30px;
 }
+
+.swiperImg{
+	width: 450px;
+    height: 450px;
+}

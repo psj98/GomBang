@@ -128,7 +128,7 @@ const GbbDetail = () => {
                         <div onClick={() => handlelike()}>
                             {gbbdata.checkLike ? "♥" : "♡"}
                         </div>
-                        <div>얘도 배열임{gbbdata.hashTag}</div>
+                        {/* <div>얘도 배열임{gbbdata.hashTag}</div> */}
                         <div>
                             위치 :{" "}
                             {gbbdata.showRoom.jibunAddress
