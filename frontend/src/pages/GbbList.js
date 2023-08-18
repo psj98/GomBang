@@ -131,6 +131,10 @@ const GbbList = ({ imageList }) => {
     const handleDeleteTag = (id) => {
         setSelectedTags(selectedTags.filter((_, index) => index !== id));
     };
+    function handlegotoDetail(id) {
+        navigate(`/gbblist/${id}`)
+    }
+
 
     return (
         <div>
@@ -221,6 +225,7 @@ const GbbList = ({ imageList }) => {
                                     src={value.thumbnail}
                                     alt={`${value}-${id}`}
                                     className={gbbListStyles.showRoomImg}
+                                    onClick={() => handlegotoDetail(value.id)}
                                 />
                                 {
                                     value.checkLike ?
