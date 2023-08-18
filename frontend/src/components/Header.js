@@ -20,7 +20,7 @@ const Header = () => {
 		}
 		setEventSource(
 			new EventSource(
-				`${process.env.REACT_APP_REST_API_MAP_KEY}/notification/subscribe/${userinfo.id}`
+				`${process.env.REACT_APP_API_ROOT}/notification/subscribe/${userinfo.id}`
 			)
 		);
 		sessionStorage.setItem("notification_issubscribe", true);
