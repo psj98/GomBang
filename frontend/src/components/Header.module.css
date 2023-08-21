@@ -1,0 +1,74 @@
+.headerDiv {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-magra);
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    margin: 20px 50px;
+  }
+  
+  .b1,
+  .b2,
+  .logoIcon {
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
+  }
+  
+  .rightTabRightDiv {
+    margin-right: 20px;
+  }
+  
+  .rightTabRightDiv:not(:first-child) {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .rightTabRightDiv:last-child {
+    margin-right: 10px;
+  }
+  
+  .rightTabImg {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .loginBtn {
+    padding: 15px;
+    border-radius: 15px;
+    background-color: var(--color-tan);
+    font-size: smaller;
+    text-decoration: none;
+    color: black;
+  }
+  
+  .loginBtn:hover {
+    cursor: pointer;
+    background-color: #c7ad92;
+  }
+  
+  .logoutBtn {
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 10px;
+  }
+  
+  .logoIcon {
+    width: 133px;
+    height: 75px;
+  }
+  
+  .leftTab {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-31xl);
+  }
+  
+  .rightTab {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  

@@ -1,0 +1,168 @@
+.gbbListBody {
+    margin: auto 200px;
+  }
+  
+  .gbbListTop {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 30px;
+  }
+  
+  .showMeTheGbbList {
+    font-size: 40px;
+  }
+  
+  .showMeTheGbbListBold {
+    font-weight: bold;
+    font-size: 40px;
+  }
+  
+  .uploadBtn {
+    font-size: 30px;
+    padding: 8px 18px;
+  }
+  
+  .gbbListMid {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 30px;
+  }
+  
+  .gbbListMidItem:first-child {
+    /* flex-grow: 4; */
+    width: 60%;
+    position: relative;
+  }
+  
+  .gbbListMidItem:nth-child(2) {
+    /* flex-grow: 1; */
+    width: 33.6%;
+  }
+  
+  .hashTagInputMargin {
+    margin-bottom: 10px;
+  }
+  
+  .gbbListMidInput {
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 10px;
+    border-color: transparent;
+    text-indent: 10px;
+    background-color: #c7ad9266;
+  }
+  
+  .gbbXBtnDiv {
+    position: absolute;
+    top: 10px;
+    right: 30px;
+  }
+  
+  .gbbXBtn {
+    background-color: transparent;
+    padding: 0;
+    font-size: 20px;
+  }
+  
+  .gbbXBtn:hover {
+    background-color: transparent;
+    color: grey;
+  }
+  
+  .gbbListMidItem:first-child input {
+    width: 95%;
+  }
+  
+  .gbbListMidItem:nth-child(2) input {
+    width: 90%;
+  }
+  
+  .gbbSearchBtn {
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 18px;
+  }
+  
+  .tagList {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .tagListItem {
+    border-radius: 10px;
+    margin: 3px;
+    padding: 4px;
+    border: 3px solid #c7ad92;
+  }
+  
+  .gbbListBottom {
+    overflow: scroll;
+    max-height: 400px;
+  }
+  
+  .imageContainer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .imageGridItem {
+    position: relative;
+    padding: 0px 5px;
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+  
+  .showRoomImg {
+    height: 100%;
+    width: 100%;
+    background-position: cover;
+    border-radius: 15px;
+  }
+  
+  .heartBtn {
+    font-size: 40px;
+    color: red;
+    position: absolute;
+    top: 3%;
+    right: 5%;
+  }
+  
+  .notHeartBtn {
+    font-size: 40px;
+    color: rgb(228, 228, 228);
+    position: absolute;
+    top: 3%;
+    right: 5%;
+  }
+  
+  .searchResultScroll {
+    position: absolute;
+    z-index: 1;
+    width: 98%;
+    overflow: scroll;
+    max-height: 280px;
+    margin-top: 10px;
+    border-radius: 10px;
+  }
+  
+  .searchResultFlex {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 30%;
+  }
+  
+  .searchResultDiv {
+    border: 1px solid #ddd;
+    margin-top: -1px;
+    background-color: #f6f6f6;
+    padding: 12px;
+  }
+  
+  .searchResultDiv:hover:not(.header) {
+    background-color: #eee;
+    cursor: pointer;
+  }
+  

@@ -1,0 +1,55 @@
+.Frame{
+    margin: 0px;
+    height: calc(100vh - 150px);
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+}
+
+.btnparent{
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-content: center;
+    padding: 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+
+}
+
+.scrollableDiv{
+    position: relative;
+    overflow-y:scroll;
+    overflow-x:unset;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0px;
+}
+
+
+.ListItems{
+        position: relative;
+        width:  400px;
+        height: 200px;
+        border: 3px solid green;
+        margin: 0px 0px 30px 0px;
+    }
+
+.mybtn{
+    position: relative;
+    width: auto;
+    background-color: transparent;
+    white-space: nowrap;
+    border: 1px solid var(--color-tan2);
+    border-radius: 10px;
+}
+
+.mybtn:hover{
+    color: inherit;
+    background-color: inherit;
+}
