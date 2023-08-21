@@ -1,0 +1,48 @@
+
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f0f0f0;
+}
+
+.navbar ul {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar li {
+  margin-right: 20px;
+}
+
+.navbar li:last-child {
+  margin-right: 0;
+}
+
+button {
+  padding: 8px 16px;
+  background-color: #C7AD92;
+  color: #000000;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #996b51;
+  color: #ffffff;
+}
+
+label:hover {
+  cursor: pointer;
+}
+
+
+/* 스크롤바 숨김 */
+::-webkit-scrollbar {
+  display: none;
+}
