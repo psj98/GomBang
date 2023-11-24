@@ -2,7 +2,7 @@
 
 > 화상 매물 양도 서비스
 
-![gombang](https://github.com/psj98/GomBang/assets/60167488/c32eb118-9f79-4737-8b0f-aef2af1f4da9)
+![GomBang](https://github.com/psj98/GomBang/assets/60167488/c32eb118-9f79-4737-8b0f-aef2af1f4da9)
 
 부득이하게 계약 기간이 만료되기 전에 나가야 하는 경우가 있습니다.
 
@@ -30,6 +30,16 @@
 
 <br/>
 
+## 👨‍💻 팀원 소개
+
+| 허태민(PM) | 박성준 | 변지혜 | 채희찬 | 박승희 | 이현도 |
+| --- | --- | --- | --- | --- | --- |
+| <p align="left" style="color:skyblue">Backend</p> | <p align="left" style="color:skyblue">Backend</p> | <p align="left" style="color:skyblue">Backend</p> | <p align="left" style="color:skyblue">Backend, Infra</p> | <p align="left" style="color:skyblue">Frontend</p> | <p align="left" style="color:skyblue">Frontend</p> |
+|화상 채팅|Elasticsearch를 활용한 검색<br>좋아요 API|카카오 소셜 로그인<br>채팅 요청 알림|매물, 피드 API<br>검색 관련 캐싱|지도, 피드 페이지|메인, 매물 페이지|
+|[@Heo-Tae-Min](https://github.com/Heo-Tae-Min)|[@psj98](https://github.com/psj98)|[@j-byun](https://github.com/j-byun)|[@chae-heechan](https://github.com/chae-heechan)|[]()|[@HidenLee](https://github.com/HidenLee)|
+
+<br/>
+
 ## 📅 프로젝트 진행 기간
 
 > 2023.07.03 ~ 2023.08.18
@@ -46,53 +56,46 @@
 
 <br/>
 
-## 👨‍💻 팀원 소개
-
-| 허태민(PM) | 박성준 | 변지혜 | 채희찬 | 박승희 | 이현도 |
-| ------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------- |
-| <p align="left" style="color:skyblue">Backend</p> | <p align="left" style="color:skyblue">Backend</p> | <p align="left" style="color:skyblue">Backend</p> | <p align="left" style="color:skyblue">Backend, Infra</p> | <p align="left" style="color:skyblue">Frontend</p> | <p align="left" style="color:skyblue">Frontend</p> |
-|화상 채팅|Elasticsearch를 활용한 검색<br>좋아요 API|카카오 소셜 로그인<br>채팅 요청 알림|매물, 피드 API<br>검색 관련 캐싱|지도, 피드 페이지|메인, 매물 페이지|
-|[@Heo-Tae-Min](https://github.com/Heo-Tae-Min)|[@psj98](https://github.com/psj98)|[@j-byun](https://github.com/j-byun)|[@chae-heechan](https://github.com/chae-heechan)|[]()|[@HidenLee](https://github.com/HidenLee)|
-
-<br/>
-
 ## 📚 기술 스택
 
 ### Back-End
 ![Java](https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white)
 ![Spring](https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F.svg?&style=for-the-badge&logo=Spring%20Boot&logoColor=white)
 ![JPA](https://img.shields.io/badge/jpa-20336B?style=for-the-badge&logo=JPA&logoColor=white)
+
+### Front-End
+![React](https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=white)
+![Css](https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css&logoColor=white)
 
 ### Database
 ![MySQL](https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 ![Redis](https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/mongodb-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
 
-### Front-End
-![React](https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=white)
-![Css](https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css&logoColor=white)
-
 ### Elasticsearch
 ![ElasticSearch](https://img.shields.io/badge/elasticsearch-005571?style=for-the-badge&logo=elasticsearch&logoColor=white)
 ![Kibana](https://img.shields.io/badge/kibana-005571?style=for-the-badge&logo=kibana&logoColor=white)
 
-### Infra
-![Amazon EC2](https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white)
-![Docker](https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Jenkins](https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white)
-![Amazon S3](https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white)
-![Nginx](https://img.shields.io/badge/Nginx-009639.svg?&style=for-the-badge&logo=Nginx&logoColor=white)
-
 ### WebRTC
 ![WebRTC](https://img.shields.io/badge/webrtc-333333?style=for-the-badge&logo=webrtc&logoColor=white)
 
-### Collaboration Tools
+### AWS Server
+![Amazon EC2](https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white)
 
+### CI/CD & Infra Tools
+![Jenkins](https://img.shields.io/badge/Jenkins-D24939.svg?&style=for-the-badge&logo=Jenkins&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED.svg?&style=for-the-badge&logo=Docker&logoColor=white)
+![Nginx](https://img.shields.io/badge/Nginx-009639.svg?&style=for-the-badge&logo=Nginx&logoColor=white)
+
+### Storage
+![Amazon S3](https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white)
+
+### Collaboration Tools
 ![Notion](https://img.shields.io/badge/Notion-000000.svg?&style=for-the-badge&logo=Notion&logoColor=로고색상)
 ![Mattermost](https://img.shields.io/badge/Mattermost-0058CC.svg?&style=for-the-badge&logo=Mattermost&logoColor=로고색상)
 
 ### Issue & Configuration Management
-
 ![GitLab](https://img.shields.io/badge/Gitlab-FC6D26.svg?&style=for-the-badge&logo=Gitlab&logoColor=#FC6D26)
 ![Jira](https://img.shields.io/badge/Jira-0052CC.svg?&style=for-the-badge&logo=Jira&logoColor=Blue)
 
@@ -128,7 +131,7 @@
 
 ## 🗺 아키텍처
 
-추후 추가 예정
+> 추후 추가 예정
 
 <br/>
 
@@ -142,7 +145,7 @@
 
 1. 포팅 메뉴얼 : [포팅 메뉴얼](https://github.com/psj98/GomBang/blob/master/exec/%EA%B3%B0%EB%B0%A9%20%ED%8F%AC%ED%8C%85%20%EB%A9%94%EB%89%B4%EC%96%BC.pdf)
 
-2. 데이터베이스 덤프 파일 : [데이터베이스 덤프 파일]()
+2. 데이터베이스 덤프 파일 : 추후 추가 예정
 
 3. Elasticsearch 활용 데이터 파일 : [Elasticsearch 활용 데이터](https://github.com/psj98/GomBang/tree/master/exec/Elasticsearch%20%ED%99%9C%EC%9A%A9%20%EB%8D%B0%EC%9D%B4%ED%84%B0)
 
@@ -150,4 +153,4 @@
 
 ## ✅ 참고 자료
 
-Notion : [Notion](https://checkered-bobolink-2c4.notion.site/468a7f0375984bd6afbf2cd9514bb159?pvs=4)
+- Notion : [참고 자료](https://checkered-bobolink-2c4.notion.site/468a7f0375984bd6afbf2cd9514bb159?pvs=4)
