@@ -134,7 +134,7 @@
 
 ## 📝 ERD
 
-추후 추가 예정
+![ERD](https://github.com/psj98/GomBang/assets/60167488/a7e5b86b-c514-4b24-97a3-640f530532a4)
 
 <br/>
 
@@ -150,4 +150,4 @@
 
 ## ✅ 참고 자료
 
-- [Notion](https://checkered-bobolink-2c4.notion.site/468a7f0375984bd6afbf2cd9514bb159?pvs=4)
+Notion : [Notion](https://checkered-bobolink-2c4.notion.site/468a7f0375984bd6afbf2cd9514bb159?pvs=4)
