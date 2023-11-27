@@ -1,0 +1,29 @@
+{
+  "properties": {
+    "showRoomId": {
+      "type": "text"
+    },
+    "address": {
+      "type": "text"
+    },
+    "station": {
+      "type": "text"
+    },
+    "univ": {
+      "type": "text"
+    },
+    "hashTag": {
+      "type": "text",
+      "fields": {
+        "nori": {
+          "type": "text",
+          "analyzer": "nori",
+          "search_analyzer": "nori"
+        }
+      }
+    },
+    "registerTime": {
+      "type": "keyword"
+    }
+  }
+}

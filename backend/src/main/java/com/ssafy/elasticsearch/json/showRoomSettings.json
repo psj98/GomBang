@@ -1,0 +1,16 @@
+{
+  "analysis": {
+    "tokenizer": {
+      "nori": {
+        "type": "standard",
+        "decompound_mode": "none"
+      }
+    },
+    "analyzer": {
+      "nori": {
+        "type": "custom",
+        "tokenizer": "nori"
+      }
+    }
+  }
+}

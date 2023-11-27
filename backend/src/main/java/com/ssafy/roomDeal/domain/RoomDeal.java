@@ -8,6 +8,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.awt.*;
+import java.io.Serializable;
 import java.sql.Date;
 
 @Entity
@@ -15,7 +16,7 @@ import java.sql.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoomDeal {
+public class RoomDeal implements Serializable {
 
     @Id
     @GeneratedValue
@@ -70,8 +71,11 @@ public class RoomDeal {
     @NotNull
     private Integer totalFloor;
 
-//    @NotNull
-//    private Point position;
+    @NotNull
+    private String lat;
+
+    @NotNull
+    private String lon;
 
     @NotNull
     private DealStatus dealStatus;
@@ -80,11 +84,7 @@ public class RoomDeal {
 
     private String station;
 
-    private Double stationDistance;
-
     private String univ;
-
-    private Double univDistance;
 
     private String content;
 
@@ -108,13 +108,11 @@ public class RoomDeal {
         this.expirationDate = roomDealRegisterDefaultDto.getExpirationDate();
         this.floor = roomDealRegisterDefaultDto.getFloor();
         this.totalFloor = roomDealRegisterDefaultDto.getTotalFloor();
-//        this.position = roomDealDefaultDto.getPosition();
+        this.lat = roomDealRegisterDefaultDto.getLat();
+        this.lon = roomDealRegisterDefaultDto.getLon();
         this.dealStatus = DealStatus.dealable;
-        this.thumbnail = roomDealRegisterDefaultDto.getThumbnail();
         this.station = roomDealRegisterDefaultDto.getStation();
-        this.stationDistance = roomDealRegisterDefaultDto.getStationDistance();
         this.univ = roomDealRegisterDefaultDto.getUniv();
-        this.univDistance = roomDealRegisterDefaultDto.getUnivDistance();
         this.content = roomDealRegisterDefaultDto.getContent();
         this.registerTime = new Date(System.currentTimeMillis());
 
@@ -125,6 +123,12 @@ public class RoomDeal {
         this.monthlyFee = roomDealUpdateRequestDto.getMonthlyFee();
         this.deposit = roomDealUpdateRequestDto.getDeposit();
         this.managementFee = roomDealUpdateRequestDto.getManagementFee();
+
+        return this;
+    }
+
+    public RoomDeal saveThumbnail(String fileUrl) {
+        this.thumbnail = fileUrl;
 
         return this;
     }
