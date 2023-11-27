@@ -2,7 +2,7 @@
 
 > 화상 매물 양도 서비스
 
-![GomBang](https://github.com/psj98/GomBang/assets/60167488/c32eb118-9f79-4737-8b0f-aef2af1f4da9)
+![GomBang](https://github.com/psj98/GomBang/assets/60167488/551c940d-4eff-48af-ac26-00df31ebbb2f)
 
 부득이하게 계약 기간이 만료되기 전에 나가야 하는 경우가 있습니다.
 
