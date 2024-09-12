@@ -4,9 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Getter
 @NoArgsConstructor
-public class BaseResponse<T> {
+public class BaseResponse<T> implements Serializable {
 
     private boolean isSuccess;
 

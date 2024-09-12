@@ -1,0 +1,39 @@
+{
+  "analysis": {
+    "tokenizer": {
+      "nori": {
+        "type": "nori_tokenizer",
+        "decompound_mode": "mixed"
+      }
+    },
+    "filter": {
+      "stopwords": {
+        "type": "stop",
+        "stopwords": [
+          "학교",
+          "대학교"
+        ]
+      },
+      "stopwords_univ": {
+        "type": "stop",
+        "stopwords": [
+          "대",
+          "학교",
+          "대학교"
+        ]
+      }
+    },
+    "analyzer": {
+      "nori": {
+        "type": "custom",
+        "tokenizer": "nori",
+        "filter": ["trim", "nori_part_of_speech", "stopwords"]
+      },
+      "nori_univ": {
+        "type": "custom",
+        "tokenizer": "nori",
+        "filter": ["trim", "nori_part_of_speech", "stopwords_univ"]
+      }
+    }
+  }
+}

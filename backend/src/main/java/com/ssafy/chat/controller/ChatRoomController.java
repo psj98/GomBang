@@ -2,16 +2,19 @@ package com.ssafy.chat.controller;
 
 import com.ssafy.chat.domain.ChatRoom;
 import com.ssafy.chat.dto.ChatCreateRequestDto;
-import com.ssafy.chat.dto.ChatCreateResponseDto;
 import com.ssafy.chat.dto.ChatGetIdRequestDto;
-import com.ssafy.chat.dto.ChatGetIdResponseDto;
+import com.ssafy.chat.dto.ChatRoomListResponseDto;
 import com.ssafy.chat.service.ChatRoomService;
+import com.ssafy.global.common.response.BaseException;
 import com.ssafy.global.common.response.BaseResponse;
+import com.ssafy.global.common.response.BaseResponseStatus;
 import com.ssafy.global.common.response.ResponseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import retrofit2.http.Path;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -35,33 +38,32 @@ public class ChatRoomController {
      */
     @PostMapping("/chatroom/create")
     public BaseResponse<?> createRoom(@RequestBody ChatCreateRequestDto chatCreateRequestDto) {
-        try{
-            // 방 생성
-            UUID roomId = chatRoomService.createChatRoom(chatCreateRequestDto);
-            log.info("Create chat roomID {}", roomId);
-
-            ChatCreateResponseDto response = new ChatCreateResponseDto();
-            response.setRoomId(roomId);
-
-            return responseService.getSuccessResponse("create success", response);
-        } catch (Exception e) {
-            return responseService.getFailureResponse("invalid data");
-        }
+        return responseService.getSuccessResponse(chatRoomService.createChatRoom(chatCreateRequestDto));
     }
 
     /**
      *
-     * @param chatGetIdRequestDto
-     * @return BaseResponse<ChatGetIdResponseDto>
+     * @param grantorId
+     * @param assigneeId
+     * @return BaseResponse<ChatRoomResponseDto>
      */
-    @GetMapping("/chatroom/find")
-    public BaseResponse<?> getChatRoomId(@RequestBody ChatGetIdRequestDto chatGetIdRequestDto) {
+    @GetMapping("/chatroom/getid/{grantorId}/{assigneeId}")
+    public BaseResponse<?> getChatRoomId(@PathVariable("grantorId") UUID grantorId, @PathVariable("assigneeId") UUID assigneeId) {
         try{
-            ChatGetIdResponseDto resultChatRoom = chatRoomService.getChatRoomId(chatGetIdRequestDto);
-            if(resultChatRoom == null) return responseService.getFailureResponse("Not Found");
-            return responseService.getSuccessResponse("find chatRoomId success", resultChatRoom);
-        } catch (Exception e) {
-            return responseService.getFailureResponse("invalid data");
+            ChatGetIdRequestDto chatGetIdRequestDto = new ChatGetIdRequestDto(grantorId, assigneeId);
+            return responseService.getSuccessResponse(chatRoomService.getChatRoomId(chatGetIdRequestDto));
+        } catch (BaseException e) {
+            return responseService.getFailureResponse(e.getStatus());
+        }
+    }
+
+    @GetMapping("/chatroom/list/{memberId}")
+    public BaseResponse<?> getChatroomList(@PathVariable("memberId") UUID memberId) {
+        try{
+            ChatRoomListResponseDto chatRoomListResponseDto = chatRoomService.getChatRoomList(memberId);
+            return responseService.getSuccessResponse(chatRoomListResponseDto);
+        } catch (BaseException e) {
+            return responseService.getFailureResponse(e.getStatus());
         }
     }
 }

@@ -1,0 +1,30 @@
+﻿도메인,기능,HTTP 메서드,API Path,Request,Response,Data
+Member,사용자 이름 수정,POST,member/update,MemberJoinRequestDto,MemberJoinResponseDto,회원가입
+Member,카카오 로그인,POST,member/login,MemberLoginRequestDto,MemberLoginResponseDto,로그인
+Member,로그아웃,GET,member/logout,,,
+Member,신고,POST,member/report,,,
+MyPage,,,,,,
+RoomDeal,인근 역 조회,GET,roomdeal/station/{gugun},StationGetRequestDto,StationGetResponseDto,인근 역 조회
+RoomDeal,인근 학교 조회,GET,roomdeal/univ/{address},UnivGetRequestDto,UnivGetResponseDto,인근 학교 조회
+RoomDeal,게시글 조회,GET,roomdeal/{roomDealId},RoomRequestDto,RoomResponseDto,게시글 조회
+RoomDeal,게시글 등록,POST,roomdeal/register,RoomDealRegisterRequestDto,RoomDealRegisterResponseDto,게시글 등록
+RoomDeal,게시글 금액 수정,PUT,roomdeal/update,RoomUpdateRequestDto,RoomUpdateResponseDto,게시글 금액 수정
+RoomDeal,게시글 삭제 (판매완료),DELETE,roomdeal/delete,RoomDeleteRequestDto,RoomDeleteResponseDto,게시글 삭제 (판매완료)
+RoomDeal,매물 검색 (1차),,,,,
+RoomDeal,매물 상세 검색,,,,,
+RoomDeal,게시글 찜,,,,,
+Show,방꾸 조회,GET,show/{articleId},ShowRequestDto,ShowResponseDto,방꾸 조회
+Show,방꾸 등록,POST,show/add,ShowAddRequestDto,ShowAddResponseDto,방꾸 등록
+Show,방꾸 검색 필터,GET,show/list?filter={filter}&search={search},ShowListRequestDto,ShowListResponseDto,방꾸 검색 필터
+Show,방꾸 검색 결과 정렬,GET,show/list?filter={filter}&search={search}&ordername={ordername}&ordertype={ordertype},ShowListRequestDto,ShowListResponseDto,방꾸 검색 결과 정렬
+Show,방꾸 삭제,DELETE,show/delete,ShowDeleteRequestDto,ShowDeleteResponseDto,방꾸 삭제
+Show,방꾸 삭제 (ver.roomId),DELETE,show/deletebyroom,ShowDeleteByRoomRequestDto,ShowDeleteByRoomResponseDto,방꾸 삭제 (RoomId)
+Show,방꾸 좋아요,,,,,
+Chat,채팅 목록 불러오기,GET,chat/list/user/{userid},ChatListRequestDto,ChatListResponseDto,채팅 목록 불러오기
+Chat,채팅 내역 불러오기,GET,chat/list/room/{roomid},ChatHistoryRequestDto,ChatHistoryReponseDto,채팅 내역 불러오기
+Chat,채팅방 생성,POST,chat/create,ChatCreatRequestDto,ChatCreateResponseDto,채팅방 생성
+Notification,,,,,,
+CheckList,,,,,,
+,찜 리스트 조회,,,,,
+,좋아요 리스트 조회,,,,,
+,,,,,,

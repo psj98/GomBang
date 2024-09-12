@@ -1,0 +1,167 @@
+.Frame{
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  overflow-y:scroll;
+  overflow-x: hidden;
+  height: inherit;
+  width: inherit;
+  padding: 0;
+}
+
+.FrameChild{
+  position: relative;
+  display: flex;
+  width: inherit;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.container{
+  flex: 1;
+  position: relative;
+  padding: 20px 20px 20px 20px;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  justify-content: stretch;
+  align-content: flex-start;
+  background-color: white;
+  border-bottom: 1px black solid;
+}
+
+.container2{ 
+  flex: 1;
+  position: relative;
+  height: inherit; 
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  justify-content: space-around;
+  border-bottom: 1px solid black;
+}
+
+.headline{
+  position: relative;
+  
+  font-size: 35px;
+}
+
+.subheadline{
+  position: relative;
+  margin-top: 10px;
+  font-size: 15px;
+}
+
+.optionbody{
+  position: relative;
+  margin: auto;
+  width: 260px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  font-size: 15px;
+  justify-content: flex-start;
+}
+
+.roomoption{
+  display: flex;
+  margin: 10px 0px 10px 0px;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  width: 130px;
+}
+
+.mycheckbox{
+  position: relative;
+  appearance: none;
+  margin-right: 10px;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid black;
+  border-radius: 0.35rem;
+  background-color: white;
+}
+
+.mycheckbox:checked{
+
+  border-color: transparent;
+  border: 1px solid black;
+
+  background-image: url("data:image/svg+xml,%3csvg width='16' height='12' viewBox='0 0 16 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M0.916748 5.99987L5.63341 10.7165L15.0834 1.2832' stroke='%23282828' stroke-width='1.0' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");
+  background-size: 70% 70%;
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-color: var(--color-tan1);
+  color: initial;
+}
+
+.sliderparent{
+  margin: 20px 10px;
+}
+
+.sliderindex{
+  /* width: inherit; */
+  position: relative;
+  display: flex;
+  color: black;
+  margin: 0px -10px 10px -20px;
+  padding: 0;
+  justify-content: space-between;
+}
+
+
+
+
+.gender,
+.roomsize{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0px 30px 0px 0px;
+  padding: 20px;
+  justify-content: space-between;
+  width: inherit;
+  height: 110px;
+}
+
+.buttongroup{
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: inherit;
+  margin: 20px 0px;
+  align-items: center;
+}
+.buttonbox_selected,
+.buttonbox{
+  display: flex;
+  min-width: 150px;
+  height: 50px;
+  background-color: white;
+  color: var(--color-gray-200);
+  border-radius: 15px;
+  margin: 20px 15px 20px 0px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: 1px solid transparent;
+  box-shadow: 1px 1px 3px black;
+
+}
+
+.buttonbox_selected{
+  box-shadow: inset 1px 1px 3px black;
+  background-color: var(--color-tan2);
+  color:black
+}
+
+.buttonbox:hover{
+  border: 1px solid var(--color-tan1);
+}

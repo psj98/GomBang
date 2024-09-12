@@ -1,0 +1,39 @@
+.flexContainer {
+  display: flex;
+  justify-content: space-between; /* 좌우 정렬 */
+  align-items: flex-start; /* 상단 정렬 */
+  /* 추가적인 스타일링을 원하면 여기에 추가 */
+}
+
+.videoElem {
+  width: 80vw;
+  max-height: 85vh;
+  overflow: hidden;
+}
+
+.videoArea {
+  flex: 8;
+}
+
+.chatArea {
+  flex: 2;
+  height: 80vh;
+  overflow: auto;
+  padding: 20px;
+}
+
+.outerContainer {
+  margin-top: 30px;
+}
+
+.leaveLiveBtn {
+  background-color: rgb(164, 118, 83);
+  color: white;
+  border-radius: 15px;
+  position: fixed;
+  bottom: 0px;
+  padding: 20px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+  right: 3vw;
+}

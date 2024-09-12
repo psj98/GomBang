@@ -14,5 +14,5 @@ public class ChatEnterRequestDto {
     private UUID roomId;
 
     @NotNull
-    private UUID userId;
+    private UUID memberId;
 }

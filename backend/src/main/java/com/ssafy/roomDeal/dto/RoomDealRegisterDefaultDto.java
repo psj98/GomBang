@@ -1,9 +1,11 @@
 package com.ssafy.roomDeal.dto;
 
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 import java.sql.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -56,19 +58,15 @@ public class RoomDealRegisterDefaultDto {
     @NotNull
     private Integer totalFloor;
 
-//    @NotNull
-//    private Point position;
+    @NotNull
+    private String lat;
 
     @NotNull
-    private  String thumbnail;
+    private String lon;
 
     private String station;
 
-    private Double stationDistance;
-
     private String univ;
-
-    private Double univDistance;
 
     private String content;
 }
